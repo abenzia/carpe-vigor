@@ -302,7 +302,7 @@ def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(cli
     import app as webapp
     assert Bare(webapp.app).post("/numbers/measures/delete").status_code == 403   # no origin evidence: refused
     assert cross.status_code == 403
-    assert len(client.get("/api/state").json()["diary"]) == 2
+    assert len(client.get("/api/state").json()["diary"]) == 3   # the watch twice (once through the tunnel), the form once
 
 
 def test_a_cooked_meal_of_the_plan_goes_in_and_out_of_the_diary(client):
