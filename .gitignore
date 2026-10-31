@@ -4,8 +4,5 @@ __pycache__/
 *.pyc
 *.sqlite
 .pytest_cache/
-data/sources/*.txt
 .playwright-mcp/
-data/sources/*.html
-data/sources/index.json
-data/sources/library.json
+data/sources/
