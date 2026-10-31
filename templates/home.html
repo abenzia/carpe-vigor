@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — Home{% endblock %}
+{% block content %}
+<div class="eyebrow">Step 3</div>
+<h2>What's at home</h2>
+<p class="muted">Tick what you already have. The agent buys only what the week's recipes need and you don't have. Anything that doesn't fit the plan is not thrown away: finish it, and it won't be bought again — a swap is suggested instead. <span class="tiny">(A fridge photo can pre-fill this list; it is optional and you always get to correct it.)</span></p>
+
+{% if flagged %}
+<div class="card">
+  <h3 style="margin-top:0">Finish, don't rebuy</h3>
+  {% for f in flagged %}
+  <div class="flag"><b>{{ f.name }}</b> — finish what you have; the agent won't buy it again.
+    {% if f.swap_sku %}<br><span class="tiny">Swap: <b>{{ catalog.items[f.swap_sku].name }}</b> — {{ f.swap_why }}.</span>{% endif %}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<form method="post" action="/home" class="card">
+  {% set groups = {} %}
+  {% for it in items %}{% set _ = groups.setdefault(it.tags[0] if it.tags else 'other', []).append(it) %}{% endfor %}
+  <div class="grid">
+  {% for group, its in groups.items() %}
+    <div>
+      <div class="eyebrow">{{ group }}</div>
+      {% for it in its %}
+      <label class="check"><input type="checkbox" name="have" value="{{ it.sku }}" {{ 'checked' if it.sku in pantry.at_home() }}>
+        {{ it.name }} <span class="muted tiny">{{ it.unit }}</span>
+        {% if it.sku in pantry.blacklist() %}<span class="pill warn">don't rebuy</span>{% endif %}</label>
+      {% endfor %}
+    </div>
+  {% endfor %}
+  </div>
+  <p style="margin-top:16px"><button type="submit">Save and build my cart →</button></p>
+</form>
+{% endblock %}

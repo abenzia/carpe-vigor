@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — Reward{% endblock %}
+{% block content %}
+<div class="eyebrow">Step 5</div>
+<h2>Care that pays you back</h2>
+<p class="muted">Up to {{ (max_rate * 100)|int }}% of what you spent on groceries this week comes back — for what you <b>did</b>, never for your weight: meals cooked, days you moved, the "don't rebuy" list kept out of the cart.</p>
+
+<div class="grid">
+  <div class="card accent">
+    <div class="eyebrow">This week</div>
+    <div class="big">{{ currency }} {{ '%.2f'|format(result.cashback) }}</div>
+    <p class="muted">{{ (result.cashback_rate * 100)|round(1) }}% of {{ currency }} {{ '%.2f'|format(behaviour.spent) }} spent · score {{ (result.score * 100)|int }}/100</p>
+    <ul class="steps">{% for r in result.reasons %}<li>{{ r }}</li>{% endfor %}</ul>
+    {% if paid %}
+      <p><span class="pill ok">paid back</span> {% for p in paid %}{{ currency }} {{ '%.2f'|format(p.amount) }} <span class="tiny muted">{{ p.refund_id }}</span>{{ ' · ' if not loop.last }}{% endfor %}</p>
+    {% elif result.cashback > 0 and behaviour.spent > 0 %}
+      <form method="post" action="/reward/pay"><button type="submit">Pay my reward via PayPal</button></form>
+    {% elif behaviour.spent == 0 %}
+      <p class="muted">No order yet this week: nothing to pay back.</p>
+    {% else %}
+      <p class="muted">Score under 50: no cashback this week. Cook a few more meals or move a bit more and it unlocks.</p>
+    {% endif %}
+  </div>
+  <div class="card">
+    <div class="eyebrow">Steps from your watch</div>
+    <p class="tiny muted">In the demo, type seven days of steps as a watch would send them (Health Connect / Apple Health in the product). Goal: {{ '{:,}'.format(steps_goal) }} a day.</p>
+    <form method="post" action="/reward/steps" class="row">
+      <input type="text" name="steps" value="{{ steps|join(', ') if steps else '8200, 6100, 9400, 7300, 4800, 11200, 7600' }}" style="flex:1">
+      <button class="secondary" type="submit">Sync</button>
+    </form>
+    {% if steps %}
+    <table style="margin-top:10px"><tr>{% for d in days %}<th>{{ d }}</th>{% endfor %}</tr>
+      <tr>{% for s in steps %}<td class="{{ 'num' }}">{{ s }} {% if s >= steps_goal %}<span class="pill ok">✓</span>{% endif %}</td>{% endfor %}</tr></table>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">Who pays the reward</h3>
+  <p class="tiny">In this demo, the platform. In the product, whoever gains when you do your part: your employer inside its welfare plan, your insurer, the retailer whose basket becomes weekly and loyal. The same mechanism — a share of grocery spend returned for behaviour, through PayPal — works for all three.</p>
+</div>
+{% endblock %}

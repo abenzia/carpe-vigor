@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — My doctor said{% endblock %}
+{% block content %}
+<div class="eyebrow">Step 1</div>
+<h2>My doctor said…</h2>
+<p class="muted">In your own words. Food, movement, sleep and habits are what this app plans for. Medicines, diagnoses and your test values stay with your doctor — if you mention them, we hand them back.</p>
+
+<form method="post" action="/doctor" class="card accent">
+  <label for="doctor_said">What did your doctor tell you?</label>
+  <textarea id="doctor_said" name="doctor_said" required placeholder="I have high blood pressure. Eat less salt, lose a few pounds and walk more.">{{ profile.doctor_said if profile else '' }}</textarea>
+
+  <div class="grid">
+    <div>
+      <label for="device">What do you cook with?</label>
+      <select id="device" name="device">
+        {% for d in devices %}<option {{ 'selected' if profile and profile.device == d }}>{{ d }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
+      <label for="budget">Weekly grocery budget ({{ currency }})</label>
+      <input type="number" id="budget" name="budget" step="1" min="20" max="500" value="{{ profile.budget if profile else 70 }}">
+    </div>
+  </div>
+
+  <label for="constraints">Allergies, dislikes, anything else</label>
+  <input type="text" id="constraints" name="constraints" placeholder="no shellfish, hate celery, two people" value="{{ profile.constraints_text if profile else '' }}">
+
+  <label class="check"><input type="checkbox" name="report_attached" value="1"> I have a lab report
+    <span class="muted tiny">— it will only tell us which topics to cover. No value is read or judged.</span></label>
+
+  <p style="margin-top:16px"><button type="submit">Plan my week</button></p>
+</form>
+
+<details class="card">
+  <summary>The public sources the reviewers read</summary>
+  <table>
+    <tr><th>Topic</th><th>Source</th><th>On disk</th></tr>
+    {% for s in sources %}
+    <tr><td>{{ s.topic }}</td><td><a href="{{ s.url }}">{{ s.name }}</a></td><td>{{ 'yes' if s.fetched else 'not fetched' }}</td></tr>
+    {% endfor %}
+  </table>
+  <p class="tiny muted">Fetch them once with <code>python -m carpevigor.sources fetch</code>. Every "why" and "evidence" line of the plan is checked against these texts.</p>
+</details>
+{% endblock %}

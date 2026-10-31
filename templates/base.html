@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Carpe Vigor{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Spline+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <div class="wrap head-in">
+    <a class="marca" href="/">
+      <span class="blaze"><i></i><i></i><i></i></span>
+      <span><h1>Carpe Vigor</h1><div class="sub">Care that pays you back</div></span>
+    </a>
+    <nav>
+      {% set nav_steps = [("/doctor","1","Doctor said"),("/week","2","The week"),("/home","3","Home"),("/cart","4","Cart"),("/reward","5","Reward")] %}
+      {% for href, n, label in nav_steps %}
+      <a href="{{ href }}" class="{{ 'on' if request.url.path.startswith(href) else '' }}"><b>{{ n }}</b> {{ label }}</a>
+      {% endfor %}
+    </nav>
+  </div>
+  <div class="wrap money" title="Your weekly grocery budget, authorized once with PayPal. Spent = what the agent's orders captured. Released = what came back to you.">
+    <div class="bar">
+      {% set b = money.budget if money.budget else 1 %}
+      <span class="seg spent" style="width: {{ (100 * money.spent / b)|round(1) }}%"></span>
+      <span class="seg released" style="width: {{ (100 * money.released / b)|round(1) }}%"></span>
+    </div>
+    <div class="nums">
+      <span><em>budget</em> {{ currency }} {{ '%.2f'|format(money.budget) }}</span>
+      <span><em>spent</em> {{ currency }} {{ '%.2f'|format(money.spent) }}</span>
+      <span><em>released</em> {{ currency }} {{ '%.2f'|format(money.released) }}</span>
+      <span><em>paid back</em> {{ currency }} {{ '%.2f'|format(money.cashback) }}</span>
+      <span class="mode">PayPal {{ money.mode }}{% if not money.authorized %} · not authorized yet{% endif %}</span>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+{% block content %}{% endblock %}
+</main>
+<footer class="wrap">
+  <p>Carpe Vigor talks about food, movement and habits in general terms and quotes public sources. Its reviewers are language
+  models reading those sources: they are not health professionals and this app does not replace your doctor. Anything about
+  medicines, diagnoses or your own test results belongs to your doctor.</p>
+  <p class="tiny">v{{ version }} · AGPL-3.0 · <form method="post" action="/reset" class="inline"><button class="link">start over</button></form></p>
+</footer>
+</body>
+</html>

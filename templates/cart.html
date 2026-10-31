@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — Cart{% endblock %}
+{% block content %}
+<div class="eyebrow">Step 4</div>
+<h2>The agent's cart</h2>
+<p class="muted">From the week's recipes minus what's at home, swaps applied, never over your budget. You approve, the agent orders, the amount is captured against the budget you authorized. {{ store_name }}{% if store_note %} — <span class="tiny">{{ store_note }}</span>{% endif %}</p>
+
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+{% if not money.authorized %}
+<form method="post" action="/budget/authorize" class="card accent">
+  <h3 style="margin-top:0">Authorize this week's budget — once</h3>
+  <p>PayPal holds the amount; nothing is charged until an order ships. What the agent doesn't spend comes back to you at the end of the week.</p>
+  <div class="row">
+    <label for="amount" style="margin:0">Budget ({{ currency }})</label>
+    <input type="number" id="amount" name="amount" step="1" min="10" value="{{ profile.budget|int }}" style="width:120px">
+    <button type="submit">Authorize with PayPal</button>
+    <span class="tiny muted">{{ 'Simulated: no PayPal account is used.' if money.mode == 'mock' else 'PayPal sandbox: you will approve in the PayPal window.' }}</span>
+  </div>
+</form>
+{% endif %}
+
+<div class="card">
+  <table>
+    <tr><th>Item</th><th>Why</th><th class="num">Price</th></tr>
+    {% for l in cart.lines %}
+    <tr><td><b>{{ l.item.name }}</b> <span class="muted tiny">{{ l.item.unit }}</span>
+        {% if l.swapped_from %}<br><span class="pill ok">swap for {{ l.swapped_from }}</span>{% endif %}</td>
+        <td class="tiny">{{ l.reason }}</td><td class="num">{{ '%.2f'|format(l.total) }}</td></tr>
+    {% endfor %}
+    <tr><td colspan="2" class="muted">Delivery</td><td class="num">{{ '%.2f'|format(cart.delivery_fee) }}</td></tr>
+    <tr><td colspan="2"><b>Total</b> <span class="tiny muted">budget available {{ '%.2f'|format(budget) }}</span></td><td class="num"><b>{{ '%.2f'|format(cart.total) }}</b></td></tr>
+  </table>
+  {% if cart.skipped %}
+  <h3>Left out, and why</h3>
+  <ul class="steps">{% for s in cart.skipped %}<li>{{ s }}</li>{% endfor %}</ul>
+  {% endif %}
+  <p class="row" style="margin-top:14px">
+    {% if money.authorized and cart.lines %}
+    <form method="post" action="/cart/order" class="inline"><button type="submit">Approve — order and pay {{ currency }} {{ '%.2f'|format(cart.total) }}</button></form>
+    {% elif not cart.lines %}<span class="muted">Nothing to buy: everything is at home.</span>
+    {% else %}<span class="muted">Authorize the budget above to let the agent order.</span>{% endif %}
+    {% if money.authorized %}
+    <form method="post" action="/budget/release" class="inline"><button class="secondary" type="submit">End the week: release {{ currency }} {{ '%.2f'|format(money.remaining) }}</button></form>
+    {% endif %}
+  </p>
+</div>
+
+{% if orders %}
+<div class="card">
+  <h3 style="margin-top:0">Orders this week</h3>
+  <table><tr><th>When</th><th>Note</th><th class="num">Captured</th></tr>
+  {% for o in orders %}<tr><td class="tiny">{{ o.at }}</td><td>{{ o.note }} <span class="tiny muted">{{ o.capture_id }}</span></td><td class="num">{{ '%.2f'|format(o.amount) }}</td></tr>{% endfor %}
+  </table>
+</div>
+{% endif %}
+<p><a class="btn secondary" href="/reward">Next: the reward →</a></p>
+{% endblock %}

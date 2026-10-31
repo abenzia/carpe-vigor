@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — The week{% endblock %}
+{% block content %}
+<div class="eyebrow">Step 2</div>
+<h2>{{ week_plan.title }}</h2>
+<p>{{ week_plan.summary }}</p>
+
+<div class="card">
+  <div class="row">
+    <span class="pill">goals: {{ profile.guidance.goals|join(' · ') }}</span>
+    {% for t in profile.guidance.topics %}<span class="pill">{{ t }}</span>{% endfor %}
+    <span class="pill">cooks with {{ profile.device }}</span>
+  </div>
+  {% if profile.guidance.to_the_doctor %}
+  <div class="flag"><b>For your doctor, not for this app:</b> {{ profile.guidance.to_the_doctor|join(' · ') }}</div>
+  {% endif %}
+</div>
+
+<div class="card {{ 'accent' if report.approved }}">
+  <div class="row">
+    <h3 style="margin:0">Review board</h3>
+    {% if report.provider == 'mock' %}<span class="pill warn">simulated — no model was called</span>
+    {% elif report.approved %}<span class="pill ok">approved</span>{% else %}<span class="pill bad">sent back</span>{% endif %}
+    <span class="pill">{{ report.statements|length }} statements</span>
+    {% if report.seconds %}<span class="pill">{{ report.seconds }} s</span>{% endif %}
+  </div>
+  {% if report.note %}<p class="muted">{{ report.note }}</p>{% endif %}
+  <div class="grid" style="margin-top:10px">
+    {% for r in report.reviewers %}
+    <div>
+      <b>{{ r.name }}</b> <span class="muted tiny">{{ r.maker }}</span><br>
+      <span class="tiny muted">{{ r.question }}</span>
+      {% if r.absent %}<div class="pill bad">absent</div>{% elif r.approved %}<div class="pill ok">approves</div>{% else %}<div class="pill warn">asks for changes</div>{% endif %}
+      <ul class="steps">{% for c in r.checks %}<li>{{ c }}</li>{% endfor %}</ul>
+    </div>
+    {% endfor %}
+  </div>
+  {% if report.corrections %}
+  <h3>Upheld corrections</h3>
+  <table><tr><th>#</th><th>The plan says</th><th>Should be</th><th>Why</th><th>Votes</th></tr>
+  {% for c in report.corrections %}<tr><td>{{ c.n }}</td><td>{{ c.says }}</td><td>{{ c.should_be }}</td><td>{{ c.why }}</td><td>{{ c.votes }}</td></tr>{% endfor %}
+  </table>
+  {% endif %}
+  <p class="tiny muted">Sources read: {% for u in used %}<a href="{{ u.url }}">{{ u.name }}</a>{{ '' if u.fetched else ' (not fetched)' }}{{ ', ' if not loop.last }}{% endfor %}</p>
+</div>
+
+<h3>Meals — tick what you cooked; it counts toward your reward</h3>
+<div class="grid">
+{% for r in week_plan.recipes %}
+  <div class="card">
+    <div class="eyebrow">{{ r.day }} · {{ r.meal }}</div>
+    <b>{{ r.title }}</b>
+    <div class="why">{{ r.why }}</div>
+    <div class="evidence">{{ r.evidence }}</div>
+    <details><summary>Ingredients and steps</summary>
+      <p class="tiny">{{ r.ingredients|join(', ') }}</p>
+      <ol class="steps">{% for s in r.steps %}<li>{{ s }}</li>{% endfor %}</ol>
+    </details>
+    <form method="post" action="/week/cooked" style="margin-top:8px">
+      <input type="hidden" name="title" value="{{ r.title }}">
+      <button class="{{ '' if r.title in cooked else 'secondary' }}">{{ '✓ cooked' if r.title in cooked else 'Mark as cooked' }}</button>
+    </form>
+  </div>
+{% endfor %}
+</div>
+
+<h3>Movement</h3>
+<div class="card"><ul class="steps">{% for m in week_plan.movement %}<li>{{ m }}</li>{% endfor %}</ul></div>
+
+<p class="row"><a class="btn" href="/home">Next: what's at home →</a> <a class="btn secondary" href="/week?build=1">Plan again</a></p>
+{% endblock %}
