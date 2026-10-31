@@ -9,9 +9,17 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from dataclasses import dataclass
 
 from . import config
+
+NOT_BOUGHT = ("water", "leftover")
+# Words that describe a quantity, a preparation or a label, not the food: they must not decide which product to buy.
+NOISE = {"dried", "fresh", "can", "canned", "chopped", "sliced", "cubed", "diced", "rinsed", "trimmed", "finely",
+         "roughly", "quartered", "minced", "grated", "salt", "added", "low", "sodium", "free", "approx", "tbsp", "tsp",
+         "cup", "cups", "portion", "bunch", "stalk", "clove", "cloves", "juice", "powder", "plain", "whole", "large",
+         "small", "medium", "mixed", "and", "the", "for", "with", "unsalted", "pinch", "handful"}
 
 
 @dataclass(frozen=True)
@@ -38,13 +46,24 @@ class Catalog:
             return cls(json.load(f))
 
     def find(self, query: str) -> Item | None:
-        """The item whose name best matches a plain-words ingredient ("spinach", "olive oil", "greek yogurt")."""
+        """The item for an ingredient. A store name ("Baby spinach") is taken as is. Otherwise the ingredient as a model
+        writes it ("400g can chopped tomatoes (no salt added)") is matched on its food words only: quantities, preparation
+        and label words never decide a match (they made oregano into lentils and tomatoes into beans). Water and
+        leftovers are not bought; snacks and drinks are bought only when named exactly."""
         q = query.lower().strip()
-        words = [w for w in q.replace(",", " ").split() if len(w) > 2]
+        for item in self.items.values():
+            if item.name.lower() == q:
+                return item
+        if any(w in q for w in NOT_BOUGHT):
+            return None
+        words = [w for w in re.findall(r"[a-z]+", re.sub(r"\([^)]*\)", " ", q)) if len(w) > 2 and w not in NOISE]
         best, best_score = None, 0
         for item in self.items.values():
-            name = item.name.lower()
-            score = (3 if q and q in name else 0) + sum(1 for w in words if w in name)
+            if item.has("snack") or item.has("drink"):
+                continue
+            name_words = [w for w in re.findall(r"[a-z]+", item.name.lower()) if w not in NOISE]
+            # prefix either way, so "fillet" finds "fillets" and "tomatoes" finds "tomato"
+            score = sum(1 for w in words if any(n.startswith(w) or w.startswith(n) for n in name_words))
             if score > best_score:
                 best, best_score = item, score
         return best

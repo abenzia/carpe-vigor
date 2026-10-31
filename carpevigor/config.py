@@ -26,13 +26,13 @@ CURRENCY = os.environ.get("CURRENCY", "USD")
 # `bedrock` = Amazon Nova via Strands Agents (how the engine ran in Carpe Class); `mock` = no model, for tests and
 # the credential-less demo. Three tiers, so the fact jurors are three DIFFERENT models whatever the provider.
 GOOGLE_CLOUD_PROJECT = os.environ.get("GOOGLE_CLOUD_PROJECT", "")
-GOOGLE_CLOUD_LOCATION = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+GOOGLE_CLOUD_LOCATION = os.environ.get("GOOGLE_CLOUD_LOCATION", "global")
 LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "vertex" if GOOGLE_CLOUD_PROJECT else "mock")  # mock | vertex | bedrock
 AWS_REGION = os.environ.get("AWS_REGION", "us-east-1")
 MODELS = {
     "vertex": {"strong": os.environ.get("GEMINI_STRONG", "gemini-2.5-pro"),
                "mid": os.environ.get("GEMINI_MID", "gemini-2.5-flash"),
-               "light": os.environ.get("GEMINI_LIGHT", "gemini-2.5-flash-lite")},
+               "light": os.environ.get("GEMINI_LIGHT", "gemini-3.1-flash-lite")},
     "bedrock": {"strong": "us.amazon.nova-pro-v1:0", "mid": "us.amazon.nova-2-lite-v1:0", "light": "us.amazon.nova-lite-v1:0"},
     "mock": {"strong": "mock", "mid": "mock", "light": "mock"},
 }

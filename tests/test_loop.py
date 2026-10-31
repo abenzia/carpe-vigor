@@ -93,6 +93,29 @@ def test_cart_charges_delivery_again_when_cutting_drops_it_below_the_free_thresh
     assert cart.within_budget
 
 
+def test_catalog_find_does_not_turn_real_gemini_ingredients_into_the_wrong_product():
+    # Strings as Gemini wrote them on 31 Oct, and what the old matcher bought for them.
+    catalog = Catalog.load()
+    name = lambda q: (catalog.find(q).name if catalog.find(q) else None)
+    assert name("1 potato, cubed") != "Potato chips"                              # was: chips in a low-salt plan
+    assert name("500g water") is None                                             # was: sparkling water, 6 bottles
+    assert name("1 tsp dried oregano") != "Dried lentils"                         # was: matched on "dried"
+    assert name("400g can chopped tomatoes (no salt added)") == "Cherry tomatoes"  # was: cannellini, on "no salt added"
+    assert name("1 portion leftover chicken and vegetable soup") is None          # leftovers are cooked, not bought
+    assert name("200g can chickpeas, rinsed (no salt added)") == "Chickpeas, no salt added"
+    assert name("1 cod fillet (approx. 150g)") == "Cod fillets"
+    assert name("2 tbsp olive oil") == "Extra-virgin olive oil"
+    assert name("Baby spinach") == "Baby spinach"                                 # exact store name wins
+    assert name("potato chips") == "Potato chips"                                 # a snack only when asked by name
+
+
+def test_cart_buys_from_the_recipes_store_list_when_there_is_one():
+    catalog = Catalog.load()
+    recipes = [{"title": "Soup", "ingredients": ["1 potato, cubed", "500g water", "1 carrot"], "buy": ["Carrots", "Yellow onions"]}]
+    names = {l.item.name for l in cart_agent.build(recipes, Pantry(), catalog, budget=100.0).lines}
+    assert names == {"Carrots", "Yellow onions"}
+
+
 def test_sources_pick_topics_and_flag_clinical():
     assert sources.topics_for("my doctor says I have high blood pressure, eat less salt") == ["blood_pressure"]
     assert "activity" in sources.topics_for("walk more")

@@ -14,6 +14,7 @@ import json
 from pydantic import BaseModel, Field
 
 from . import config, llm, review_board, sources
+from .catalog import Catalog
 from .profile import Guidance
 
 DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -24,6 +25,9 @@ class Recipe(BaseModel):
     meal: str = Field(description="lunch or dinner")
     title: str
     ingredients: list[str] = Field(description="Plain grocery names, one per line, e.g. 'chicken breast', 'spinach', 'olive oil'")
+    buy: list[str] = Field(default_factory=list,
+                           description="What to buy for this dish: names copied EXACTLY from the STORE list. Leave out water "
+                                       "and leftovers. An ingredient the store does not sell is simply not listed here.")
     steps: list[str] = Field(description="3-6 steps written for the person's kitchen device, with real settings for that device")
     why: str = Field(description="One sentence tying this dish to the doctor's goals (e.g. 'Low in sodium: herbs instead of salt, because you were told to cut salt')")
     evidence: str = Field(description="One sentence saying what the public source says on average, with the source name in brackets; never a prediction for this person")
@@ -46,8 +50,11 @@ source's name in brackets. Simple dishes, common ingredients, nothing exotic."""
 def make(guidance: Guidance, device: str) -> tuple[WeekPlan, dict, list[dict]]:
     """The plan, the board's report on its claims, and the sources used."""
     reference, used = sources.reference_for(guidance.topics)
+    # The planner picks the products; plain code (cart_agent) prices them and keeps the cart under budget.
+    store = "\n".join(sorted(i.name for i in Catalog.load().items.values()))
     task = (f"GOALS: {'; '.join(guidance.goals)}\nCONSTRAINTS: {'; '.join(guidance.constraints) or 'none'}\n"
-            f"KITCHEN DEVICE: {device}\n\nPUBLIC SOURCES YOU MAY CITE (use only what they say):\n{reference or '(sources not fetched yet)'}")
+            f"KITCHEN DEVICE: {device}\n\nSTORE (cook mostly with what it sells; copy these names into 'buy'):\n{store}\n\n"
+            f"PUBLIC SOURCES YOU MAY CITE (use only what they say):\n{reference or '(sources not fetched yet)'}")
     plan = llm.ask(SYSTEM, task, WeekPlan, temperature=0.3)
     claims = " ".join(f"{r.why} {r.evidence}" for r in plan.recipes)
     if reference:

@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from .catalog import Catalog, Item
+from .catalog import NOT_BOUGHT, Catalog, Item
 from .pantry import Pantry
 
 
@@ -67,10 +67,11 @@ PROTECTED = ("protein", "vegetable", "legume")  # the plan itself: never cut to 
 
 
 def needs(recipes: list[dict]) -> dict[str, list[str]]:
-    """Ingredient name → recipes that use it. A recipe is {"title", "ingredients": ["spinach", "olive oil", …]}."""
+    """Ingredient name → recipes that use it. A recipe is {"title", "ingredients": [...], "buy": [...]}: `buy` holds store
+    names chosen by the planner and is used when present; `ingredients` (as written for the cook) is the fallback."""
     wanted: dict[str, list[str]] = {}
     for recipe in recipes:
-        for ingredient in recipe.get("ingredients", []):
+        for ingredient in recipe.get("buy") or recipe.get("ingredients", []):
             wanted.setdefault(ingredient.strip().lower(), []).append(recipe["title"])
     return wanted
 
@@ -82,7 +83,8 @@ def build(recipes: list[dict], pantry: Pantry, catalog: Catalog, budget: float) 
     for ingredient, used_in in needs(recipes).items():
         item = catalog.find(ingredient)
         if not item:
-            cart.skipped.append(f"\"{ingredient}\": not in the store's catalog")
+            if not any(w in ingredient for w in NOT_BOUGHT):  # leftovers and water are not missing, just not bought
+                cart.skipped.append(f"\"{ingredient}\": not in the store's catalog")
             continue
         if item.sku in at_home and item.sku not in blacklist:
             continue  # already at home
