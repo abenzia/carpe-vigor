@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — Planning your week{% endblock %}
+{% block content %}
+<style>
+  .building-veil{position:fixed;inset:0;background:rgba(21,26,24,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+  .building{background:var(--carta);border-top:4px solid var(--segnavia);border-radius:var(--radius);max-width:520px;width:100%;padding:24px 24px 20px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+  .building h2{margin:4px 0 6px}
+  .building .bar{height:12px;background:var(--nebbia);border:1px solid var(--linea);border-radius:999px;overflow:hidden;margin:14px 0 6px}
+  .building .fill{height:100%;width:0;background:var(--bosco);transition:width .6s ease}
+  .building .pct{font-variant-numeric:tabular-nums;font-weight:600}
+  .building ol{list-style:none;margin:14px 0 0;padding:0}
+  .building li{padding:5px 0 5px 26px;position:relative;color:var(--ghiaia)}
+  .building li::before{content:"○";position:absolute;left:4px}
+  .building li.now{color:var(--pietra);font-weight:600}
+  .building li.now::before{content:"◐";color:var(--segnavia)}
+  .building li.done{color:var(--pietra)}
+  .building li.done::before{content:"✓";color:var(--ok)}
+  .building .error{display:none;margin-top:14px}
+</style>
+<div class="building-veil" role="dialog" aria-modal="true" aria-labelledby="building-title">
+  <div class="building">
+    <div class="eyebrow">Your week</div>
+    <h2 id="building-title">Planning your week</h2>
+    <p class="muted tiny">The AI writes 14 recipes for your kitchen; plain code and a review board check them before you see them. About three minutes.</p>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="building-title"><div class="fill" id="fill"></div></div>
+    <div class="row" style="justify-content:space-between"><span id="step" class="tiny">Starting…</span><span id="pct" class="pct">0%</span></div>
+    <ol id="phases">
+      <li data-from="0">Reading the public sources</li>
+      <li data-from="5">Outlining the week: 14 meals, portions and leftovers</li>
+      <li data-from="15">Writing the recipes, day by day</li>
+      <li data-from="62">Checking every step on your kitchen device</li>
+      <li data-from="80">The review board reads the plan against the sources</li>
+      <li data-from="92">Rewriting what the board sent back</li>
+    </ol>
+    <div class="error flag" id="error"><b>The week could not be planned.</b> <span id="error-text"></span>
+      <p style="margin-top:8px"><a class="btn" href="/week?build=1">Try again</a> <a class="btn secondary" href="/doctor">Back</a></p></div>
+  </div>
+</div>
+<script>
+(function () {
+  const phases = [...document.querySelectorAll('#phases li')];
+  function show(s) {
+    const p = Math.max(0, Math.min(100, s.percent || 0));
+    document.getElementById('fill').style.width = p + '%';
+    document.querySelector('.bar').setAttribute('aria-valuenow', p);
+    document.getElementById('pct').textContent = p + '%';
+    if (s.step) document.getElementById('step').textContent = s.step;
+    phases.forEach((li, i) => {
+      const next = phases[i + 1] ? +phases[i + 1].dataset.from : 101;
+      li.className = p >= next || s.done ? 'done' : (p >= +li.dataset.from ? 'now' : '');
+    });
+  }
+  async function poll() {
+    try {
+      const s = await (await fetch('/api/building', {cache: 'no-store'})).json();
+      show(s);
+      if (s.done) { setTimeout(() => location.href = '/week', 400); return; }
+      if (s.error) {
+        document.getElementById('error-text').textContent = s.error;
+        document.getElementById('error').style.display = 'block';
+        return;
+      }
+    } catch (e) { /* the server is busy or restarting: ask again */ }
+    setTimeout(poll, 1000);
+  }
+  poll();
+})();
+</script>
+{% endblock %}

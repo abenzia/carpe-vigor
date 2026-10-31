@@ -13,6 +13,7 @@ Budget / spent / released is shown on every screen (base.html).
 from __future__ import annotations
 
 import json
+import threading
 from datetime import datetime, timezone
 
 from fastapi import FastAPI, Form, Request
@@ -65,6 +66,48 @@ def doctor_submit(request: Request, doctor_said: str = Form(...), device: str = 
 
 
 # 2 ------------------------------------------------------------------------------------------------------------------
+# With real models a week takes about three minutes: it is built in the background while the screen shows each
+# step (building.html asks /api/building every second). One build at a time: the app has one person.
+building = {"running": False, "done": False, "step": "", "percent": 0, "error": ""}
+_building_lock = threading.Lock()
+
+
+def start_building(prof: dict):
+    with _building_lock:
+        if building["running"]:
+            return  # a reload of the waiting screen does not start a second week
+        building.update(running=True, done=False, step="Starting", percent=0, error="")
+    threading.Thread(target=_build_week, args=(prof,), daemon=True).start()
+
+
+def _build_week(prof: dict):
+    def progress(step: str, percent: int):
+        with _building_lock:
+            building.update(step=step, percent=percent)
+    try:
+        guidance = profile.Guidance.model_validate(prof["guidance"])
+        # My numbers (optional): a measure off the doctor's target adds its topic and a lifestyle goal for the week
+        focus = [v for v in checkup.view(store.get("numbers", [])) if v["target"] is not None and not v["status"].startswith("at ")]
+        guidance.topics = list(dict.fromkeys(guidance.topics + [v["topic"] for v in focus]))
+        guidance.goals = guidance.goals + [f"Food and habits that help with {v['label']}" for v in focus]
+        made, report, used = planner.make(guidance, prof["device"], prof.get("people", 1), progress)
+        plan = {"plan": made.model_dump(), "report": report, "sources": used, "cooked": [],
+                "focus": [f"{v['label']}: {v['status']}" for v in focus], "numbers": guidelines.for_week(guidance.topics)}
+        store.put("plan", plan)
+        store.log("plan", {"approved": report.get("approved"), "provider": report.get("provider")})
+        with _building_lock:
+            building.update(running=False, done=True, step="Your week is ready", percent=100)
+    except Exception as error:  # shown on the waiting screen, with the way to try again: never a silent stop
+        with _building_lock:
+            building.update(running=False, done=False, error=f"{type(error).__name__}: {error}")
+
+
+@app.get("/api/building")
+def building_status():
+    with _building_lock:
+        return dict(building)
+
+
 @app.get("/week", response_class=HTMLResponse)
 def week_view(request: Request, build: int = 0):
     prof = store.get("profile")
@@ -72,16 +115,8 @@ def week_view(request: Request, build: int = 0):
         return RedirectResponse("/doctor")
     plan = store.get("plan")
     if build or not plan:
-        guidance = profile.Guidance.model_validate(prof["guidance"])
-        # My numbers (optional): a measure off the doctor's target adds its topic and a lifestyle goal for the week
-        focus = [v for v in checkup.view(store.get("numbers", [])) if v["target"] is not None and not v["status"].startswith("at ")]
-        guidance.topics = list(dict.fromkeys(guidance.topics + [v["topic"] for v in focus]))
-        guidance.goals = guidance.goals + [f"Food and habits that help with {v['label']}" for v in focus]
-        made, report, used = planner.make(guidance, prof["device"], prof.get("people", 1))
-        plan = {"plan": made.model_dump(), "report": report, "sources": used, "cooked": [],
-                "focus": [f"{v['label']}: {v['status']}" for v in focus], "numbers": guidelines.for_week(guidance.topics)}
-        store.put("plan", plan)
-        store.log("plan", {"approved": report.get("approved"), "provider": report.get("provider")})
+        start_building(prof)
+        return render(request, "building.html")
     return render(request, "week.html", week_plan=plan["plan"], report=plan["report"], used=plan["sources"],
                   numbers=plan.get("numbers") or guidelines.for_week(prof["guidance"]["topics"]),
                   cooked=set(plan.get("cooked", [])), days=planner.DAYS)

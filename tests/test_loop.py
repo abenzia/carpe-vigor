@@ -552,7 +552,7 @@ def test_a_sent_back_plan_is_rewritten_once_and_what_stays_wrong_never_reaches_t
     plan.recipes[3].evidence = bad_evidence  # one sentence used by two dishes, whatever the demo week says
     # a fresh clone has no fetched sources: give the planner one, so the board path runs everywhere
     monkeypatch.setattr(planner.sources, "reference_for", lambda topics: ("SOURCE: test\n\nsome text", []))
-    monkeypatch.setattr(planner, "write_week", lambda task: plan.model_copy(deep=True))  # the week as written, at once
+    monkeypatch.setattr(planner, "write_week", lambda task, **k: plan.model_copy(deep=True))  # the week as written
     import re
     monkeypatch.setattr(planner.llm, "ask", lambda system, task, shape, tier="strong", temperature=0.1:
                         plan.model_copy(deep=True) if shape is planner.WeekPlan else
@@ -624,11 +624,47 @@ def test_review_board_mock_is_honest_about_itself():
     assert all("Simulated" in r["checks"][0] or "Ruled on" in r["checks"][0] for r in report["reviewers"])
 
 
+def _built_week(client):
+    """The week is built in the background while the screen shows its steps: start it, wait for it, open it."""
+    import time
+    assert "Planning your week" in client.get("/week?build=1").text
+    for _ in range(400):
+        status = client.get("/api/building").json()
+        if status["done"] or status["error"]:
+            break
+        time.sleep(0.05)
+    assert status["done"] and status["percent"] == 100, status
+    return client.get("/week")
+
+
+def test_the_waiting_screen_shows_each_step_and_says_when_it_fails(client, monkeypatch):
+    import app as webapp
+    from carpevigor import planner
+    steps = []
+    real = planner.make
+    monkeypatch.setattr(planner, "make", lambda g, device, people, progress:
+                        real(g, device, people, lambda s, p: (steps.append((s, p)), progress(s, p))))
+    client.post("/doctor", data={"doctor_said": "Eat less salt, walk more", "device": "Thermomix / Bimby TM7", "budget": "140"})
+    _built_week(client)
+    percents = [p for _, p in steps]
+    assert percents == sorted(percents) and percents[0] < 10 and steps[-1][1] >= 62
+    assert any("Writing the recipes: 7 of 7 days" == s for s, _ in steps)
+    def broken(*a, **k):
+        raise RuntimeError("Vertex said 429 five times")
+    monkeypatch.setattr(planner, "make", broken)
+    client.get("/week?build=1")
+    for _ in range(100):
+        if webapp.building["error"]:
+            break
+        __import__("time").sleep(0.02)
+    assert "Vertex said 429" in client.get("/api/building").json()["error"] and not webapp.building["running"]
+
+
 def test_full_loop_through_the_web_app(client):
     r = client.post("/doctor", data={"doctor_said": "High blood pressure: eat less salt, lose weight, walk more",
                                      "device": "Thermomix / Bimby", "constraints": "", "budget": "70"}, follow_redirects=False)
     assert r.status_code == 303
-    r = client.get("/week?build=1")
+    r = _built_week(client)
     assert r.status_code == 200 and "Review board" in r.text and "simulated" in r.text
     r = client.post("/week/cooked", data={"title": "Lentil and vegetable soup"}, follow_redirects=False)
     r = client.post("/home", data={"have": ["DAI-BUTTER-250", "FAT-EVOO-500", "GRA-BROWN-1K"]}, follow_redirects=False)
@@ -687,7 +723,7 @@ def test_my_numbers_steer_the_plan_and_the_check_up_pays_through_the_month(clien
     assert "LDL cholesterol" in page and "above your doctor&#39;s target" in page and "What the public sources say" in page
     assert client.post("/numbers", data={"key": "psa", "value": "3", "on": "2026-10-20"},
                        follow_redirects=False).headers["location"].startswith("/numbers?error")
-    week_page = client.get("/week?build=1").text
+    week_page = _built_week(client).text
     assert "From My numbers" in week_page and "LDL cholesterol" in week_page
     assert any(s["topic"] == "cholesterol" for s in client.get("/api/state").json()["plan"]["sources"])  # topic added
     # a week of shopping, then the check-up: the doctor says the goals are met

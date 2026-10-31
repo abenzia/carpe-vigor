@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -16,32 +17,41 @@ from . import config
 class Store:
     def __init__(self, path: Path | str = config.DB_PATH):
         self.conn = sqlite3.connect(str(path), check_same_thread=False)
+        # One connection for every thread: FastAPI serves requests from a pool, and the week is built in the
+        # background (app.py). sqlite3 leaves sharing a connection to the caller: one call at a time.
+        self._lock = threading.RLock()
         self.conn.execute("CREATE TABLE IF NOT EXISTS kv (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
         self.conn.execute("CREATE TABLE IF NOT EXISTS log (id INTEGER PRIMARY KEY AUTOINCREMENT, at TEXT DEFAULT CURRENT_TIMESTAMP, kind TEXT, data TEXT)")
         self.conn.commit()
 
     def get(self, key: str, default: Any = None) -> Any:
-        row = self.conn.execute("SELECT value FROM kv WHERE key = ?", (key,)).fetchone()
-        return json.loads(row[0]) if row else default
+        with self._lock:
+            row = self.conn.execute("SELECT value FROM kv WHERE key = ?", (key,)).fetchone()
+            return json.loads(row[0]) if row else default
 
     def put(self, key: str, value: Any):
-        self.conn.execute("INSERT OR REPLACE INTO kv (key, value) VALUES (?, ?)", (key, json.dumps(value, ensure_ascii=False, default=str)))
-        self.conn.commit()
+        with self._lock:
+            self.conn.execute("INSERT OR REPLACE INTO kv (key, value) VALUES (?, ?)", (key, json.dumps(value, ensure_ascii=False, default=str)))
+            self.conn.commit()
 
     def delete(self, key: str):
-        self.conn.execute("DELETE FROM kv WHERE key = ?", (key,))
-        self.conn.commit()
+        with self._lock:
+            self.conn.execute("DELETE FROM kv WHERE key = ?", (key,))
+            self.conn.commit()
 
     def log(self, kind: str, data: dict):
-        self.conn.execute("INSERT INTO log (kind, data) VALUES (?, ?)", (kind, json.dumps(data, ensure_ascii=False, default=str)))
-        self.conn.commit()
+        with self._lock:
+            self.conn.execute("INSERT INTO log (kind, data) VALUES (?, ?)", (kind, json.dumps(data, ensure_ascii=False, default=str)))
+            self.conn.commit()
 
     def events(self, kind: str | None = None) -> list[dict]:
-        q = "SELECT at, kind, data FROM log" + (" WHERE kind = ?" if kind else "") + " ORDER BY id DESC"
-        rows = self.conn.execute(q, (kind,) if kind else ()).fetchall()
-        return [{"at": at, "kind": k, **json.loads(d)} for at, k, d in rows]
+        with self._lock:
+            q = "SELECT at, kind, data FROM log" + (" WHERE kind = ?" if kind else "") + " ORDER BY id DESC"
+            rows = self.conn.execute(q, (kind,) if kind else ()).fetchall()
+            return [{"at": at, "kind": k, **json.loads(d)} for at, k, d in rows]
 
     def reset(self):
-        self.conn.execute("DELETE FROM kv")
-        self.conn.execute("DELETE FROM log")
-        self.conn.commit()
+        with self._lock:
+            self.conn.execute("DELETE FROM kv")
+            self.conn.execute("DELETE FROM log")
+            self.conn.commit()

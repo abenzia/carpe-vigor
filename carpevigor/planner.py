@@ -11,9 +11,10 @@ from __future__ import annotations
 
 import json
 import re
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
-from typing import Literal
+from typing import Callable, Literal
 
 from pydantic import BaseModel, Field
 
@@ -165,8 +166,16 @@ class FixedRecipes(BaseModel):
     recipes: list[FixedRecipe]
 
 
-def make(guidance: Guidance, device: str, people: int = 1) -> tuple[WeekPlan, dict, list[dict]]:
-    """The plan, the board's report on its claims, and the sources used."""
+def _quiet(step: str, percent: int) -> None:
+    pass
+
+
+def make(guidance: Guidance, device: str, people: int = 1,
+         progress: Callable[[str, int], None] = _quiet) -> tuple[WeekPlan, dict, list[dict]]:
+    """The plan, the board's report on its claims, and the sources used. `progress(step, percent)` is told what is
+    being done, for the screen the person waits on: percents follow a week timed on 31 Oct 2026 (outline and days about
+    half, the recipe check a quarter, the board the rest)."""
+    progress("Reading the public sources", 2)
     reference, used = sources.reference_for(guidance.topics)
     dev = kitchen.device(device)
     # The planner picks the products; plain code (cart_agent) prices them and keeps the cart under budget.
@@ -180,18 +189,21 @@ def make(guidance: Guidance, device: str, people: int = 1) -> tuple[WeekPlan, di
             f"PUBLIC NUMBERS FOR PEOPLE IN GENERAL (plan within them; cite these, never numbers of your own):\n"
             f"{guidelines.as_task(guidelines.for_week(guidance.topics))}\n\n"
             f"PUBLIC SOURCES YOU MAY CITE (use only what they say):\n{reference or '(sources not fetched yet)'}")
-    plan = write_week(task)
+    plan = write_week(task, progress=progress)
     # Before the board reads a word: the recipes must be cookable on this device and keep their own portions
-    kitchen_report = fix_recipes(plan, dev, people)
+    progress(f"Checking every step on the {dev.name}", 62)
+    kitchen_report = fix_recipes(plan, dev, people, progress)
     claims = " ".join(f"{r.why} {r.evidence}" for r in plan.recipes)
     if reference:
         # 'why' describes the dish (no source speaks of this dish): safety and clarity read it; the fact jurors rule on
         # the 'evidence' lines, the health claims, against the sources.
+        progress("The review board is reading the plan against the sources", 80)
         facts = " ".join(r.evidence for r in plan.recipes)
         board_reference, retrieval = rag.reference(review_board.statements_of(facts), guidance.topics)
         report = review_board.convene(claims, board_reference, strict=True, facts=facts)
         report["retrieval"] = retrieval
         if not report["approved"]:
+            progress("Rewriting what the board sent back, and reading it again", 92)
             report = revise(plan, report, reference, guidance.topics)
     else:
         report = {"approved": False, "provider": llm.provider(), "reviewers": [], "corrections": [], "set_aside": [],
@@ -207,11 +219,12 @@ def _outline_lines(outline: WeekOutline) -> str:
                      for m in outline.meals)
 
 
-def write_week(task: str) -> WeekPlan:
+def write_week(task: str, progress: Callable[[str, int], None] = _quiet) -> WeekPlan:
     """The week in two moves, so the slow part runs in parallel: one call outlines the 14 meals (titles, servings,
     leftovers, the week's variety), then one call per day writes that day's two recipes in full, all days at once.
     Day, meal, servings and leftovers are taken from the outline, not from each day's call: days written apart still
     agree on who cooks extra for whom."""
+    progress("Outlining the week: 14 meals, portions and leftovers", 5)
     outline = llm.ask(SYSTEM, f"{task}\n\nFIRST OUTLINE THE WEEK: 14 meals, lunch and dinner for Mon..Sun.",
                       WeekOutline, temperature=0.3)
     lines = _outline_lines(outline)
@@ -233,18 +246,30 @@ def write_week(task: str) -> WeekPlan:
             out.append(r.model_copy(update={"day": m.day, "meal": m.meal, "servings": m.servings,
                                             "leftovers_for": m.leftovers_for, "from_leftovers": m.from_leftovers}))
         return out
+    done = 0
+    done_lock = threading.Lock()
+
+    def counted(meals: list[MealOutline]) -> list[Recipe]:
+        nonlocal done
+        recipes = day(meals)
+        with done_lock:
+            done += 1
+            progress(f"Writing the recipes: {done} of {len(by_day)} days", 15 + 45 * done // len(by_day))
+        return recipes
+    progress(f"Writing the recipes: 0 of {len(by_day)} days", 15)
     with ThreadPoolExecutor(max_workers=DAYS_AT_ONCE) as pool:
-        recipes = [r for rs in pool.map(day, by_day.values()) for r in rs]
+        recipes = [r for rs in pool.map(counted, by_day.values()) for r in rs]
     return WeekPlan(title=outline.title, summary=outline.summary, recipes=recipes, movement=outline.movement)
 
 
-def fix_recipes(plan: WeekPlan, dev: kitchen.Device, people: int) -> dict:
+def fix_recipes(plan: WeekPlan, dev: kitchen.Device, people: int, progress: Callable[[str, int], None] = _quiet) -> dict:
     """One round of fixes: the recipes the kitchen check finds wrong go back to the model, whole, with what is wrong;
     the check reads them again. What is still wrong stays on the recipe as a flag the person sees: never hidden."""
     def problems() -> dict[int, list[str]]:
         return kitchen.check([r.model_dump() for r in plan.recipes], dev, people)
     first = problems()
     if first:
+        progress(f"Fixing {len(first)} recipes the check sent back", 68)
         asked = "\n\n".join(f"INDEX {i}\n{plan.recipes[i].model_dump_json(exclude={'removed', 'kitchen_flags'})}\n"
                             f"WRONG: " + "; ".join(p) for i, p in first.items())
         fixed = llm.ask(FIX_RECIPES, f"COOKING FOR: {people}\nKITCHEN DEVICE: {dev.name}\nDEVICE RULES: {dev.rules}\n\n"
