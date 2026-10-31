@@ -36,6 +36,9 @@ MODELS = {
     "bedrock": {"strong": "us.amazon.nova-pro-v1:0", "mid": "us.amazon.nova-2-lite-v1:0", "light": "us.amazon.nova-lite-v1:0"},
     "mock": {"strong": "mock", "mid": "mock", "light": "mock"},
 }
+# Retrieval over the sources (rag.py): the board's fact jurors read the passages closest to each claim.
+EMBED_MODEL = os.environ.get("GEMINI_EMBED", "gemini-embedding-2")
+EMBED_DIMENSIONS = int(os.environ.get("GEMINI_EMBED_DIMENSIONS", "768"))
 
 # Reward rules (reward.py): what a week of good behaviour pays back, as a share of what was spent.
 CASHBACK_MAX = float(os.environ.get("CASHBACK_MAX", "0.20"))  # up to 20% of the grocery spend, by basket and behaviour

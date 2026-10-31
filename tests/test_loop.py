@@ -13,6 +13,13 @@ from carpevigor.pantry import Pantry
 from carpevigor.store import Store
 
 
+@pytest.fixture(autouse=True)
+def _no_index_in_the_repo(tmp_path, monkeypatch):
+    """The retrieval index is a cache next to the real sources: tests keep theirs in a temporary folder."""
+    from carpevigor import rag
+    monkeypatch.setattr(rag, "INDEX", tmp_path / "index.json")
+
+
 @pytest.fixture
 def client(tmp_path, monkeypatch):
     import app as webapp
@@ -191,6 +198,104 @@ def test_cart_buys_from_the_recipes_store_list_when_there_is_one():
     recipes = [{"title": "Soup", "ingredients": ["1 potato, cubed", "500g water", "1 carrot"], "buy": ["Carrots", "Yellow onions"]}]
     names = {l.item.name for l in cart_agent.build(recipes, Pantry(), catalog, budget=100.0).lines}
     assert names == {"Carrots", "Yellow onions"}
+
+
+def test_a_blocked_site_is_read_from_the_page_saved_by_hand(tmp_path, monkeypatch):
+    import requests
+    monkeypatch.setattr(sources, "DIR", tmp_path)
+    (tmp_path / "aha-fats.html").write_text("<html><nav>menu</nav><p>Limit saturated fat to less than 6% of calories.</p></html>",
+                                            encoding="utf-8")
+
+    def blocked(url, **kw):
+        raise requests.HTTPError("403 Client Error: Forbidden")
+    monkeypatch.setattr(sources.requests, "get", blocked)
+    assert sources.fetch("aha-fats") == ["aha-fats"]
+    text = sources.text_of("aha-fats")
+    assert "less than 6% of calories" in text and "menu" not in text and "saved by hand" in text
+    assert sources.fetch("who-diet") == []                    # blocked and nothing saved: said, not invented
+
+
+def test_a_long_paper_keeps_only_the_sections_we_cite():
+    xml = ("<article><front>title</front><body><sec><title>Prevalence of CVH</title><p>not needed</p></sec>"
+           "<sec><title>SLEEP HEALTH AS A NEW COMPONENT OF CVH</title><p>7 to 9 hours of sleep.</p></sec></body></article>")
+    assert sources.sections(xml, ["SLEEP HEALTH"]) == "SLEEP HEALTH AS A NEW COMPONENT OF CVH\n\n7 to 9 hours of sleep."
+
+
+def _two_sources(tmp_path, monkeypatch):
+    from carpevigor import rag
+    monkeypatch.setattr(sources, "DIR", tmp_path)
+    monkeypatch.setattr(rag, "INDEX", tmp_path / "index.json")
+    monkeypatch.setattr(rag, "CHUNK", 120)  # small passages, so the salt facts and the filler are apart
+    (tmp_path / "who-sodium.txt").write_text("WHO — Sodium\nhttps://who.int\n\nMost people eat too much salt.\n\n"
+                                             "Adults should eat less than 5 g of salt a day.\n\n" + "Unrelated filler about trade. " * 60,
+                                             encoding="utf-8")
+    (tmp_path / "who-activity.txt").write_text("WHO — Activity\nhttps://who.int/a\n\nAdults should do 150 minutes of "
+                                               "moderate physical activity a week.", encoding="utf-8")
+    return rag
+
+
+def test_rag_gives_the_jurors_the_passages_closest_to_each_claim(tmp_path, monkeypatch):
+    rag = _two_sources(tmp_path, monkeypatch)
+    text, info = rag.reference(["Adults should eat less than 5 g of salt a day [WHO]."], ["blood_pressure", "activity"], k=1)
+    assert "less than 5 g of salt" in text and "SOURCE: WHO — Sodium" in text and text.count("trade") <= 1  # not 60
+    assert info["mode"] == "retrieved" and info["passages"] == 1 and info["chars"] < 400
+    text, _ = rag.reference(["150 minutes of moderate activity a week"], ["activity"], k=1)
+    assert "150 minutes" in text and "salt" not in text                       # only the topics' sources are searched
+
+
+def test_rag_falls_back_to_the_full_texts_and_says_so(tmp_path, monkeypatch):
+    rag = _two_sources(tmp_path, monkeypatch)
+
+    def broken(texts, task):
+        raise RuntimeError("quota exceeded")
+    monkeypatch.setattr(rag.llm, "embed", broken)
+    text, info = rag.reference(["less salt"], ["blood_pressure"])
+    assert "Most people eat too much salt" in text and "trade" in text       # the whole source, not nothing
+    assert info["mode"] == "full texts" and "quota exceeded" in info["note"]
+
+
+def test_vertex_embedding_sends_one_text_per_call(monkeypatch):
+    # gemini-embedding-2 answers a list of 5 texts with ONE vector (they are read as one content): batching would
+    # give every passage the same vector and retrieval would return noise, silently.
+    from carpevigor import llm
+    calls = []
+
+    class Models:
+        def embed_content(self, model, contents, config=None):
+            calls.append(contents)
+            return type("R", (), {"embeddings": [type("E", (), {"values": [float(len(calls))] * 4})()]})()
+    monkeypatch.setattr(llm, "_vertex_client", type("C", (), {"models": Models()})())
+    monkeypatch.setattr(llm, "provider", lambda: "vertex")
+    vectors = llm.embed(["a", "b", "c"], "RETRIEVAL_DOCUMENT")
+    assert len(calls) == 3 and all(isinstance(c, str) for c in calls) and len({v[0] for v in vectors}) == 3
+
+
+def test_vertex_retries_a_429_and_nothing_else(monkeypatch):
+    from pydantic import BaseModel as Shape
+    from carpevigor import llm
+
+    class A(Shape):
+        answer: str
+
+    class Busy(Exception):
+        code = 429
+    calls = []
+
+    class Models:
+        def generate_content(self, model, contents, config=None):
+            calls.append(1)
+            if len(calls) < 3:
+                raise Busy("RESOURCE_EXHAUSTED")
+            return type("R", (), {"parsed": A(answer="ok"), "text": ""})()
+    monkeypatch.setattr(llm, "_vertex_client", type("C", (), {"models": Models()})())
+    monkeypatch.setattr(llm, "RETRY_WAITS", (0, 0))
+    assert llm._vertex("s", "t", A, "m", 0.1).answer == "ok" and len(calls) == 3
+
+    class Broken(Exception):
+        code = 400
+    monkeypatch.setattr(Models, "generate_content", lambda self, **k: (_ for _ in ()).throw(Broken("bad request")))
+    with pytest.raises(Broken):
+        llm._vertex("s", "t", A, "m", 0.1)
 
 
 def test_sources_pick_topics_and_flag_clinical():

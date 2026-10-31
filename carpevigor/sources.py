@@ -20,6 +20,13 @@ from . import config
 
 DIR = config.DATA / "sources"
 
+# AHA's 2022 presidential advisory on the eight cardiovascular health metrics, open access in PubMed Central: the
+# definitions of the metrics (diet, activity, sleep, weight...) and the sleep section, not the whole 53,000 characters.
+AHA_LE8 = {"id": "aha-le8", "name": "American Heart Association — Life's Essential 8 (Circulation, 2022)",
+           "url": "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001078",
+           "fetch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=10503546&tool=carpevigor",
+           "keep": ["UPDATED DEFINITIONS", "SLEEP HEALTH"]}
+
 TOPICS: dict[str, dict] = {
     "blood_pressure": {
         "label": "Blood pressure and sodium",
@@ -28,6 +35,7 @@ TOPICS: dict[str, dict] = {
             {"id": "who-sodium", "name": "WHO — Sodium reduction (fact sheet)", "url": "https://www.who.int/news-room/fact-sheets/detail/sodium-reduction"},
             {"id": "medlineplus-hbp", "name": "MedlinePlus — High blood pressure: lifestyle changes", "url": "https://medlineplus.gov/ency/article/007484.htm"},
             {"id": "nhs-hbp", "name": "NHS — High blood pressure: prevention", "url": "https://www.nhs.uk/conditions/high-blood-pressure-hypertension/prevention/"},
+            {"id": "aha-sodium", "name": "American Heart Association — How much sodium should I eat per day?", "url": "https://www.heart.org/en/healthy-living/healthy-eating/eat-smart/sodium/how-much-sodium-should-i-eat-per-day"},
         ],
     },
     "cholesterol": {
@@ -36,6 +44,7 @@ TOPICS: dict[str, dict] = {
         "sources": [
             {"id": "medlineplus-chol", "name": "MedlinePlus — How to lower cholesterol with diet", "url": "https://medlineplus.gov/howtolowercholesterolwithdiet.html"},
             {"id": "aha-fats", "name": "American Heart Association — Saturated fat", "url": "https://www.heart.org/en/healthy-living/healthy-eating/eat-smart/fats/saturated-fats"},
+            AHA_LE8,
         ],
     },
     "weight": {
@@ -44,6 +53,7 @@ TOPICS: dict[str, dict] = {
         "sources": [
             {"id": "who-diet", "name": "WHO — Healthy diet (fact sheet)", "url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"},
             {"id": "medlineplus-weight", "name": "MedlinePlus — Weight control", "url": "https://medlineplus.gov/weightcontrol.html"},
+            {"id": "aha-diet", "name": "American Heart Association — Diet and lifestyle recommendations", "url": "https://www.heart.org/en/healthy-living/healthy-eating/eat-smart/nutrition-basics/aha-diet-and-lifestyle-recommendations"},
         ],
     },
     "activity": {
@@ -51,6 +61,7 @@ TOPICS: dict[str, dict] = {
         "match": ["exercise", "activity", "walk", "steps", "sedentary", "move"],
         "sources": [
             {"id": "who-activity", "name": "WHO — Physical activity (fact sheet)", "url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity"},
+            AHA_LE8,
         ],
     },
     "fiber": {
@@ -106,23 +117,42 @@ def reference_for(topic_keys: list[str]) -> tuple[str, list[dict]]:
 
 
 def fetch(source_id: str | None = None, timeout: int = 30) -> list[str]:
-    """Download the sources as plain text. Run on a machine with internet; the repo keeps the result."""
+    """Download the sources as plain text. Run on a machine with internet; the texts stay local (gitignored).
+
+    A source may name a `fetch` address for machines (a paper's open-access copy in PubMed Central, read through
+    NCBI's official API) and the `keep` sections worth citing. A site that blocks scripts (heart.org answers 403)
+    is not worked around: a person saves the page as `<id>.html` in data/sources and it is read from there."""
+    seen: set[str] = set()
     DIR.mkdir(parents=True, exist_ok=True)
     done = []
     for topic in TOPICS.values():
         for src in topic["sources"]:
-            if source_id and src["id"] != source_id:
+            if (source_id and src["id"] != source_id) or src["id"] in seen:
                 continue
-            # One site blocking us (heart.org answers 403 to scripts) must not stop the others: say it and go on.
+            seen.add(src["id"])
+            saved = DIR / f"{src['id']}.html"
             try:
-                r = requests.get(src["url"], timeout=timeout, headers={"User-Agent": "CarpeVigor/0.1 (PayPal AI Hackathon entry)"})
+                r = requests.get(src.get("fetch", src["url"]), timeout=timeout, headers={"User-Agent": "CarpeVigor/0.1 (PayPal AI Hackathon entry)"})
                 r.raise_for_status()
+                body, how = (sections(r.text, src["keep"]) if "keep" in src else plain(r.text)), ""
             except requests.RequestException as e:
-                print(f"FAILED {src['id']}: {e}", file=sys.stderr)
-                continue
-            path_for(src["id"]).write_text(f"{src['name']}\n{src['url']}\n\n{plain(r.text)}", encoding="utf-8")
+                if not saved.exists():
+                    print(f"FAILED {src['id']}: {e} — save the page by hand as {saved} and run fetch again", file=sys.stderr)
+                    continue
+                body, how = plain(saved.read_text(encoding="utf-8", errors="replace")), " (page saved by hand: the site blocks scripts)"
+            path_for(src["id"]).write_text(f"{src['name']}\n{src['url']}{how}\n\n{body}", encoding="utf-8")
             done.append(src["id"])
     return done
+
+
+def sections(xml: str, keep: list[str]) -> str:
+    """From a paper in JATS XML (PubMed Central), the sections whose title starts with one of `keep`, as plain text."""
+    out = []
+    for m in re.finditer(r"<sec[^>]*>\s*<title>(.*?)</title>(.*?)(?=<sec[^>]*>\s*<title>|</body>)", xml, re.S):
+        title = plain(m.group(1))
+        if any(title.upper().startswith(k.upper()) for k in keep):
+            out.append(f"{title}\n\n{plain(m.group(2))}")
+    return "\n\n".join(out)
 
 
 def plain(page: str) -> str:

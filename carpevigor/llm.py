@@ -13,6 +13,10 @@ Providers:
 from __future__ import annotations
 
 import os
+import re
+import time
+import zlib
+from concurrent.futures import ThreadPoolExecutor
 from typing import Callable, Type, TypeVar
 
 from pydantic import BaseModel
@@ -22,6 +26,7 @@ from . import config
 T = TypeVar("T", bound=BaseModel)
 
 mock_answers: dict[str, Callable[[str], BaseModel]] = {}
+RETRY_WAITS = (3.0, 8.0)  # seconds before the 2nd and 3rd try of a call Vertex refused with 429
 
 
 def provider() -> str:
@@ -48,17 +53,55 @@ def ask(system: str, task: str, shape: Type[T], tier: str = "strong", temperatur
 _vertex_client = None
 
 
-def _vertex(system: str, task: str, shape: Type[T], model: str, temperature: float) -> T:
+def _client():
     global _vertex_client
-    from google import genai  # imported here so mock mode needs no SDK
+    if _vertex_client is None:
+        from google import genai  # imported here so mock mode needs no SDK
+        _vertex_client = genai.Client(vertexai=True, project=config.GOOGLE_CLOUD_PROJECT, location=config.GOOGLE_CLOUD_LOCATION)
+    return _vertex_client
+
+
+def embed(texts: list[str], task: str) -> list[list[float]]:
+    """One vector per text. `task`: RETRIEVAL_DOCUMENT for the source passages, RETRIEVAL_QUERY for the claims.
+    Vertex: ONE text per call — gemini-embedding-2 reads a list of texts as one content and returns one vector,
+    without an error. Mock: a bag of words hashed into 256 numbers, enough for the tests to retrieve by keyword."""
+    if provider() != "vertex":
+        return [_mock_vector(t) for t in texts]
+    from google.genai import types
+    settings = types.EmbedContentConfig(task_type=task, output_dimensionality=config.EMBED_DIMENSIONS)
+
+    def one(text: str) -> list[float]:
+        vectors = _client().models.embed_content(model=config.EMBED_MODEL, contents=text, config=settings).embeddings
+        if len(vectors) != 1:
+            raise RuntimeError(f"{config.EMBED_MODEL} returned {len(vectors)} vectors for one text")
+        return list(vectors[0].values)
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        return list(pool.map(one, texts))
+
+
+def _mock_vector(text: str) -> list[float]:
+    vector = [0.0] * 256
+    for word in re.findall(r"[a-z0-9]+", text.lower()):
+        if len(word) > 2:
+            vector[zlib.crc32(word.encode()) % 256] += 1.0
+    return vector
+
+
+def _vertex(system: str, task: str, shape: Type[T], model: str, temperature: float) -> T:
     from google.genai import types
 
-    if _vertex_client is None:
-        _vertex_client = genai.Client(vertexai=True, project=config.GOOGLE_CLOUD_PROJECT, location=config.GOOGLE_CLOUD_LOCATION)
-    response = _vertex_client.models.generate_content(
-        model=model, contents=task,
-        config=types.GenerateContentConfig(system_instruction=system, temperature=temperature,
-                                           response_mime_type="application/json", response_schema=shape))
+    settings = types.GenerateContentConfig(system_instruction=system, temperature=temperature,
+                                           response_mime_type="application/json", response_schema=shape)
+    for wait in RETRY_WAITS + (None,):
+        try:
+            response = _client().models.generate_content(model=model, contents=task, config=settings)
+            break
+        except Exception as error:
+            # 429: the board sends several calls to the same model at once and Vertex sometimes says "try again later".
+            # Only that is retried; anything else, or a 429 after the last wait, goes up to the caller as it is.
+            if wait is None or getattr(error, "code", None) != 429:
+                raise
+            time.sleep(wait)
     parsed = response.parsed
     return parsed if isinstance(parsed, shape) else shape.model_validate_json(response.text)
 

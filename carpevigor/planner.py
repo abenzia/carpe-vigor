@@ -15,7 +15,7 @@ import time
 
 from pydantic import BaseModel, Field
 
-from . import config, llm, review_board, sources
+from . import config, llm, rag, review_board, sources
 from .catalog import Catalog
 from .profile import Guidance
 
@@ -86,9 +86,12 @@ def make(guidance: Guidance, device: str) -> tuple[WeekPlan, dict, list[dict]]:
     if reference:
         # 'why' describes the dish (no source speaks of this dish): safety and clarity read it; the fact jurors rule on
         # the 'evidence' lines, the health claims, against the sources.
-        report = review_board.convene(claims, reference, strict=True, facts=" ".join(r.evidence for r in plan.recipes))
+        facts = " ".join(r.evidence for r in plan.recipes)
+        board_reference, retrieval = rag.reference(review_board.statements_of(facts), guidance.topics)
+        report = review_board.convene(claims, board_reference, strict=True, facts=facts)
+        report["retrieval"] = retrieval
         if not report["approved"]:
-            report = revise(plan, report, reference)
+            report = revise(plan, report, reference, guidance.topics)
     else:
         report = {"approved": False, "provider": llm.provider(), "reviewers": [], "corrections": [], "set_aside": [],
                   "statements": review_board.statements_of(claims), "note": "Sources not fetched: run `python -m carpevigor.sources fetch`."}
@@ -118,7 +121,7 @@ def flagged(plan: WeekPlan, corrections: list[dict], among: set[str] | None = No
     return out
 
 
-def revise(plan: WeekPlan, report: dict, reference: str) -> dict:
+def revise(plan: WeekPlan, report: dict, reference: str, topics: list[str] | None = None) -> dict:
     """One round of corrections: the sentences the board sent back are rewritten, and the same board reads the
     rewrites. What it sends back again is removed: nothing the board rejected reaches the screen. The first round's
     report stays the one shown, with `revision` saying what happened after it."""
@@ -133,8 +136,10 @@ def revise(plan: WeekPlan, report: dict, reference: str) -> dict:
         if rw.id in first and rw.text.strip():
             i, field = rw.id[1:].split(".")
             setattr(plan.recipes[int(i)], field, rw.text.strip())
-    second = review_board.convene(" ".join(_text(plan, fid) for fid in first), reference, strict=True,
-                                  facts=" ".join(_text(plan, fid) for fid in first if fid.endswith(".evidence")))
+    facts = " ".join(_text(plan, fid) for fid in first if fid.endswith(".evidence"))
+    if topics:  # the rewritten claims are new: retrieve their own passages
+        reference, _ = rag.reference(review_board.statements_of(facts), topics)
+    second = review_board.convene(" ".join(_text(plan, fid) for fid in first), reference, strict=True, facts=facts)
     still = flagged(plan, second["corrections"], among=set(first))
     for fid in still:
         i, field = fid[1:].split(".")

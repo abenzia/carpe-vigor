@@ -6,3 +6,5 @@ __pycache__/
 .pytest_cache/
 data/sources/*.txt
 .playwright-mcp/
+data/sources/*.html
+data/sources/index.json

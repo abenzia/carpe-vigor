@@ -48,7 +48,8 @@
   </table>
   </details>
   {% endif %}
-  <p class="tiny muted">Sources read: {% for u in used %}<a href="{{ u.url }}">{{ u.name }}</a>{{ '' if u.fetched else ' (not fetched)' }}{{ ', ' if not loop.last }}{% endfor %}</p>
+  {% if report.retrieval %}<p class="tiny muted">{% if report.retrieval.mode == 'retrieved' %}The fact jurors read the {{ report.retrieval.passages }} passages of the sources closest to the claims ({{ report.retrieval.per_claim }} per claim, {{ report.retrieval.model }}).{% else %}{{ report.retrieval.note }}{% endif %}</p>{% endif %}
+  <p class="tiny muted">Sources read:{% for u in used %}<a href="{{ u.url }}">{{ u.name }}</a>{{ '' if u.fetched else ' (not fetched)' }}{{ ', ' if not loop.last }}{% endfor %}</p>
 </div>
 
 <h3>Meals — tick what you cooked; it counts toward your reward</h3>
