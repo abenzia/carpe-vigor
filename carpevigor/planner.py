@@ -15,7 +15,7 @@ import time
 
 from pydantic import BaseModel, Field
 
-from . import config, llm, rag, review_board, sources
+from . import config, guidelines, llm, rag, review_board, sources
 from .catalog import Catalog
 from .profile import Guidance
 
@@ -80,6 +80,8 @@ def make(guidance: Guidance, device: str) -> tuple[WeekPlan, dict, list[dict]]:
     store = "\n".join(sorted(i.name for i in Catalog.load().items.values()))
     task = (f"GOALS: {'; '.join(guidance.goals)}\nCONSTRAINTS: {'; '.join(guidance.constraints) or 'none'}\n"
             f"KITCHEN DEVICE: {device}\n\nSTORE (cook mostly with what it sells; copy these names into 'buy'):\n{store}\n\n"
+            f"PUBLIC NUMBERS FOR PEOPLE IN GENERAL (plan within them; cite these, never numbers of your own):\n"
+            f"{guidelines.as_task(guidelines.for_week(guidance.topics))}\n\n"
             f"PUBLIC SOURCES YOU MAY CITE (use only what they say):\n{reference or '(sources not fetched yet)'}")
     plan = llm.ask(SYSTEM, task, WeekPlan, temperature=0.3)
     claims = " ".join(f"{r.why} {r.evidence}" for r in plan.recipes)

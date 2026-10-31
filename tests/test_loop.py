@@ -608,3 +608,24 @@ def test_my_numbers_steer_the_plan_and_the_check_up_pays_through_the_month(clien
     from carpevigor import config as c
     rows = client.get("/api/ledger").json()
     assert any(r["what"] == "Check-up bonus" and r["amount"] == round(spent * c.CHECKUP_BONUS["met"], 2) for r in rows)
+
+
+def test_guideline_numbers_have_a_source_and_show_only_when_the_source_says_them(monkeypatch):
+    from carpevigor import guidelines, sources
+    for e in guidelines.NUMBERS:  # every number points to a source we know, and quotes it
+        assert guidelines.source_of(e["source"])["url"].startswith("https://") and e["quote"]
+        assert e["topic"] is None or e["topic"] in sources.TOPICS
+    salt = next(e for e in guidelines.NUMBERS if e["source"] == "who-sodium")
+    # the source's own words, with other spacing and case: found
+    monkeypatch.setattr(sources, "text_of", lambda sid: "WHO\n\n... LESS THAN 2000 mg/day   sodium (equivalent to < 5 g/day salt, ..."
+                        if sid == "who-sodium" else None)
+    assert guidelines.found(salt) is True
+    week = guidelines.for_week(["blood_pressure"])
+    assert any(e["source"] == "who-sodium" and e["checked"] for e in week)
+    assert not any(e["topic"] == "cholesterol" for e in week)  # not this week's topic
+    assert any(e["key"] == "sleep" and not e["checked"] for e in week)  # every week; not fetched here, still shown
+    # a source text that no longer says it: the number is dropped, not shown and not given to the planner
+    monkeypatch.setattr(sources, "text_of", lambda sid: "WHO\n\nThe page changed." if sid == "who-sodium" else None)
+    assert guidelines.found(salt) is False
+    assert not any(e["source"] == "who-sodium" for e in guidelines.for_week(["blood_pressure"]))
+    assert "WHO — Sodium reduction" not in guidelines.as_task(guidelines.for_week(["blood_pressure"]))

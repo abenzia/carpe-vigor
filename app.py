@@ -20,7 +20,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from carpevigor import __version__, ask, cart_agent, checkup, config, planner, profile, rag, reward, sources, week
+from carpevigor import __version__, ask, cart_agent, checkup, config, guidelines, planner, profile, rag, reward, sources, week
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -76,10 +76,11 @@ def week_view(request: Request, build: int = 0):
         guidance.goals = guidance.goals + [f"Food and habits that help with {v['label']}" for v in focus]
         made, report, used = planner.make(guidance, prof["device"])
         plan = {"plan": made.model_dump(), "report": report, "sources": used, "cooked": [],
-                "focus": [f"{v['label']}: {v['status']}" for v in focus]}
+                "focus": [f"{v['label']}: {v['status']}" for v in focus], "numbers": guidelines.for_week(guidance.topics)}
         store.put("plan", plan)
         store.log("plan", {"approved": report.get("approved"), "provider": report.get("provider")})
     return render(request, "week.html", week_plan=plan["plan"], report=plan["report"], used=plan["sources"],
+                  numbers=plan.get("numbers") or guidelines.for_week(prof["guidance"]["topics"]),
                   cooked=set(plan.get("cooked", [])), days=planner.DAYS)
 
 

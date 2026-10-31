@@ -19,6 +19,16 @@
   {% endif %}
 </div>
 
+{% if numbers %}
+<div class="card">
+  <h3 style="margin:0">The public numbers this week is planned around</h3>
+  <p class="muted">For people in general, word for word from the source. Your own targets are your doctor's.</p>
+  <ul class="steps">{% for n in numbers %}
+    <li>{{ n.says }} — <a href="{{ n.src.url }}" target="_blank" rel="noopener" title="&ldquo;{{ n.quote }}&rdquo;">{{ n.src.name }}</a>{% if not n.checked %} <span class="muted">(source text not fetched here)</span>{% endif %}</li>
+  {% endfor %}</ul>
+</div>
+{% endif %}
+
 <div class="card {{ 'accent' if report.approved }}">
   <div class="row">
     <h3 style="margin:0">Review board</h3>
