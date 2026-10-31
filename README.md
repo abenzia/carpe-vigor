@@ -49,7 +49,7 @@ The header of every screen shows budget · spent · released · paid back. Three
 | Check-up bonus | +5% / +2.5% / 0 | your doctor's verdict on the goals they set: met / improving / not yet | your doctor |
 
 - **The basket score** is the healthy share of the spend minus *twice* the junk share. Healthy means vegetables,
-  legumes, fruit, fish and whole grains; junk means sweets, snacks, cured meat, sugary drinks, saturated fat and
+  legumes, fruit, fish, whole grains, white meat and eggs; junk means sweets, snacks, cured meat, sugary drinks, saturated fat and
   anything on the "don't rebuy" list. Each dollar of junk costs twice what a dollar of vegetables earns.
 - **The rate** is 20% times the week's score. A week scoring under half pays nothing.
 - **Payment**: the weeks are added up and paid once a month, as partial refunds of that month's captures.

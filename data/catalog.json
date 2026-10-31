@@ -22,7 +22,7 @@
     {"sku": "PRO-TURK-500", "name": "Turkey breast slices, low sodium", "unit": "500 g", "price": 6.49, "tags": ["protein", "poultry", "low-sodium"], "per": {"g": 500}},
     {"sku": "PRO-SALM-400", "name": "Salmon fillets", "unit": "400 g", "price": 11.99, "tags": ["protein", "fish", "omega-3"], "per": {"g": 400}},
     {"sku": "PRO-COD-400", "name": "Cod fillets", "unit": "400 g", "price": 9.49, "tags": ["protein", "fish"], "per": {"g": 400}},
-    {"sku": "PRO-EGGS-12", "name": "Eggs", "unit": "12", "price": 3.79, "tags": ["protein"], "per": {"piece": 12}},
+    {"sku": "PRO-EGGS-12", "name": "Eggs", "unit": "12", "price": 3.79, "tags": ["protein", "egg"], "per": {"piece": 12}},
     {"sku": "PRO-TOFU-400", "name": "Firm tofu", "unit": "400 g", "price": 2.99, "tags": ["protein", "plant"], "per": {"g": 400}},
     {"sku": "PRO-GYOG-1K", "name": "Greek yogurt, plain 0%", "unit": "1 kg", "price": 5.49, "tags": ["protein", "dairy"], "per": {"g": 1000}},
     {"sku": "LEG-LENT-500", "name": "Dried lentils", "unit": "500 g", "price": 1.99, "tags": ["legume", "fiber", "protein"], "per": {"g": 500}},
