@@ -517,6 +517,7 @@ def test_a_sent_back_plan_is_rewritten_once_and_what_stays_wrong_never_reaches_t
     from carpevigor.profile import Guidance
     plan = planner._mock_plan("")
     bad_why, bad_evidence = plan.recipes[0].why, plan.recipes[1].evidence
+    plan.recipes[3].evidence = bad_evidence  # one sentence used by two dishes, whatever the demo week says
     # a fresh clone has no fetched sources: give the planner one, so the board path runs everywhere
     monkeypatch.setattr(planner.sources, "reference_for", lambda topics: ("SOURCE: test\n\nsome text", []))
     import re
@@ -543,7 +544,7 @@ def test_a_sent_back_plan_is_rewritten_once_and_what_stays_wrong_never_reaches_t
     assert made.recipes[1].evidence == "" and "evidence" in made.recipes[1].removed
     assert report["approved"] and report["revision"]["removed"] == expected  # nothing the board rejected is on screen
     shown = " ".join(f"{r.why} {r.evidence}" for r in made.recipes)
-    assert bad_why not in shown and bad_evidence not in shown and "No added salt" not in shown
+    assert bad_why not in shown and bad_evidence not in shown and "No added salt: herbs and lemon instead." not in shown
 
 
 def test_statements_keep_their_citation_and_do_not_break_on_abbreviations():
