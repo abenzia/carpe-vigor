@@ -31,6 +31,15 @@ h3{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:20px;marg
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
 .grid.fit{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))} /* few cards: empty tracks collapse, cards widen */
 .scroll-x{overflow-x:auto}
+.nums a{color:var(--pietra)}
+.ledger-grid{--ag-font-family:'Spline Sans',system-ui,sans-serif;--ag-header-font-family:'JetBrains Mono',monospace;
+  --ag-font-size:14px;--ag-background-color:var(--carta);--ag-header-background-color:var(--nebbia);
+  --ag-foreground-color:var(--pietra);--ag-border-color:var(--linea);--ag-accent-color:var(--segnavia);
+  --ag-wrapper-border-radius:var(--radius);--ag-odd-row-background-color:var(--carta);margin-bottom:16px}
+.ledger-grid .mono{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.4;padding-top:10px;padding-bottom:8px;word-break:break-all}
+.ledger-grid .ag-row-pinned{font-weight:600}
+.ledger-grid .pill{line-height:1.5;margin:0}
+.ledger-grid .wrap{line-height:1.4;padding-top:8px;padding-bottom:8px;font-size:13px}
 label{display:block;font-weight:500;margin:12px 0 4px}
 input[type=text],input[type=number],textarea,select{width:100%;padding:10px 12px;border:1px solid var(--pietra);border-radius:var(--radius);background:#fff;font:inherit}
 textarea{min-height:110px}

@@ -133,3 +133,17 @@ def test_full_loop_through_the_web_app(client):
     client.post("/budget/release", follow_redirects=False)
     state = client.get("/api/state").json()
     assert state["money"]["released"] == round(120 - state["money"]["spent"], 2)
+    for title in [r["title"] for r in state["plan"]["plan"]["recipes"]][:12]:
+        client.post("/week/cooked", data={"title": title}, follow_redirects=False)
+    client.post("/reward/pay", follow_redirects=False)
+    # The ledger: one row per money movement, each with its PayPal id, adding up to the header's numbers.
+    rows = client.get("/api/ledger").json()
+    money = client.get("/api/state").json()["money"]
+    kinds = [r["what"] for r in rows]
+    assert kinds == ["Budget held", "Order captured", "Remainder released", "Reward paid back"]
+    by = {r["what"]: r for r in rows}
+    assert by["Budget held"]["amount"] == 120 and by["Budget held"]["paypal_id"].startswith("MOCK-AUTH-")
+    assert by["Order captured"]["amount"] == money["spent"]
+    assert by["Remainder released"]["amount"] == money["released"]
+    assert by["Reward paid back"]["amount"] == money["cashback"] > 0 and by["Reward paid back"]["paypal_id"].startswith("MOCK-REF-")
+    assert "ag-grid" in client.get("/ledger").text

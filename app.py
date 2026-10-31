@@ -219,6 +219,16 @@ def reset():
     return RedirectResponse("/doctor", status_code=303)
 
 
+@app.get("/ledger", response_class=HTMLResponse)
+def ledger_view(request: Request):
+    return render(request, "ledger.html", rows=week.ledger(store))
+
+
+@app.get("/api/ledger")
+def api_ledger():
+    return week.ledger(store)
+
+
 @app.get("/api/state")
 def api_state():
     return {"money": week.status(store), "profile": store.get("profile"), "plan": store.get("plan"),

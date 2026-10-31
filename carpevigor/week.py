@@ -75,7 +75,7 @@ def release_remainder(store: Store) -> dict:
     paypal.client().void(auth["authorization_id"])
     auth["voided"], auth["released"] = True, round(auth["amount"] - spent, 2)
     store.put("authorization", auth)
-    store.log("released", {"released": auth["released"]})
+    store.log("released", {"released": auth["released"], "authorization_id": auth["authorization_id"]})
     return auth
 
 
@@ -84,6 +84,7 @@ def pay_reward(store: Store, result: reward.Reward) -> list[dict]:
     left = result.cashback
     captures = store.get("captures", [])
     refunds = store.get("refunds", [])
+    paid_now = []
     for cap in sorted(captures, key=lambda c: -c["amount"]):
         if left <= 0:
             break
@@ -94,8 +95,30 @@ def pay_reward(store: Store, result: reward.Reward) -> list[dict]:
         ref = paypal.client().refund(cap["capture_id"], amount, "Carpe Vigor reward: you did your part this week")
         cap["refunded"] = round(cap.get("refunded", 0.0) + amount, 2)
         refunds.append({"refund_id": ref["refund_id"], "capture_id": cap["capture_id"], "amount": amount, "reasons": result.reasons})
+        paid_now.append({"refund_id": ref["refund_id"], "capture_id": cap["capture_id"], "amount": amount})
         left = round(left - amount, 2)
     store.put("captures", captures)
     store.put("refunds", refunds)
-    store.log("reward_paid", {"cashback": result.cashback, "rate": result.cashback_rate, "score": result.score})
+    store.log("reward_paid", {"cashback": result.cashback, "rate": result.cashback_rate, "score": result.score, "refunds": paid_now})
     return refunds
+
+
+def ledger(store: Store) -> list[dict]:
+    """Every money movement of the week, oldest first, one row each, with the PayPal id a judge can look up in the
+    sandbox dashboard. Built from the week log, so it is what actually happened, in order."""
+    rows = []
+    for e in reversed(store.events()):
+        if e["kind"] == "authorized":
+            rows.append({"at": e["at"], "what": "Budget held", "paypal_id": e["authorization_id"], "amount": e["amount"],
+                         "effect": "held", "note": f"held, not charged · order {e['order_id']}"})
+        elif e["kind"] == "captured":
+            rows.append({"at": e["at"], "what": "Order captured", "paypal_id": e["capture_id"], "amount": e["amount"],
+                         "effect": "charged", "note": e.get("note", "")})
+        elif e["kind"] == "released":
+            rows.append({"at": e["at"], "what": "Remainder released", "paypal_id": e.get("authorization_id", ""),
+                         "amount": e["released"], "effect": "back to you", "note": "authorization voided"})
+        elif e["kind"] == "reward_paid":
+            for r in e.get("refunds", []):
+                rows.append({"at": e["at"], "what": "Reward paid back", "paypal_id": r["refund_id"], "amount": r["amount"],
+                             "effect": "paid to you", "note": f"refund of {r['capture_id']} · score {round(e['score'] * 100)}/100"})
+    return rows

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — Ledger{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-grid.css"
+      integrity="sha384-gIsz6JTVbF5eW0CcuAljKL2kOE400G4TjBH3CBtGXjf8BkjmC5x9jp4Y+bYa7HKA" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-theme-quartz.css"
+      integrity="sha384-bH6bJyGdKmdCV+hlDWtv+dVLH5shFT5aKgGRKceh40t3vt171XksCejZ5ebqZVn0" crossorigin="anonymous">
+<div class="eyebrow">The week's money</div>
+<h2>Ledger</h2>
+<p class="muted">Every movement of the week, in order, with its PayPal id: the budget held once, each order captured against it,
+the remainder released, the reward paid back. {% if money.mode == 'sandbox' %}Each id can be looked up in the PayPal sandbox.{% else %}Simulated: ids starting with MOCK- never reached PayPal.{% endif %}</p>
+
+{% if rows %}
+<div id="ledger" class="ag-theme-quartz ledger-grid"></div>
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/dist/ag-grid-community.min.js"
+        integrity="sha384-OEiOpwgvTUxOUC72SwfU8zDqZrWBwr0YNPNhovPbjCxdaTD0cLxMHBew/o8zuRln" crossorigin="anonymous"></script>
+<script>
+  const rows = {{ rows|tojson }};
+  const money = {{ money|tojson }};
+  const fmt = p => p.value == null ? '' : money.currency + ' ' + Number(p.value).toFixed(2);
+  const tone = {"held": "", "charged": "bad", "back to you": "ok", "paid to you": "ok"};
+  agGrid.createGrid(document.getElementById('ledger'), {
+    rowData: rows,
+    columnDefs: [
+      {field: 'at', headerName: 'When (UTC)', flex: 1.1, minWidth: 110, wrapText: true, autoHeight: true, cellClass: 'wrap'},
+      {field: 'what', headerName: 'What', flex: 1.3, minWidth: 130, filter: true, wrapText: true, autoHeight: true, cellClass: 'wrap'},
+      {field: 'amount', headerName: 'Amount', type: 'rightAligned', valueFormatter: fmt, flex: 1, minWidth: 100},
+      {field: 'effect', headerName: 'Effect', flex: 1.2, minWidth: 130, filter: true,
+       cellRenderer: p => p.value ? `<span class="pill ${tone[p.value] || ''}">${p.value}</span>` : ''},
+      {field: 'paypal_id', headerName: 'PayPal id', flex: 1.5, minWidth: 150, cellClass: 'mono', wrapText: true, autoHeight: true},
+      {field: 'note', headerName: 'Note', flex: 1.8, minWidth: 140, wrapText: true, autoHeight: true, cellClass: 'wrap'},
+    ],
+    defaultColDef: {sortable: true, resizable: true},
+    pinnedBottomRowData: [{what: 'Net cost of the week', amount: Math.round((money.spent - money.cashback) * 100) / 100,
+                           note: `charged ${fmt({value: money.spent})} − paid back ${fmt({value: money.cashback})}`}],
+    domLayout: 'autoHeight',
+  });
+</script>
+{% else %}
+<div class="card"><p class="muted">No money has moved yet this week. Authorize a budget on the <a href="/cart">cart</a> screen.</p></div>
+{% endif %}
+{% endblock %}
