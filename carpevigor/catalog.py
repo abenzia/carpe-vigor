@@ -14,7 +14,12 @@ from dataclasses import dataclass
 
 from . import config
 
-NOT_BOUGHT = ("water", "leftover")
+NOT_BOUGHT = {"water", "leftover", "leftovers"}
+
+
+def not_bought(ingredient: str) -> bool:
+    """Water and leftovers: whole words only, so watermelon and watercress are still bought."""
+    return bool(NOT_BOUGHT & set(re.findall(r"[a-z]+", ingredient.lower())))
 # Words that describe a quantity, a preparation or a label, not the food: they must not decide which product to buy.
 NOISE = {"dried", "fresh", "can", "canned", "chopped", "sliced", "cubed", "diced", "rinsed", "trimmed", "finely",
          "roughly", "quartered", "minced", "grated", "salt", "added", "low", "sodium", "free", "approx", "tbsp", "tsp",
@@ -54,7 +59,7 @@ class Catalog:
         for item in self.items.values():
             if item.name.lower() == q:
                 return item
-        if any(w in q for w in NOT_BOUGHT):
+        if not_bought(q):
             return None
         words = [w for w in re.findall(r"[a-z]+", re.sub(r"\([^)]*\)", " ", q)) if len(w) > 2 and w not in NOISE]
         best, best_score = None, 0

@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from .catalog import NOT_BOUGHT, Catalog, Item
+from .catalog import Catalog, Item, not_bought
 from .pantry import Pantry
 
 
@@ -76,23 +76,26 @@ def needs(recipes: list[dict]) -> dict[str, list[str]]:
     return wanted
 
 
-def build(recipes: list[dict], pantry: Pantry, catalog: Catalog, budget: float) -> Cart:
+def build(recipes: list[dict], pantry: Pantry, catalog: Catalog, budget: float, avoid: set[str] = frozenset()) -> Cart:
+    """`avoid`: skus the profile keeps off the cart (catalog.off_plan). Applied to every line, whoever named it — the
+    planner's `buy` names come from a model and must not be able to put bacon in a low-sodium week."""
     cart = Cart(budget=budget)
     at_home, blacklist = pantry.at_home(), pantry.blacklist()
     seen: dict[str, CartLine] = {}
     for ingredient, used_in in needs(recipes).items():
         item = catalog.find(ingredient)
         if not item:
-            if not any(w in ingredient for w in NOT_BOUGHT):  # leftovers and water are not missing, just not bought
+            if not not_bought(ingredient):  # leftovers and water are not missing, just not bought
                 cart.skipped.append(f"\"{ingredient}\": not in the store's catalog")
             continue
         if item.sku in at_home and item.sku not in blacklist:
             continue  # already at home
         swapped_from = ""
-        if item.sku in blacklist:
+        if item.sku in blacklist or item.sku in avoid:
             swap = catalog.swap_for(item.sku)
-            if not swap:
-                cart.skipped.append(f"{item.name}: on your \"don't rebuy\" list, no swap available")
+            if not swap or swap[0].sku in avoid:
+                cart.skipped.append(f"{item.name}: on your \"don't rebuy\" list, no swap available" if item.sku in blacklist
+                                    else f"{item.name}: off your plan, not bought")
                 continue
             swapped_from, item = item.name, swap[0]
             if item.sku in at_home:

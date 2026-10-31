@@ -109,6 +109,21 @@ def test_catalog_find_does_not_turn_real_gemini_ingredients_into_the_wrong_produ
     assert name("potato chips") == "Potato chips"                                 # a snack only when asked by name
 
 
+def test_a_model_chosen_name_cannot_put_an_off_plan_product_in_the_cart():
+    catalog = Catalog.load()
+    recipes = [{"title": "Bad", "ingredients": [], "buy": ["Bacon", "Cola, 6 cans", "Broccoli"]}]
+    cart = cart_agent.build(recipes, Pantry(), catalog, budget=100.0, avoid=catalog.off_plan(["low sodium", "less sugar"]))
+    names = {l.item.name for l in cart.lines}
+    assert "Broccoli" in names and not names & {"Bacon", "Cola, 6 cans"}   # swapped (bacon → low-sodium turkey) or skipped
+    for gone in ("Bacon", "Cola"):
+        assert any(l.swapped_from.startswith(gone) for l in cart.lines) or any(gone in s for s in cart.skipped)
+    butter = cart_agent.build([{"title": "y", "ingredients": [], "buy": ["Butter"]}], Pantry(), catalog, 100.0,
+                              avoid=catalog.off_plan(["less saturated fat"]))
+    assert [(l.item.name, l.swapped_from) for l in butter.lines] == [("Extra-virgin olive oil", "Butter")]  # swapped, not lost
+    assert catalog.find("1 watermelon") is None or catalog.find("1 watermelon").name != "Sparkling water, 6 bottles"
+    assert cart_agent.build([{"title": "x", "ingredients": ["2 cups watercress"]}], Pantry(), catalog, 100.0).skipped  # said, not dropped
+
+
 def test_cart_buys_from_the_recipes_store_list_when_there_is_one():
     catalog = Catalog.load()
     recipes = [{"title": "Soup", "ingredients": ["1 potato, cubed", "500g water", "1 carrot"], "buy": ["Carrots", "Yellow onions"]}]
