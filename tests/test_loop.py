@@ -360,6 +360,8 @@ def test_a_sent_back_plan_is_rewritten_once_and_what_stays_wrong_never_reaches_t
     from carpevigor.profile import Guidance
     plan = planner._mock_plan("")
     bad_why, bad_evidence = plan.recipes[0].why, plan.recipes[1].evidence
+    # a fresh clone has no fetched sources: give the planner one, so the board path runs everywhere
+    monkeypatch.setattr(planner.sources, "reference_for", lambda topics: ("SOURCE: test\n\nsome text", []))
     import re
     monkeypatch.setattr(planner.llm, "ask", lambda system, task, shape, tier="strong", temperature=0.1:
                         plan.model_copy(deep=True) if shape is planner.WeekPlan else
