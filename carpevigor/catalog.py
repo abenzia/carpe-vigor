@@ -14,8 +14,8 @@ from dataclasses import dataclass
 
 from . import config
 
-# Poultry and eggs: white meat and eggs count as healthy (Ale, 31 Oct 2026); processed poultry is still junk (junk wins).
-HEALTHY = ("vegetable", "legume", "fruit", "fish", "whole", "plant", "poultry", "egg")
+# Poultry, eggs, olive oil and unsalted nuts count as healthy (Ale, 31 Oct 2026); processed poultry is still junk (junk wins).
+HEALTHY = ("vegetable", "legume", "fruit", "fish", "whole", "plant", "poultry", "egg", "unsaturated")
 UNHEALTHY = ("snack", "sugar", "processed", "high-sodium", "saturated")
 NOT_BOUGHT = {"water", "leftover", "leftovers"}
 

@@ -114,7 +114,7 @@ def test_catalog_says_what_is_healthy_and_what_is_junk():
     assert kind("Baby spinach") == kind("Salmon fillets") == kind("Dried lentils") == kind("Rolled oats") == "healthy"
     assert kind("Bacon") == kind("Potato chips") == kind("Cola, 6 cans") == kind("Butter") == "unhealthy"
     assert kind("Chicken breast") == kind("Turkey breast slices, low sodium") == kind("Eggs") == "healthy"
-    assert kind("Extra-virgin olive oil") == "neutral"
+    assert kind("Extra-virgin olive oil") == kind("Walnuts, unsalted") == "healthy"
     assert any(i.has("sugar") and i.has("snack") for i in catalog.items.values())  # there are sweets to tempt you
 
 
