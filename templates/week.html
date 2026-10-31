@@ -66,6 +66,15 @@
 </div>
 
 <h3>Meals — tick what you cooked; it counts toward your reward</h3>
+{% if week_plan.recipes and week_plan.recipes[0].nutrition %}
+<details class="card"><summary><b>What the week's lunches and dinners bring, day by day</b> <span class="muted tiny">— USDA FoodData Central</span></summary>
+  <table><tr><th>Day</th><th class="num">kcal</th><th class="num">Protein</th><th class="num">Fiber</th><th class="num">Sat. fat</th><th class="num">Sodium</th></tr>
+  {% for d in days %}{% set t = namespace(kcal=0, p=0, f=0, s=0, na=0, most=false) %}{% for r in week_plan.recipes if r.day == d and r.nutrition %}{% set t.kcal = t.kcal + r.nutrition.kcal %}{% set t.p = t.p + r.nutrition.protein_g %}{% set t.f = t.f + r.nutrition.fiber_g %}{% set t.s = t.s + r.nutrition.sat_fat_g %}{% set t.na = t.na + r.nutrition.sodium_mg %}{% set t.most = t.most or r.nutrition.sodium_at_most %}{% endfor %}
+  <tr><td>{{ d }}</td><td class="num">{{ t.kcal|round|int }}</td><td class="num">{{ t.p|round|int }} g</td><td class="num">{{ t.f|round|int }} g</td><td class="num">{{ t.s|round|int }} g</td><td class="num">{{ '≤ ' if t.most }}{{ t.na|round|int }} mg</td></tr>{% endfor %}
+  </table>
+  <p class="tiny muted">One serving of each, lunch and dinner only: breakfast and snacks are not in the plan. For comparison, WHO's number for adults is under 2,000 mg of sodium a day for everything eaten. Values are for the raw ingredients; a number shown as "≤" counts a low-sodium product as its regular version.</p>
+</details>
+{% endif %}
 <div class="grid">
 {% for r in week_plan.recipes %}
   <div class="card">
@@ -76,6 +85,10 @@
     {% elif r[field] %}<div class="{{ field }}">{{ r[field] }}</div>{% endif %}
     {% endfor %}
     {% if r.servings %}<p class="tiny muted">Serves {{ r.servings }}{% if r.leftovers_for %} · cooks enough for {{ r.leftovers_for }} too{% endif %}{% if r.from_leftovers %} · made from {{ r.from_leftovers }}{% endif %}</p>{% endif %}
+    {% set n = r.nutrition %}{% if n %}<details class="tiny"><summary><b>{{ n.kcal|round|int }} kcal</b> · protein {{ n.protein_g|round|int }} g · fiber {{ n.fiber_g|round|int }} g · saturated fat {{ n.sat_fat_g|round|int }} g · sodium {{ '≤ ' if n.sodium_at_most }}{{ n.sodium_mg|round|int }} mg <span class="muted">per serving</span></summary>
+      <p class="muted">Raw ingredients counted with {{ n.source }}, values per 100 g:</p><ul>{% for c in n.counted %}<li>{{ c }}</li>{% endfor %}</ul>
+      {% if n.left_out %}<p class="muted">Not counted (no matching food in the database): {{ n.left_out|join(', ') }}.</p>{% endif %}
+      {% if n.sodium_at_most %}<p class="muted">A low-sodium ingredient was counted as its regular version: the real sodium is lower.</p>{% endif %}</details>{% endif %}
     {% for f in r.kitchen_flags or [] %}<p class="tiny flag">Check before cooking: {{ f }}.</p>{% endfor %}
     <details><summary>Ingredients and steps</summary>
       {% if r.total_minutes %}<p class="tiny muted">Prep {{ r.prep_minutes }} min · total {{ r.total_minutes }} min · {{ r.difficulty }}{% if r.accessories %} · {{ r.accessories|join(', ') }}{% endif %}</p>{% endif %}

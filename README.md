@@ -19,6 +19,12 @@ Entry for the **PayPal AI Hackathon** (Devpost, November 2026).
    - **Laid out like a Thermomix recipe card**: prep and total time, difficulty, accessories, ingredients with how
      they go in, numbered steps whose machine setting (time / temperature or Varoma / reverse / speed) is data, not
      prose, and tips. The content is the planner's, written for this person's week.
+   - **What each dish brings**, per serving: calories, protein, fiber, saturated fat and sodium, from **USDA
+     FoodData Central** (SR Legacy, public domain), kept on disk (`python -m carpevigor.nutrition fetch`). Each
+     ingredient has its raw weight; a model picks the matching FoodData Central food among real candidates the local
+     index finds (it cannot offer one of its own), and plain code scales the values per 100 g. A low-sodium product the
+     database lists only in its regular version is counted as the regular one and the sodium is shown as "≤". A table
+     adds up each day's lunch and dinner. Calories are shown, never set as a target: that is the doctor's.
    - **Recipes that work on your machine.** For a Thermomix (TM7, TM6, TM5, TM31) the planner gets that model's
      limits from Vorwerk's published specs: a TM31 stops at 100 °C, a TM7 does not heat above speed 6. Plain code
      then reads every step: a setting the machine cannot do, a step that says "as in Monday's recipe", a dinner
@@ -135,6 +141,7 @@ saved page and labels it as saved by hand. Without them, those sources are skipp
     python -m carpevigor.sources fetch      # once, with internet: the topic sources
     python -m carpevigor.sources library    # once: the MedlinePlus library (Ask the sources, the sleep number)
     python -m carpevigor.guidelines         # each public number found in its source?
+    python -m carpevigor.nutrition fetch    # once: USDA FoodData Central (SR Legacy, 6 MB) for what each dish brings
     python -m uvicorn app:app --port 8080   # http://127.0.0.1:8080
 
 **Without `.env`** everything is simulated and labelled as such: a demo plan, a simulated board and mock

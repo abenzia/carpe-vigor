@@ -1,66 +1,97 @@
 {
- "title": "One-Person Low-Sodium & Lighter Week on the Thermomix TM7",
- "summary": "This week uses fresh vegetables, pulses, whole grains, and lean proteins cooked in the Thermomix TM7 with salt-free herbs, garlic, and lemon instead of added salt. Portions are balanced with steamed meals and batch-cooked dinners that provide effortless next-day lunches alongside daily walking.",
+ "title": "Low-Sodium, Veggie-Rich Week for One",
+ "summary": "This week uses your Thermomix TM7 to steam fish, poultry, and fresh vegetables while cooking whole grains and pulses with salt-free herbs, lemon, and garlic instead of added salt. Cooking extra portions at dinner four nights a week gives you ready-made lunches and keeps daily meals simple, balanced, and portioned for one.",
  "recipes": [
   {
    "day": "Mon",
    "meal": "lunch",
-   "title": "Warm Chickpea, Tomato and Spinach Salad with Lemon-Herb Dressing",
+   "title": "Warm Quinoa, Chickpea and Spinach Bowl with Lemon-Herb Dressing",
    "servings": 1,
    "leftovers_for": "",
    "from_leftovers": "",
-   "prep_minutes": 5,
-   "total_minutes": 12,
+   "prep_minutes": 10,
+   "total_minutes": 30,
    "difficulty": "easy",
    "accessories": [
+    "simmering basket",
+    "Varoma",
     "spatula"
    ],
    "ingredients": [
     {
-     "amount": "1",
-     "name": "garlic clove",
-     "note": "peeled"
+     "amount": "1000 g",
+     "name": "water",
+     "grams": 0.0,
+     "note": "for steaming"
+    },
+    {
+     "amount": "70 g",
+     "name": "quinoa",
+     "grams": 70.0,
+     "note": "rinsed thoroughly under cold running water"
+    },
+    {
+     "amount": "120 g",
+     "name": "chickpeas, no salt added",
+     "grams": 120.0,
+     "note": "drained and rinsed"
+    },
+    {
+     "amount": "100 g",
+     "name": "cherry tomatoes",
+     "grams": 100.0,
+     "note": "halved"
+    },
+    {
+     "amount": "80 g",
+     "name": "baby spinach",
+     "grams": 80.0,
+     "note": "washed"
     },
     {
      "amount": "10 g",
      "name": "extra-virgin olive oil",
+     "grams": 10.0,
      "note": ""
     },
     {
-     "amount": "150 g",
-     "name": "cherry tomatoes",
-     "note": "halved"
-    },
-    {
-     "amount": "150 g",
-     "name": "chickpeas, no salt added",
-     "note": "drained and rinsed"
+     "amount": "15 g",
+     "name": "lemon juice",
+     "grams": 15.0,
+     "note": "freshly squeezed (about 1/2 lemon)"
     },
     {
      "amount": "1 tsp",
      "name": "mixed dried herbs, salt-free",
+     "grams": 1.0,
      "note": ""
     },
     {
      "amount": "1 pinch",
      "name": "black pepper",
-     "note": "ground"
-    },
-    {
-     "amount": "60 g",
-     "name": "baby spinach",
-     "note": "washed"
-    },
-    {
-     "amount": "15 g",
-     "name": "lemon juice",
-     "note": "freshly squeezed (from 0.5 lemon)"
+     "grams": 0.5,
+     "note": "freshly ground"
     }
    ],
    "buy": [
     {
-     "name": "Garlic",
-     "amount": 5.0,
+     "name": "Quinoa",
+     "amount": 70.0,
+     "unit": "g"
+    },
+    {
+     "name": "Chickpeas, no salt added",
+     "amount": 120.0,
+     "unit": "g"
+    },
+    {
+     "name": "Cherry tomatoes",
+     "amount": 100.0,
+     "unit": "g"
+    },
+    {
+     "name": "Baby spinach",
+     "amount": 80.0,
      "unit": "g"
     },
     {
@@ -69,99 +100,98 @@
      "unit": "ml"
     },
     {
-     "name": "Cherry tomatoes",
-     "amount": 150.0,
-     "unit": "g"
-    },
-    {
-     "name": "Chickpeas, no salt added",
-     "amount": 150.0,
-     "unit": "g"
+     "name": "Lemons",
+     "amount": 1.0,
+     "unit": "piece"
     },
     {
      "name": "Mixed dried herbs, salt-free",
-     "amount": 2.0,
+     "amount": 1.0,
      "unit": "g"
     },
     {
      "name": "Black pepper",
-     "amount": 1.0,
+     "amount": 0.5,
      "unit": "g"
-    },
-    {
-     "name": "Baby spinach",
-     "amount": 60.0,
-     "unit": "g"
-    },
-    {
-     "name": "Lemons",
-     "amount": 1.0,
-     "unit": "piece"
     }
    ],
    "steps": [
     {
-     "text": "Place the peeled garlic clove in the mixing bowl, chop",
+     "text": "Place 1000 g of water into the mixing bowl. Insert the simmering basket and weigh in 70 g of rinsed quinoa. Place the Varoma dish into position, add 120 g of drained chickpeas and 100 g of halved cherry tomatoes into the Varoma dish, cover with the Varoma lid, and steam",
      "setting": {
-      "time": "3 sec",
-      "temperature": "",
-      "reverse": false,
-      "speed": "8",
-      "mode": ""
-     },
-     "then": "Scrape down the sides of the mixing bowl with the spatula."
-    },
-    {
-     "text": "Add 10 g extra-virgin olive oil, sauté",
-     "setting": {
-      "time": "2 min",
-      "temperature": "120°C",
+      "time": "15 min",
+      "temperature": "Varoma",
       "reverse": false,
       "speed": "1",
-      "mode": ""
+      "mode": "Steaming"
      },
-     "then": ""
+     "then": "Carefully remove the Varoma lid away from your face to avoid escaping steam."
     },
     {
-     "text": "Add 150 g halved cherry tomatoes, 150 g drained no-salt-added chickpeas, 1 tsp salt-free mixed dried herbs, and 1 pinch black pepper, warm through",
+     "text": "Add 80 g of baby spinach to the Varoma dish on top of the chickpeas and tomatoes, replace the Varoma lid, and steam",
      "setting": {
       "time": "3 min",
-      "temperature": "100°C",
-      "reverse": true,
-      "speed": "spoon",
-      "mode": ""
+      "temperature": "Varoma",
+      "reverse": false,
+      "speed": "1",
+      "mode": "Steaming"
      },
-     "then": ""
+     "then": "Set the Varoma aside. Use the notch on the spatula to lift out the simmering basket, transfer the cooked quinoa, chickpeas, tomatoes, and spinach to a serving bowl, and empty the mixing bowl."
     },
     {
-     "text": "Add 60 g baby spinach and 15 g freshly squeezed lemon juice, wilt gently",
+     "text": "Place 10 g of extra-virgin olive oil, 15 g of fresh lemon juice, 1 tsp of salt-free mixed dried herbs, and 1 pinch of black pepper into the empty mixing bowl, mix",
      "setting": {
-      "time": "2 min",
-      "temperature": "90°C",
-      "reverse": true,
-      "speed": "spoon",
+      "time": "10 sec",
+      "temperature": "",
+      "reverse": false,
+      "speed": "4",
       "mode": ""
      },
-     "then": "Transfer to a serving bowl and serve warm."
+     "then": "Pour the lemon-herb dressing over the warm quinoa and vegetable bowl, toss gently with the spatula, and serve immediately."
     }
    ],
    "tips": [
-    "Serve with a slice of toasted whole-grain bread if desired."
+    "Rinse the quinoa thoroughly in a fine-mesh sieve before cooking to remove its natural bitter coating (saponin).",
+    "Leave a few steam vents unobstructed in the bottom of the Varoma dish so the steam circulates evenly around the chickpeas and spinach."
    ],
-   "why": "This dish uses no-salt-added chickpeas, fresh spinach, and cherry tomatoes seasoned with lemon juice, garlic, and salt-free herbs instead of salt.",
-   "evidence": "For adults, the World Health Organization recommends consuming less than 2,000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+   "why": "Made with whole-grain quinoa, no-salt-added chickpeas, baby spinach, and cherry tomatoes, and seasoned with lemon juice and salt-free herbs instead of added salt.",
+   "evidence": "For adults, the World Health Organization recommends consuming less than 2000 mg of sodium per day, which is equivalent to less than 5 grams of salt [WHO — Sodium reduction (fact sheet)].",
    "removed": [],
-   "kitchen_flags": []
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 492.6,
+    "protein_g": 19.1,
+    "fat_g": 17.2,
+    "sat_fat_g": 2.2,
+    "carbs_g": 69.2,
+    "fiber_g": 13.3,
+    "sugars_g": 6.5,
+    "sodium_mg": 230.6,
+    "counted": [
+     "70 g quinoa → Quinoa, uncooked",
+     "120 g chickpeas, no salt added → Chickpeas (garbanzo beans, bengal gram), mature seeds, canned, solids and liquids, low sodium",
+     "100 g cherry tomatoes → Tomatoes, red, ripe, raw, year round average",
+     "80 g baby spinach → Spinach, raw",
+     "10 g extra-virgin olive oil → Oil, olive, salad or cooking",
+     "15 g lemon juice → Lemon juice, raw",
+     "0.5 g black pepper → Spices, pepper, black"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": false,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
   },
   {
    "day": "Mon",
    "meal": "dinner",
-   "title": "Steamed Salmon, Broccoli and Quinoa with Yogurt-Lemon Sauce",
+   "title": "Steamed Salmon with Broccoli, Carrots and Brown Rice",
    "servings": 2,
    "leftovers_for": "Tue lunch",
    "from_leftovers": "",
    "prep_minutes": 10,
-   "total_minutes": 32,
+   "total_minutes": 40,
    "difficulty": "easy",
    "accessories": [
     "simmering basket",
@@ -171,76 +201,382 @@
    ],
    "ingredients": [
     {
-     "amount": "1",
-     "name": "garlic clove",
-     "note": "peeled"
+     "amount": "1200 g",
+     "name": "water",
+     "grams": 0.0,
+     "note": "for cooking rice and steaming"
     },
     {
-     "amount": "100 g",
-     "name": "Greek yogurt, plain 0%",
-     "note": ""
+     "amount": "140 g",
+     "name": "brown rice",
+     "grams": 140.0,
+     "note": "rinsed"
     },
     {
-     "amount": "20 g",
-     "name": "lemon juice",
-     "note": "freshly squeezed (from 0.5 lemon)"
+     "amount": "250 g",
+     "name": "broccoli",
+     "grams": 250.0,
+     "note": "cut into bite-sized florets"
     },
     {
-     "amount": "10 g",
-     "name": "extra-virgin olive oil",
-     "note": ""
+     "amount": "160 g",
+     "name": "carrots",
+     "grams": 160.0,
+     "note": "peeled, sliced into 0.5 cm rounds"
+    },
+    {
+     "amount": "280 g",
+     "name": "salmon fillets",
+     "grams": 280.0,
+     "note": "2 skinless fillets (140 g each)"
     },
     {
      "amount": "1 tsp",
      "name": "mixed dried herbs, salt-free",
+     "grams": 1.0,
      "note": ""
     },
     {
-     "amount": "2 pinches",
+     "amount": "1 pinch",
      "name": "black pepper",
-     "note": "ground, divided"
+     "grams": 0.5,
+     "note": "freshly ground"
     },
     {
-     "amount": "1200 g",
-     "name": "water",
-     "note": ""
+     "amount": "10 g",
+     "name": "extra-virgin olive oil",
+     "grams": 10.0,
+     "note": "for drizzling at the table"
     },
     {
-     "amount": "140 g",
-     "name": "quinoa",
-     "note": "rinsed thoroughly under cold water"
-    },
-    {
-     "amount": "350 g",
-     "name": "broccoli",
-     "note": "cut into florets"
-    },
-    {
-     "amount": "260 g",
-     "name": "salmon fillets",
-     "note": "2 fillets (130 g each), skinless"
+     "amount": "30 g",
+     "name": "lemon juice",
+     "grams": 30.0,
+     "note": "freshly squeezed (about 1 lemon)"
     }
    ],
    "buy": [
     {
-     "name": "Garlic",
-     "amount": 5.0,
+     "name": "Brown rice",
+     "amount": 140.0,
      "unit": "g"
     },
     {
-     "name": "Greek yogurt, plain 0%",
-     "amount": 100.0,
+     "name": "Broccoli",
+     "amount": 250.0,
      "unit": "g"
     },
     {
-     "name": "Lemons",
+     "name": "Carrots",
+     "amount": 160.0,
+     "unit": "g"
+    },
+    {
+     "name": "Salmon fillets",
+     "amount": 280.0,
+     "unit": "g"
+    },
+    {
+     "name": "Mixed dried herbs, salt-free",
      "amount": 1.0,
-     "unit": "piece"
+     "unit": "g"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 0.5,
+     "unit": "g"
     },
     {
      "name": "Extra-virgin olive oil",
      "amount": 10.0,
      "unit": "ml"
+    },
+    {
+     "name": "Lemons",
+     "amount": 1.0,
+     "unit": "piece"
+    }
+   ],
+   "steps": [
+    {
+     "text": "Place 1200 g of water into the mixing bowl. Insert the simmering basket, weigh in 140 g of brown rice, close the mixing bowl lid, and cook",
+     "setting": {
+      "time": "10 min",
+      "temperature": "100°C",
+      "reverse": false,
+      "speed": "1",
+      "mode": ""
+     },
+     "then": "Meanwhile, arrange 250 g of broccoli florets and 160 g of sliced carrots in the Varoma dish, leaving a few vents uncovered for steam to pass through."
+    },
+    {
+     "text": "Line the Varoma tray with a sheet of wetted, crumpled baking paper, keeping the side vents clear. Place 280 g of salmon fillets on the tray and sprinkle with 1 tsp of salt-free mixed dried herbs and 1 pinch of black pepper. Set the Varoma dish and tray in position, cover with the Varoma lid, and steam",
+     "setting": {
+      "time": "18 min",
+      "temperature": "Varoma",
+      "reverse": false,
+      "speed": "1",
+      "mode": "Steaming"
+     },
+     "then": "Check that the salmon flakes easily in the centre and the vegetables and brown rice are tender."
+    },
+    {
+     "text": "Remove the Varoma and lift out the simmering basket using the notch on the spatula. Divide the brown rice, steamed broccoli, carrots, and salmon between two portions: plate one serving now and drizzle with 5 g of extra-virgin olive oil and 15 g of lemon juice; pack the second portion with the remaining 5 g of extra-virgin olive oil and 15 g of lemon juice in an airtight container for the next meal.",
+     "setting": null,
+     "then": "Cool the leftover portion promptly and store it in the refrigerator."
+    }
+   ],
+   "tips": [
+    "Wetting and crumpling the baking paper helps it fit snugly on the Varoma tray while keeping the side vents free for steam circulation.",
+    "Store the leftover portion in a sealed container in the refrigerator and enjoy it chilled as a salmon rice bowl or gently reheat it."
+   ],
+   "why": "Steamed salmon fillets, broccoli, carrots, and whole-grain brown rice cooked without added salt and dressed with extra-virgin olive oil, herbs, and fresh lemon.",
+   "evidence": "Everyone older than 10 years of age should aim for at least 400 grams of fruits and vegetables per day and at least 25 grams of naturally-occurring dietary fibre from foods [WHO — Healthy diet (fact sheet)].",
+   "removed": [],
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 671.5,
+    "protein_g": 38.2,
+    "fat_g": 26.7,
+    "sat_fat_g": 5.6,
+    "carbs_g": 70.5,
+    "fiber_g": 8.1,
+    "sugars_g": 6.8,
+    "sodium_mg": 182.9,
+    "counted": [
+     "140 g brown rice → Rice, brown, long-grain, raw (Includes foods for USDA's Food Distribution Program)",
+     "250 g broccoli → Broccoli, raw",
+     "160 g carrots → Carrots, raw",
+     "280 g salmon fillets → Fish, salmon, Atlantic, farmed, raw",
+     "0.5 g black pepper → Spices, pepper, black",
+     "10 g extra-virgin olive oil → Oil, olive, salad or cooking",
+     "30 g lemon juice → Lemon juice, raw"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": false,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
+  },
+  {
+   "day": "Tue",
+   "meal": "lunch",
+   "title": "Steamed Salmon with Broccoli, Carrots and Brown Rice (from Monday dinner)",
+   "servings": 1,
+   "leftovers_for": "",
+   "from_leftovers": "Mon dinner",
+   "prep_minutes": 5,
+   "total_minutes": 15,
+   "difficulty": "easy",
+   "accessories": [
+    "Varoma",
+    "baking paper"
+   ],
+   "ingredients": [
+    {
+     "amount": "500 g",
+     "name": "water",
+     "grams": 0.0,
+     "note": "for steaming"
+    },
+    {
+     "amount": "120 g",
+     "name": "cooked salmon fillet",
+     "grams": 120.0,
+     "note": "reserved from Monday dinner"
+    },
+    {
+     "amount": "150 g",
+     "name": "cooked broccoli florets",
+     "grams": 150.0,
+     "note": "reserved from Monday dinner"
+    },
+    {
+     "amount": "100 g",
+     "name": "cooked sliced carrots",
+     "grams": 100.0,
+     "note": "reserved from Monday dinner"
+    },
+    {
+     "amount": "150 g",
+     "name": "cooked brown rice",
+     "grams": 150.0,
+     "note": "reserved from Monday dinner"
+    },
+    {
+     "amount": "0.5",
+     "name": "lemon",
+     "grams": 30.0,
+     "note": "juiced"
+    },
+    {
+     "amount": "1 tsp",
+     "name": "extra-virgin olive oil",
+     "grams": 4.5,
+     "note": "for drizzling"
+    },
+    {
+     "amount": "1 pinch",
+     "name": "black pepper",
+     "grams": 0.5,
+     "note": "freshly ground"
+    }
+   ],
+   "buy": [
+    {
+     "name": "Lemons",
+     "amount": 0.5,
+     "unit": "piece"
+    },
+    {
+     "name": "Extra-virgin olive oil",
+     "amount": 4.5,
+     "unit": "ml"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 0.5,
+     "unit": "g"
+    }
+   ],
+   "steps": [
+    {
+     "text": "Pour 500 g water into the mixing bowl. Line the Varoma tray with baking paper (leaving the side vents clear) and arrange the reserved cooked brown rice, broccoli, carrots, and salmon on top. Set the Varoma in place and warm through",
+     "setting": {
+      "time": "8 min",
+      "temperature": "Varoma",
+      "reverse": false,
+      "speed": "1",
+      "mode": "Steaming"
+     },
+     "then": "Remove the Varoma carefully."
+    },
+    {
+     "text": "Transfer the warmed brown rice, broccoli, carrots, and salmon to a serving plate.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Drizzle with the fresh lemon juice and extra-virgin olive oil, season with a pinch of black pepper, and serve immediately.",
+     "setting": null,
+     "then": ""
+    }
+   ],
+   "tips": [
+    "This dish can also be enjoyed cold straight from the refrigerator as a salmon and brown rice salad without reheating."
+   ],
+   "why": "Prepared from fresh fish, brown rice, broccoli, and carrots with lemon juice and black pepper instead of added salt.",
+   "evidence": "For adults, the World Health Organization recommends consuming less than 2000 mg of sodium per day, which is equivalent to less than 5 grams of salt [WHO — Sodium reduction (fact sheet)].",
+   "removed": [],
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 671.5,
+    "protein_g": 38.2,
+    "fat_g": 26.7,
+    "sat_fat_g": 5.6,
+    "carbs_g": 70.5,
+    "fiber_g": 8.1,
+    "sugars_g": 6.8,
+    "sodium_mg": 182.9,
+    "counted": [
+     "140 g brown rice → Rice, brown, long-grain, raw (Includes foods for USDA's Food Distribution Program)",
+     "250 g broccoli → Broccoli, raw",
+     "160 g carrots → Carrots, raw",
+     "280 g salmon fillets → Fish, salmon, Atlantic, farmed, raw",
+     "0.5 g black pepper → Spices, pepper, black",
+     "10 g extra-virgin olive oil → Oil, olive, salad or cooking",
+     "30 g lemon juice → Lemon juice, raw"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": false,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
+  },
+  {
+   "day": "Tue",
+   "meal": "dinner",
+   "title": "Herbed Chicken Breast with Zucchini, Bell Peppers and Quinoa",
+   "servings": 2,
+   "leftovers_for": "Wed lunch",
+   "from_leftovers": "",
+   "prep_minutes": 10,
+   "total_minutes": 30,
+   "difficulty": "easy",
+   "accessories": [
+    "simmering basket",
+    "Varoma",
+    "baking paper",
+    "spatula"
+   ],
+   "ingredients": [
+    {
+     "amount": "1200 g",
+     "name": "water",
+     "grams": 0.0,
+     "note": "for cooking and steaming"
+    },
+    {
+     "amount": "140 g",
+     "name": "quinoa",
+     "grams": 140.0,
+     "note": "rinsed thoroughly"
+    },
+    {
+     "amount": "300 g",
+     "name": "chicken breast",
+     "grams": 300.0,
+     "note": "cut into strips (2 cm)"
+    },
+    {
+     "amount": "2 tsp",
+     "name": "mixed dried herbs, salt-free",
+     "grams": 2.0,
+     "note": ""
+    },
+    {
+     "amount": "2 pinches",
+     "name": "black pepper",
+     "grams": 1.0,
+     "note": ""
+    },
+    {
+     "amount": "250 g",
+     "name": "zucchini",
+     "grams": 250.0,
+     "note": "cut into half-moons (1 cm)"
+    },
+    {
+     "amount": "200 g",
+     "name": "bell peppers",
+     "grams": 200.0,
+     "note": "deseeded, cut into strips"
+    },
+    {
+     "amount": "1",
+     "name": "lemon",
+     "grams": 60.0,
+     "note": "juiced"
+    },
+    {
+     "amount": "2 tsp",
+     "name": "extra-virgin olive oil",
+     "grams": 9.0,
+     "note": "for dressing"
+    }
+   ],
+   "buy": [
+    {
+     "name": "Quinoa",
+     "amount": 140.0,
+     "unit": "g"
+    },
+    {
+     "name": "Chicken breast",
+     "amount": 300.0,
+     "unit": "g"
     },
     {
      "name": "Mixed dried herbs, salt-free",
@@ -253,160 +589,199 @@
      "unit": "g"
     },
     {
-     "name": "Quinoa",
-     "amount": 140.0,
+     "name": "Zucchini",
+     "amount": 250.0,
      "unit": "g"
     },
     {
-     "name": "Broccoli",
-     "amount": 350.0,
+     "name": "Bell peppers",
+     "amount": 200.0,
      "unit": "g"
     },
     {
-     "name": "Salmon fillets",
-     "amount": 260.0,
-     "unit": "g"
+     "name": "Lemons",
+     "amount": 1.0,
+     "unit": "piece"
+    },
+    {
+     "name": "Extra-virgin olive oil",
+     "amount": 9.0,
+     "unit": "ml"
     }
    ],
    "steps": [
     {
-     "text": "Place the peeled garlic clove in the mixing bowl, chop",
-     "setting": {
-      "time": "3 sec",
-      "temperature": "",
-      "reverse": false,
-      "speed": "8",
-      "mode": ""
-     },
-     "then": "Scrape down the sides of the mixing bowl with the spatula."
+     "text": "Pour 1200 g water into the mixing bowl. Insert the simmering basket and weigh in 140 g rinsed quinoa.",
+     "setting": null,
+     "then": ""
     },
     {
-     "text": "Add 100 g plain 0% Greek yogurt, 20 g freshly squeezed lemon juice, 10 g extra-virgin olive oil, 0.5 tsp salt-free mixed dried herbs, and 1 pinch black pepper, mix",
-     "setting": {
-      "time": "10 sec",
-      "temperature": "",
-      "reverse": false,
-      "speed": "3",
-      "mode": ""
-     },
-     "then": "Transfer the yogurt-lemon sauce to a small bowl and keep in the refrigerator until serving."
+     "text": "Arrange 250 g zucchini half-moons and 200 g bell pepper strips in the Varoma dish, leaving some holes unobstructed for steam to circulate.",
+     "setting": null,
+     "then": ""
     },
     {
-     "text": "Without washing the mixing bowl, pour 1200 g water into the mixing bowl, insert the simmering basket and weigh in 140 g rinsed quinoa. Place the Varoma dish in position and arrange 350 g broccoli florets inside, ensuring some steam vents remain uncovered. Line the Varoma tray with baking paper (leaving the side vents clear), place 260 g salmon fillets on the paper, and season the fillets with the remaining 0.5 tsp salt-free mixed dried herbs and 1 pinch black pepper. Insert the Varoma tray, close the Varoma lid, and steam",
+     "text": "Line the Varoma tray with wet, crumpled baking paper, keeping the side vents uncovered. Toss 300 g chicken breast strips with 2 tsp salt-free mixed dried herbs and 2 pinches black pepper, then spread them across the tray. Fit the Varoma into position and steam",
      "setting": {
-      "time": "22 min",
+      "time": "20 min",
       "temperature": "Varoma",
       "reverse": false,
       "speed": "1",
       "mode": "Steaming"
      },
-     "then": "Remove the Varoma carefully and lift out the simmering basket using the notch on the spatula. Plate one portion of the salmon, broccoli, and quinoa with half of the yogurt-lemon sauce; cool and refrigerate the second portion and sauce in airtight containers."
+     "then": "Check that the chicken is cooked through and the quinoa is tender."
+    },
+    {
+     "text": "Remove the Varoma and use the spatula notch to lift out the simmering basket. Divide the quinoa, steamed vegetables, and herbed chicken into two equal portions.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Dress both portions with the juice of 1 lemon and 2 tsp extra-virgin olive oil. Serve one portion warm now, and pack the second portion into an airtight container and refrigerate once cooled for the next meal.",
+     "setting": null,
+     "then": ""
     }
    ],
    "tips": [
-    "Wetting and crumpling the baking paper before laying it on the Varoma tray makes it easier to shape while keeping the side vents open for steam circulation.",
-    "Keep the extra yogurt-lemon sauce in a separate small container so it can be drizzled fresh over the chilled second portion."
+    "Wetting and crumpling the baking paper makes it mould easily to the Varoma tray while keeping the chicken juices from dripping onto the vegetables below."
    ],
-   "why": "Steamed salmon, broccoli, and whole-grain quinoa are cooked without added salt and dressed with a fat-free Greek yogurt, lemon, and herb sauce.",
-   "evidence": "Everyone older than 10 years of age should aim for at least 400 g of fruits and vegetables per day [WHO — Healthy diet (fact sheet)].",
+   "why": "Steamed lean chicken breast, quinoa, zucchini, and bell peppers seasoned with salt-free dried herbs and lemon juice.",
+   "evidence": "Everyone older than 10 years of age should aim for at least 400 grams of fruits and vegetables per day [WHO — Healthy diet (fact sheet)].",
    "removed": [],
-   "kitchen_flags": []
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 528.6,
+    "protein_g": 46.4,
+    "fat_g": 13.4,
+    "sat_fat_g": 2.1,
+    "carbs_g": 56.6,
+    "fiber_g": 8.8,
+    "sugars_g": 6.3,
+    "sodium_mg": 84.8,
+    "counted": [
+     "140 g quinoa → Quinoa, uncooked",
+     "300 g chicken breast → Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw",
+     "1 g black pepper → Spices, pepper, black",
+     "250 g zucchini → Squash, summer, zucchini, includes skin, raw",
+     "200 g bell peppers → Peppers, sweet, green, raw",
+     "60 g lemon → Lemons, raw, without peel",
+     "9 g extra-virgin olive oil → Oil, olive, salad or cooking"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": false,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
   },
   {
-   "day": "Tue",
+   "day": "Wed",
    "meal": "lunch",
-   "title": "Chilled Salmon, Broccoli and Quinoa Bowl with Yogurt-Lemon Sauce",
+   "title": "Herbed Chicken Breast with Zucchini, Bell Peppers and Quinoa (from Tuesday dinner)",
    "servings": 1,
    "leftovers_for": "",
-   "from_leftovers": "Mon dinner",
+   "from_leftovers": "Tue dinner",
    "prep_minutes": 5,
-   "total_minutes": 5,
+   "total_minutes": 15,
    "difficulty": "easy",
    "accessories": [
+    "Varoma",
     "spatula"
    ],
    "ingredients": [
     {
-     "amount": "150 g",
-     "name": "cooked quinoa",
-     "note": "chilled, reserved from Monday dinner"
+     "amount": "1 portion",
+     "name": "leftover herbed chicken, zucchini, bell peppers, and quinoa",
+     "grams": 450.0,
+     "note": "chilled, from Tuesday dinner"
     },
     {
-     "amount": "150 g",
-     "name": "steamed broccoli florets",
-     "note": "chilled, reserved from Monday dinner"
+     "amount": "500 g",
+     "name": "water",
+     "grams": 0.0,
+     "note": "for steaming"
     },
     {
-     "amount": "125 g",
-     "name": "steamed salmon fillet",
-     "note": "chilled, reserved from Monday dinner"
-    },
-    {
-     "amount": "60 g",
-     "name": "yogurt-lemon sauce",
-     "note": "chilled, reserved from Monday dinner"
-    },
-    {
-     "amount": "30 g",
-     "name": "baby spinach",
-     "note": "fresh leaves"
+     "amount": "1 tsp",
+     "name": "extra-virgin olive oil",
+     "grams": 4.5,
+     "note": "for dressing"
     },
     {
      "amount": "1 pinch",
      "name": "black pepper",
+     "grams": 0.5,
      "note": "freshly ground"
     }
    ],
    "buy": [
     {
-     "name": "Baby spinach",
-     "amount": 30.0,
-     "unit": "g"
+     "name": "Extra-virgin olive oil",
+     "amount": 5.0,
+     "unit": "ml"
     },
     {
      "name": "Black pepper",
-     "amount": 1.0,
+     "amount": 0.5,
      "unit": "g"
     }
    ],
    "steps": [
     {
-     "text": "Place 60 g reserved yogurt-lemon sauce in the clean mixing bowl, stir until smooth",
+     "text": "Pour 500 g of water into the mixing bowl. Arrange the leftover quinoa, zucchini, bell peppers, and herbed chicken in the Varoma dish, leaving small vents for steam to circulate. Position the Varoma in place and gently reheat",
      "setting": {
-      "time": "10 sec",
-      "temperature": "",
+      "time": "10 min",
+      "temperature": "Varoma",
       "reverse": false,
-      "speed": "3",
-      "mode": ""
+      "speed": "1",
+      "mode": "Steaming"
      },
-     "then": "Scrape down the sides of the mixing bowl with the spatula."
+     "then": "Carefully remove the Varoma lid away from the face."
     },
     {
-     "text": "Arrange 30 g fresh baby spinach and 150 g chilled cooked quinoa in a serving bowl.",
+     "text": "Transfer the warmed quinoa, vegetables, and chicken to a serving bowl. Drizzle with 1 tsp of extra-virgin olive oil, season with 1 pinch of black pepper, toss gently with the spatula, and serve immediately.",
      "setting": null,
      "then": ""
-    },
-    {
-     "text": "Flake 125 g chilled steamed salmon fillet into bite-sized pieces and place on top of the quinoa alongside 150 g chilled steamed broccoli florets.",
-     "setting": null,
-     "then": "Drizzle with the yogurt-lemon sauce from the mixing bowl, season with 1 pinch of black pepper, and serve immediately."
     }
    ],
    "tips": [
-    "Take the reserved salmon and broccoli out of the refrigerator 10 minutes before assembling so the flavors are more pronounced.",
-    "If a warm bowl is preferred, place the quinoa, broccoli, and salmon in the mixing bowl with 20 g water and warm for 3 min/70°C/Reverse/speed spoon before plating over the fresh spinach."
+    "This dish can also be enjoyed cold straight from the refrigerator as a refreshing grain and vegetable salad."
    ],
-   "why": "This meal uses fresh baby spinach, whole-grain quinoa, broccoli, and fish with an herbed yogurt-lemon dressing and no added salt.",
-   "evidence": "For adults, the World Health Organization recommends consuming less than 2000 mg of sodium per day, which is equivalent to less than 5 grams of salt [WHO — Sodium reduction (fact sheet)].",
+   "why": "Prepared from steamed lean chicken breast, quinoa, and vegetables, this meal uses black pepper and extra-virgin olive oil for flavor with no added salt.",
+   "evidence": "For adults, the World Health Organization recommends consuming less than 2,000 mg of sodium per day, which is equivalent to less than 5 grams of salt [WHO — Sodium reduction (fact sheet)].",
    "removed": [],
-   "kitchen_flags": []
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 528.6,
+    "protein_g": 46.4,
+    "fat_g": 13.4,
+    "sat_fat_g": 2.1,
+    "carbs_g": 56.6,
+    "fiber_g": 8.8,
+    "sugars_g": 6.3,
+    "sodium_mg": 84.8,
+    "counted": [
+     "140 g quinoa → Quinoa, uncooked",
+     "300 g chicken breast → Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw",
+     "1 g black pepper → Spices, pepper, black",
+     "250 g zucchini → Squash, summer, zucchini, includes skin, raw",
+     "200 g bell peppers → Peppers, sweet, green, raw",
+     "60 g lemon → Lemons, raw, without peel",
+     "9 g extra-virgin olive oil → Oil, olive, salad or cooking"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": false,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
   },
   {
-   "day": "Tue",
+   "day": "Wed",
    "meal": "dinner",
-   "title": "Hearty Red Lentil, Carrot and Zucchini Stew",
+   "title": "Hearty Red Lentil, Carrot and Spinach Stew",
    "servings": 2,
-   "leftovers_for": "Wed lunch",
+   "leftovers_for": "Thu lunch",
    "from_leftovers": "",
    "prep_minutes": 10,
    "total_minutes": 35,
@@ -417,53 +792,63 @@
    "ingredients": [
     {
      "amount": "100 g",
-     "name": "yellow onion",
+     "name": "yellow onions",
+     "grams": 100.0,
      "note": "peeled, halved"
     },
     {
-     "amount": "2",
-     "name": "garlic cloves",
+     "amount": "2 cloves",
+     "name": "garlic",
+     "grams": 6.0,
      "note": "peeled"
     },
     {
-     "amount": "150 g",
+     "amount": "200 g",
      "name": "carrots",
+     "grams": 200.0,
      "note": "peeled, in pieces (3-4 cm)"
     },
     {
-     "amount": "15 g",
+     "amount": "10 g",
      "name": "extra-virgin olive oil",
+     "grams": 10.0,
      "note": ""
-    },
-    {
-     "amount": "200 g",
-     "name": "zucchini",
-     "note": "trimmed, in pieces (2 cm)"
     },
     {
      "amount": "160 g",
      "name": "dried lentils",
+     "grams": 160.0,
      "note": "rinsed and drained"
     },
     {
      "amount": "600 g",
      "name": "vegetable stock, low sodium",
+     "grams": 600.0,
      "note": ""
     },
     {
      "amount": "1 tsp",
      "name": "mixed dried herbs, salt-free",
+     "grams": 2.0,
      "note": ""
     },
     {
-     "amount": "1/4 tsp",
+     "amount": "1 pinch",
      "name": "black pepper",
-     "note": "ground"
+     "grams": 0.5,
+     "note": ""
     },
     {
-     "amount": "80 g",
-     "name": "cherry tomatoes",
-     "note": "halved"
+     "amount": "120 g",
+     "name": "baby spinach",
+     "grams": 120.0,
+     "note": "washed"
+    },
+    {
+     "amount": "0.5",
+     "name": "lemons",
+     "grams": 30.0,
+     "note": "juiced"
     }
    ],
    "buy": [
@@ -474,23 +859,18 @@
     },
     {
      "name": "Garlic",
-     "amount": 10.0,
+     "amount": 6.0,
      "unit": "g"
     },
     {
      "name": "Carrots",
-     "amount": 150.0,
+     "amount": 200.0,
      "unit": "g"
     },
     {
      "name": "Extra-virgin olive oil",
-     "amount": 15.0,
+     "amount": 10.0,
      "unit": "ml"
-    },
-    {
-     "name": "Zucchini",
-     "amount": 200.0,
-     "unit": "g"
     },
     {
      "name": "Dried lentils",
@@ -504,23 +884,28 @@
     },
     {
      "name": "Mixed dried herbs, salt-free",
-     "amount": 3.0,
+     "amount": 2.0,
      "unit": "g"
     },
     {
      "name": "Black pepper",
-     "amount": 1.0,
+     "amount": 0.5,
      "unit": "g"
     },
     {
-     "name": "Cherry tomatoes",
-     "amount": 80.0,
+     "name": "Baby spinach",
+     "amount": 120.0,
      "unit": "g"
+    },
+    {
+     "name": "Lemons",
+     "amount": 0.5,
+     "unit": "piece"
     }
    ],
    "steps": [
     {
-     "text": "Place 100 g halved yellow onion, 2 garlic cloves, and 150 g carrot pieces in the mixing bowl, chop",
+     "text": "Place 100 g of halved yellow onions, 2 cloves of garlic, and 200 g of carrot pieces in the mixing bowl, chop",
      "setting": {
       "time": "5 sec",
       "temperature": "",
@@ -531,7 +916,7 @@
      "then": "Scrape down the sides of the mixing bowl with the spatula."
     },
     {
-     "text": "Add 15 g extra-virgin olive oil to the mixing bowl, sauté",
+     "text": "Add 10 g of extra-virgin olive oil to the mixing bowl, sauté",
      "setting": {
       "time": "4 min",
       "temperature": "120°C",
@@ -542,7 +927,7 @@
      "then": ""
     },
     {
-     "text": "Add 200 g zucchini pieces, 160 g rinsed dried lentils, 600 g low-sodium vegetable stock, 1 tsp salt-free mixed dried herbs, and 1/4 tsp ground black pepper to the mixing bowl, cook",
+     "text": "Add 160 g of rinsed dried lentils, 600 g of low-sodium vegetable stock, 1 tsp of salt-free mixed dried herbs, and 1 pinch of black pepper to the mixing bowl, cook",
      "setting": {
       "time": "20 min",
       "temperature": "100°C",
@@ -553,281 +938,60 @@
      "then": ""
     },
     {
-     "text": "Add 80 g halved cherry tomatoes to the mixing bowl, cook",
+     "text": "Add 120 g of baby spinach to the mixing bowl, push down gently with the spatula, and cook until wilted",
      "setting": {
-      "time": "5 min",
+      "time": "2 min",
       "temperature": "100°C",
       "reverse": true,
       "speed": "spoon",
       "mode": ""
      },
-     "then": "Serve one portion of the stew hot in a bowl, and transfer the second portion to an airtight container to cool and refrigerate."
-    }
-   ],
-   "tips": [
-    "Lentils naturally thicken as they cool; when reheating the second portion, add a splash of water to loosen the consistency.",
-    "Rinse the dried lentils under cold water in the simmering basket before adding them to the mixing bowl."
-   ],
-   "why": "Pulses like dried lentils and a generous mix of carrots, zucchini, and tomatoes are simmered in low-sodium vegetable stock with salt-free herbs.",
-   "evidence": "Everyone older than 10 years of age should aim for at least 400 grams of fruits and vegetables per day and at least 25 grams of naturally-occurring dietary fibre [WHO — Healthy diet (fact sheet)].",
-   "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Wed",
-   "meal": "lunch",
-   "title": "Warm Lentil and Vegetable Stew with Toasted Whole-Grain Bread",
-   "servings": 1,
-   "leftovers_for": "",
-   "from_leftovers": "Tue dinner",
-   "prep_minutes": 3,
-   "total_minutes": 10,
-   "difficulty": "easy",
-   "accessories": [
-    "spatula"
-   ],
-   "ingredients": [
-    {
-     "amount": "350 g",
-     "name": "reserved lentil, carrot and zucchini stew",
-     "note": "from Tuesday dinner"
+     "then": ""
     },
     {
-     "amount": "50 g",
-     "name": "water",
-     "note": "to loosen the stew if thick"
-    },
-    {
-     "amount": "40 g",
-     "name": "whole-grain bread",
-     "note": "1 slice, toasted"
-    },
-    {
-     "amount": "5 ml",
-     "name": "extra-virgin olive oil",
-     "note": "to drizzle"
-    },
-    {
-     "amount": "1 pinch",
-     "name": "black pepper",
-     "note": "freshly ground"
-    }
-   ],
-   "buy": [
-    {
-     "name": "Whole-grain bread",
-     "amount": 40.0,
-     "unit": "g"
-    },
-    {
-     "name": "Extra-virgin olive oil",
-     "amount": 5.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Black pepper",
-     "amount": 1.0,
-     "unit": "g"
-    }
-   ],
-   "steps": [
-    {
-     "text": "Place the 350 g reserved lentil, carrot and zucchini stew and 50 g water into the mixing bowl, warm through",
-     "setting": {
-      "time": "6 min",
-      "temperature": "90°C",
-      "reverse": true,
-      "speed": "spoon",
-      "mode": ""
-     },
-     "then": "Meanwhile, toast the slice of whole-grain bread until golden."
-    },
-    {
-     "text": "Add a pinch of freshly ground black pepper to the mixing bowl, stir gently",
-     "setting": {
-      "time": "10 sec",
-      "temperature": "",
-      "reverse": true,
-      "speed": "1",
-      "mode": ""
-     },
-     "then": "Pour the warm stew into a serving bowl using the spatula."
-    },
-    {
-     "text": "Drizzle the stew with 5 ml extra-virgin olive oil and serve immediately alongside the toasted whole-grain bread.",
+     "text": "Stir in the juice of 0.5 lemon with the spatula. Serve half of the stew warm now, and transfer the remaining portion to an airtight container to cool and refrigerate for the next meal.",
      "setting": null,
      "then": ""
     }
    ],
    "tips": [
-    "If the stew absorbed a lot of liquid overnight in the fridge, add an extra 20 g of water before reheating."
+    "Lentils naturally thicken as they cool; add a splash of water or low-sodium stock when reheating the leftover portion."
    ],
-   "why": "Combines a lentil, carrot, and zucchini stew seasoned with herbs instead of added salt with a slice of whole-grain bread.",
-   "evidence": "On average, carbohydrates in the diet should come primarily from whole grains, vegetables, fruits, and pulses such as lentils, chickpeas, and beans [WHO — Healthy diet (fact sheet)].",
+   "why": "Built around pulses and fresh vegetables like carrots, onion, and spinach, this stew relies on garlic, salt-free herbs, and lemon juice instead of added salt.",
+   "evidence": "Everyone older than 10 years of age should aim for at least 400 grams of fruits and vegetables per day and at least 25 grams of naturally-occurring dietary fibre from foods such as pulses, vegetables, and whole grains [WHO — Healthy diet (fact sheet)].",
    "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Wed",
-   "meal": "dinner",
-   "title": "Herbed Chicken Breast with Brown Rice and Steamed Carrots & Peppers",
-   "servings": 2,
-   "leftovers_for": "Thu lunch",
-   "from_leftovers": "",
-   "prep_minutes": 10,
-   "total_minutes": 40,
-   "difficulty": "easy",
-   "accessories": [
-    "simmering basket",
-    "Varoma",
-    "spatula"
-   ],
-   "ingredients": [
-    {
-     "amount": "1",
-     "name": "garlic clove",
-     "note": "peeled"
-    },
-    {
-     "amount": "1 tsp",
-     "name": "mixed dried herbs, salt-free",
-     "note": ""
-    },
-    {
-     "amount": "1 pinch",
-     "name": "black pepper",
-     "note": "freshly ground"
-    },
-    {
-     "amount": "15 ml",
-     "name": "extra-virgin olive oil",
-     "note": "divided"
-    },
-    {
-     "amount": "300 g",
-     "name": "chicken breast",
-     "note": "cut into strips (2 cm thick)"
-    },
-    {
-     "amount": "160 g",
-     "name": "carrots",
-     "note": "peeled, sliced into thin rounds"
-    },
-    {
-     "amount": "160 g",
-     "name": "bell peppers",
-     "note": "deseeded, cut into strips"
-    },
-    {
-     "amount": "1200 g",
-     "name": "water",
-     "note": "for steaming"
-    },
-    {
-     "amount": "140 g",
-     "name": "brown rice",
-     "note": "rinsed under cold water"
-    },
-    {
-     "amount": "0.5",
-     "name": "lemon",
-     "note": "juiced (approx. 15 ml)"
-    }
-   ],
-   "buy": [
-    {
-     "name": "Garlic",
-     "amount": 5.0,
-     "unit": "g"
-    },
-    {
-     "name": "Mixed dried herbs, salt-free",
-     "amount": 2.0,
-     "unit": "g"
-    },
-    {
-     "name": "Black pepper",
-     "amount": 1.0,
-     "unit": "g"
-    },
-    {
-     "name": "Extra-virgin olive oil",
-     "amount": 15.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Chicken breast",
-     "amount": 300.0,
-     "unit": "g"
-    },
-    {
-     "name": "Carrots",
-     "amount": 160.0,
-     "unit": "g"
-    },
-    {
-     "name": "Bell peppers",
-     "amount": 160.0,
-     "unit": "g"
-    },
-    {
-     "name": "Brown rice",
-     "amount": 140.0,
-     "unit": "g"
-    },
-    {
-     "name": "Lemons",
-     "amount": 1.0,
-     "unit": "piece"
-    }
-   ],
-   "steps": [
-    {
-     "text": "Place 1 peeled garlic clove, 1 tsp salt-free mixed dried herbs, 1 pinch of black pepper, and 5 ml extra-virgin olive oil into the mixing bowl, chop",
-     "setting": {
-      "time": "3 sec",
-      "temperature": "",
-      "reverse": false,
-      "speed": "8",
-      "mode": ""
-     },
-     "then": "Scrape down the sides of the mixing bowl with the spatula, then transfer the herb paste to a medium bowl."
-    },
-    {
-     "text": "Add the 300 g chicken breast strips to the bowl with the herb paste and toss until evenly coated. Arrange the 160 g sliced carrots and 160 g bell pepper strips in the Varoma dish, place the Varoma tray on top, and arrange the herbed chicken strips on the tray, leaving a few steam vents uncovered.",
-     "setting": null,
-     "then": ""
-    },
-    {
-     "text": "Without washing the mixing bowl, pour 1200 g water into the mixing bowl, insert the simmering basket, weigh the 140 g rinsed brown rice into the basket, set the covered Varoma in place, and steam",
-     "setting": {
-      "time": "28 min",
-      "temperature": "Varoma",
-      "reverse": false,
-      "speed": "1",
-      "mode": "Steaming"
-     },
-     "then": "Carefully remove the Varoma and use the notch on the spatula to lift out the simmering basket."
-    },
-    {
-     "text": "Divide the cooked brown rice, steamed carrots, bell peppers, and herbed chicken into two equal portions. Drizzle the first portion with 10 ml extra-virgin olive oil and 15 ml lemon juice to serve warm, and pack the second portion into an airtight container to refrigerate.",
-     "setting": null,
-     "then": ""
-    }
-   ],
-   "tips": [
-    "When arranging the chicken and vegetables in the Varoma, keep a few holes in the centre unobstructed so the steam circulates evenly.",
-    "Let the second portion cool completely before sealing and refrigerating."
-   ],
-   "why": "Uses steamed skinless chicken breast, brown rice, carrots, and bell peppers seasoned with garlic, lemon juice, and salt-free herbs instead of salt.",
-   "evidence": "For adults on average, the World Health Organization recommends less than 2000 mg/day of sodium (equivalent to less than 5 g/day salt), and sodium intake can be reduced by cooking with little or no added salt and using herbs and spices to flavour food rather than salt [WHO — Sodium reduction (fact sheet)].",
-   "removed": [],
-   "kitchen_flags": []
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 428.0,
+    "protein_g": 24.0,
+    "fat_g": 6.7,
+    "sat_fat_g": 1.0,
+    "carbs_g": 72.7,
+    "fiber_g": 14.1,
+    "sugars_g": 10.9,
+    "sodium_mg": 1033.2,
+    "counted": [
+     "100 g yellow onions → Onions, raw",
+     "6 g garlic → Garlic, raw",
+     "200 g carrots → Carrots, raw",
+     "10 g extra-virgin olive oil → Oil, olive, salad or cooking",
+     "160 g dried lentils → Lentils, raw",
+     "600 g vegetable stock, low sodium → Soup, SWANSON, vegetable broth (regular version: its sodium is counted)",
+     "0.5 g black pepper → Spices, pepper, black",
+     "120 g baby spinach → Spinach, raw",
+     "30 g lemons → Lemons, raw, without peel"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": true,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
   },
   {
    "day": "Thu",
    "meal": "lunch",
-   "title": "Herbed Chicken and Brown Rice Bowl with Fresh Spinach",
+   "title": "Hearty Red Lentil, Carrot and Spinach Stew (from Wednesday dinner)",
    "servings": 1,
    "leftovers_for": "",
    "from_leftovers": "Wed dinner",
@@ -840,208 +1004,228 @@
    "ingredients": [
     {
      "amount": "1 portion",
-     "name": "leftover steamed herbed chicken, brown rice, carrots and bell peppers",
-     "note": "from Wednesday dinner, cut into bite-sized pieces"
+     "name": "reserved lentil, carrot and spinach stew (from Wed dinner)",
+     "grams": 0.0,
+     "note": "chilled"
     },
     {
-     "amount": "60 g",
-     "name": "baby spinach",
-     "note": "fresh, washed"
+     "amount": "50 g",
+     "name": "water",
+     "grams": 0.0,
+     "note": "to loosen the stew"
     },
     {
-     "amount": "10 ml",
+     "amount": "35 g",
+     "name": "whole-grain bread",
+     "grams": 35.0,
+     "note": "1 slice, toasted"
+    },
+    {
+     "amount": "1 tsp",
      "name": "extra-virgin olive oil",
-     "note": ""
-    },
-    {
-     "amount": "0.5",
-     "name": "lemon",
-     "note": "juiced"
+     "grams": 4.5,
+     "note": "for drizzling"
     },
     {
      "amount": "1 pinch",
      "name": "black pepper",
-     "note": "ground"
-    },
-    {
-     "amount": "30 g",
-     "name": "water",
-     "note": ""
+     "grams": 0.2,
+     "note": "freshly ground"
     }
    ],
    "buy": [
     {
-     "name": "Baby spinach",
-     "amount": 60.0,
+     "name": "Whole-grain bread",
+     "amount": 35.0,
      "unit": "g"
     },
     {
      "name": "Extra-virgin olive oil",
-     "amount": 10.0,
+     "amount": 4.5,
      "unit": "ml"
     },
     {
-     "name": "Lemons",
-     "amount": 0.5,
-     "unit": "piece"
-    },
-    {
      "name": "Black pepper",
-     "amount": 1.0,
+     "amount": 0.2,
      "unit": "g"
     }
    ],
    "steps": [
     {
-     "text": "Place the leftover brown rice, steamed carrots, bell peppers, chicken pieces, and 30 g of water into the mixing bowl, then warm gently",
+     "text": "Place the reserved lentil, carrot and spinach stew and 50 g water in the mixing bowl, warm through",
      "setting": {
-      "time": "4 min",
+      "time": "5 min",
       "temperature": "90°C",
       "reverse": true,
       "speed": "spoon",
       "mode": ""
      },
-     "then": "Scrape down the sides of the mixing bowl with the spatula."
+     "then": "Meanwhile, toast the slice of whole-grain bread."
     },
     {
-     "text": "Add 60 g of fresh baby spinach, 10 ml of extra-virgin olive oil, the juice of half a lemon, and a pinch of black pepper to the mixing bowl, then toss to wilt the leaves slightly",
-     "setting": {
-      "time": "1 min",
-      "temperature": "60°C",
-      "reverse": true,
-      "speed": "spoon",
-      "mode": ""
-     },
-     "then": "Check that the spinach is lightly wilted and the mixture is evenly coated."
-    },
-    {
-     "text": "Transfer the warm chicken, brown rice, and spinach mixture into a serving bowl and serve immediately",
+     "text": "Pour the hot stew into a bowl using the spatula, drizzle with 1 tsp extra-virgin olive oil, season with 1 pinch of black pepper, and serve alongside the toasted whole-grain bread.",
      "setting": null,
      "then": ""
     }
    ],
    "tips": [
-    "If preferred cold as a salad, skip the heating step and toss all ingredients directly in a bowl with the lemon juice and olive oil."
+    "If the stew has thickened overnight in the refrigerator, add an extra splash of water before reheating."
    ],
-   "why": "This dish pairs whole-grain brown rice, lean skinless chicken breast, and fresh vegetables like spinach, carrots, and peppers with lemon juice and herbs instead of added salt.",
-   "evidence": "On average, everyone older than 10 years of age should aim for at least 400 grams of fruits and vegetables per day [WHO — Healthy diet (fact sheet)].",
+   "why": "Prepared from pulses, carrots, spinach, and whole-grain bread with olive oil, black pepper, and no added salt.",
+   "evidence": "Carbohydrates in the diet should come primarily from whole grains, vegetables, fruits and pulses, with examples of pulses including lentils, chickpeas, beans, and dried peas [WHO — Healthy diet (fact sheet)].",
    "removed": [],
-   "kitchen_flags": []
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 428.0,
+    "protein_g": 24.0,
+    "fat_g": 6.7,
+    "sat_fat_g": 1.0,
+    "carbs_g": 72.7,
+    "fiber_g": 14.1,
+    "sugars_g": 10.9,
+    "sodium_mg": 1033.2,
+    "counted": [
+     "100 g yellow onions → Onions, raw",
+     "6 g garlic → Garlic, raw",
+     "200 g carrots → Carrots, raw",
+     "10 g extra-virgin olive oil → Oil, olive, salad or cooking",
+     "160 g dried lentils → Lentils, raw",
+     "600 g vegetable stock, low sodium → Soup, SWANSON, vegetable broth (regular version: its sodium is counted)",
+     "0.5 g black pepper → Spices, pepper, black",
+     "120 g baby spinach → Spinach, raw",
+     "30 g lemons → Lemons, raw, without peel"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": true,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
   },
   {
    "day": "Thu",
    "meal": "dinner",
-   "title": "Steamed Cod with Cannellini Bean, Tomato and Garlic Ragout",
+   "title": "Steamed Cod with Cherry Tomatoes, Zucchini and Whole-Wheat Pasta",
    "servings": 1,
    "leftovers_for": "",
    "from_leftovers": "",
    "prep_minutes": 10,
-   "total_minutes": 30,
+   "total_minutes": 25,
    "difficulty": "easy",
    "accessories": [
     "Varoma",
-    "baking paper",
-    "spatula"
+    "spatula",
+    "baking paper"
    ],
    "ingredients": [
     {
-     "amount": "150 g",
-     "name": "cod fillets",
-     "note": "fresh or thawed"
-    },
-    {
-     "amount": "1",
-     "name": "garlic clove",
+     "amount": "1 clove",
+     "name": "garlic",
+     "grams": 3.0,
      "note": "peeled"
-    },
-    {
-     "amount": "50 g",
-     "name": "yellow onion",
-     "note": "halved"
-    },
-    {
-     "amount": "10 ml",
-     "name": "extra-virgin olive oil",
-     "note": ""
     },
     {
      "amount": "150 g",
      "name": "cherry tomatoes",
+     "grams": 150.0,
      "note": "halved"
     },
     {
-     "amount": "150 g",
-     "name": "cannellini beans, no salt added",
-     "note": "drained and rinsed"
-    },
-    {
-     "amount": "100 ml",
-     "name": "vegetable stock, low sodium",
-     "note": ""
+     "amount": "2 tsp",
+     "name": "extra-virgin olive oil",
+     "grams": 9.0,
+     "note": "divided"
     },
     {
      "amount": "1 tsp",
      "name": "mixed dried herbs, salt-free",
-     "note": ""
+     "grams": 1.0,
+     "note": "divided"
     },
     {
      "amount": "1 pinch",
      "name": "black pepper",
-     "note": "ground"
+     "grams": 0.2,
+     "note": ""
+    },
+    {
+     "amount": "220 g",
+     "name": "vegetable stock, low sodium",
+     "grams": 220.0,
+     "note": ""
+    },
+    {
+     "amount": "70 g",
+     "name": "whole-wheat pasta",
+     "grams": 70.0,
+     "note": "short shapes"
+    },
+    {
+     "amount": "150 g",
+     "name": "zucchini",
+     "grams": 150.0,
+     "note": "cut into half-moons (1 cm)"
+    },
+    {
+     "amount": "150 g",
+     "name": "cod fillets",
+     "grams": 150.0,
+     "note": "skinless, pin-boned"
     },
     {
      "amount": "0.5",
-     "name": "lemon",
-     "note": "cut into wedges, for serving"
+     "name": "lemons",
+     "grams": 50.0,
+     "note": "juiced"
     }
    ],
    "buy": [
+    {
+     "name": "Garlic",
+     "amount": 3.0,
+     "unit": "g"
+    },
+    {
+     "name": "Cherry tomatoes",
+     "amount": 150.0,
+     "unit": "g"
+    },
+    {
+     "name": "Extra-virgin olive oil",
+     "amount": 9.0,
+     "unit": "ml"
+    },
+    {
+     "name": "Mixed dried herbs, salt-free",
+     "amount": 1.0,
+     "unit": "g"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 0.2,
+     "unit": "g"
+    },
+    {
+     "name": "Vegetable stock, low sodium",
+     "amount": 220.0,
+     "unit": "ml"
+    },
+    {
+     "name": "Whole-wheat pasta",
+     "amount": 70.0,
+     "unit": "g"
+    },
+    {
+     "name": "Zucchini",
+     "amount": 150.0,
+     "unit": "g"
+    },
     {
      "name": "Cod fillets",
      "amount": 150.0,
      "unit": "g"
     },
     {
-     "name": "Garlic",
-     "amount": 5.0,
-     "unit": "g"
-    },
-    {
-     "name": "Yellow onions",
-     "amount": 50.0,
-     "unit": "g"
-    },
-    {
-     "name": "Extra-virgin olive oil",
-     "amount": 10.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Cherry tomatoes",
-     "amount": 150.0,
-     "unit": "g"
-    },
-    {
-     "name": "Cannellini beans, no salt added",
-     "amount": 150.0,
-     "unit": "g"
-    },
-    {
-     "name": "Vegetable stock, low sodium",
-     "amount": 100.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Mixed dried herbs, salt-free",
-     "amount": 2.0,
-     "unit": "g"
-    },
-    {
-     "name": "Black pepper",
-     "amount": 1.0,
-     "unit": "g"
-    },
-    {
      "name": "Lemons",
      "amount": 0.5,
      "unit": "piece"
@@ -1049,335 +1233,7 @@
    ],
    "steps": [
     {
-     "text": "Place 1 peeled garlic clove and 50 g of halved yellow onion in the mixing bowl, then chop",
-     "setting": {
-      "time": "3 sec",
-      "temperature": "",
-      "reverse": false,
-      "speed": "5",
-      "mode": ""
-     },
-     "then": "Scrape down the sides of the mixing bowl with the spatula."
-    },
-    {
-     "text": "Add 10 ml of extra-virgin olive oil to the mixing bowl and sauté",
-     "setting": {
-      "time": "3 min",
-      "temperature": "120°C",
-      "reverse": false,
-      "speed": "1",
-      "mode": ""
-     },
-     "then": ""
-    },
-    {
-     "text": "Add 150 g of halved cherry tomatoes, 150 g of drained no-salt-added cannellini beans, 100 ml of low-sodium vegetable stock, 0.5 tsp of salt-free mixed dried herbs, and a pinch of black pepper to the mixing bowl. Line the Varoma tray with wetted, crumpled baking paper, leaving the side vents clear; place the 150 g cod fillet on the paper, season with the remaining 0.5 tsp of salt-free mixed dried herbs, position the Varoma on top, and cook",
-     "setting": {
-      "time": "15 min",
-      "temperature": "Varoma",
-      "reverse": true,
-      "speed": "1",
-      "mode": "Steaming"
-     },
-     "then": "Carefully remove the Varoma and check that the cod flakes easily."
-    },
-    {
-     "text": "Spoon the warm cannellini bean and tomato ragout into a deep plate, top with the steamed cod fillet, and serve with the lemon wedges on the side",
-     "setting": null,
-     "then": ""
-    }
-   ],
-   "tips": [
-    "Wetting and crumpling the baking paper makes it fit the Varoma tray easily while keeping the fish juices contained; always leave some vents uncovered so steam circulates properly."
-   ],
-   "why": "Steamed cod and no-salt-added cannellini beans provide lean fish and plant protein, flavored with garlic, tomatoes, and salt-free herbs rather than table salt.",
-   "evidence": "For adults, the World Health Organization recommends less than 2,000 mg of sodium per day, which is equivalent to less than 5 g of salt per day, on average [WHO — Sodium reduction (fact sheet)].",
-   "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Fri",
-   "meal": "lunch",
-   "title": "Low-Sodium Turkey, Avocado and Spinach Whole-Grain Sandwich with Carrot-Apple Slaw",
-   "servings": 1,
-   "leftovers_for": "",
-   "from_leftovers": "",
-   "prep_minutes": 10,
-   "total_minutes": 10,
-   "difficulty": "easy",
-   "accessories": [
-    "spatula"
-   ],
-   "ingredients": [
-    {
-     "amount": "100 g",
-     "name": "carrots",
-     "note": "peeled, in pieces (3-4 cm)"
-    },
-    {
-     "amount": "80 g",
-     "name": "apple",
-     "note": "cored, in pieces (3-4 cm)"
-    },
-    {
-     "amount": "10 g",
-     "name": "lemon juice",
-     "note": "freshly squeezed"
-    },
-    {
-     "amount": "10 g",
-     "name": "extra-virgin olive oil",
-     "note": ""
-    },
-    {
-     "amount": "1 pinch",
-     "name": "black pepper",
-     "note": ""
-    },
-    {
-     "amount": "70 g",
-     "name": "whole-grain bread",
-     "note": "2 slices"
-    },
-    {
-     "amount": "50 g",
-     "name": "avocado",
-     "note": "peeled, pitted"
-    },
-    {
-     "amount": "80 g",
-     "name": "low-sodium turkey breast slices",
-     "note": ""
-    },
-    {
-     "amount": "30 g",
-     "name": "baby spinach",
-     "note": "washed and dried"
-    }
-   ],
-   "buy": [
-    {
-     "name": "Carrots",
-     "amount": 100.0,
-     "unit": "g"
-    },
-    {
-     "name": "Apples",
-     "amount": 1.0,
-     "unit": "piece"
-    },
-    {
-     "name": "Lemons",
-     "amount": 1.0,
-     "unit": "piece"
-    },
-    {
-     "name": "Extra-virgin olive oil",
-     "amount": 10.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Black pepper",
-     "amount": 1.0,
-     "unit": "g"
-    },
-    {
-     "name": "Whole-grain bread",
-     "amount": 70.0,
-     "unit": "g"
-    },
-    {
-     "name": "Avocados",
-     "amount": 1.0,
-     "unit": "piece"
-    },
-    {
-     "name": "Turkey breast slices, low sodium",
-     "amount": 80.0,
-     "unit": "g"
-    },
-    {
-     "name": "Baby spinach",
-     "amount": 30.0,
-     "unit": "g"
-    }
-   ],
-   "steps": [
-    {
-     "text": "Place the 100 g carrot pieces, 80 g apple pieces, 10 g lemon juice, 10 g extra-virgin olive oil, and 1 pinch of black pepper in the mixing bowl, shred",
-     "setting": {
-      "time": "4 sec",
-      "temperature": "",
-      "reverse": false,
-      "speed": "4",
-      "mode": ""
-     },
-     "then": "Scrape down the sides of the mixing bowl with the spatula and transfer the carrot-apple slaw to a serving plate."
-    },
-    {
-     "text": "Place the 50 g avocado in the mixing bowl, mash",
-     "setting": {
-      "time": "5 sec",
-      "temperature": "",
-      "reverse": false,
-      "speed": "4",
-      "mode": ""
-     },
-     "then": "Scrape down the sides with the spatula."
-    },
-    {
-     "text": "Spread the mashed avocado evenly onto one of the 2 slices of whole-grain bread, layer with the 80 g low-sodium turkey breast slices and 30 g baby spinach, top with the second slice of bread, and serve alongside the carrot-apple slaw.",
-     "setting": null,
-     "then": ""
-    }
-   ],
-   "tips": [
-    "Toast the whole-grain bread slices lightly before assembling the sandwich for extra crunch.",
-    "Add a pinch of salt-free mixed dried herbs to the mashed avocado for an extra boost of flavour."
-   ],
-   "why": "This lunch uses low-sodium turkey breast, whole-grain bread, avocado, and raw carrot, apple, and spinach dressed with lemon juice and olive oil with no added salt.",
-   "evidence": "For adults, on average, the World Health Organization recommends consuming less than 2,000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
-   "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Fri",
-   "meal": "dinner",
-   "title": "Whole-Wheat Pasta with Creamy Ricotta, Zucchini and Cherry Tomatoes",
-   "servings": 2,
-   "leftovers_for": "Sat lunch",
-   "from_leftovers": "",
-   "prep_minutes": 10,
-   "total_minutes": 30,
-   "difficulty": "easy",
-   "accessories": [
-    "simmering basket",
-    "spatula"
-   ],
-   "ingredients": [
-    {
-     "amount": "1200 g",
-     "name": "water",
-     "note": "for boiling pasta"
-    },
-    {
-     "amount": "160 g",
-     "name": "whole-wheat pasta",
-     "note": "short shapes such as penne or fusilli"
-    },
-    {
-     "amount": "2",
-     "name": "garlic cloves",
-     "note": "peeled"
-    },
-    {
-     "amount": "15 g",
-     "name": "extra-virgin olive oil",
-     "note": ""
-    },
-    {
-     "amount": "300 g",
-     "name": "zucchini",
-     "note": "trimmed, cut into 1.5 cm dice"
-    },
-    {
-     "amount": "200 g",
-     "name": "cherry tomatoes",
-     "note": "halved"
-    },
-    {
-     "amount": "1 tsp",
-     "name": "mixed dried herbs, salt-free",
-     "note": ""
-    },
-    {
-     "amount": "1 pinch",
-     "name": "black pepper",
-     "note": ""
-    },
-    {
-     "amount": "100 g",
-     "name": "ricotta",
-     "note": ""
-    },
-    {
-     "amount": "60 g",
-     "name": "baby spinach",
-     "note": "washed"
-    }
-   ],
-   "buy": [
-    {
-     "name": "Whole-wheat pasta",
-     "amount": 160.0,
-     "unit": "g"
-    },
-    {
-     "name": "Garlic",
-     "amount": 6.0,
-     "unit": "g"
-    },
-    {
-     "name": "Extra-virgin olive oil",
-     "amount": 15.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Zucchini",
-     "amount": 300.0,
-     "unit": "g"
-    },
-    {
-     "name": "Cherry tomatoes",
-     "amount": 200.0,
-     "unit": "g"
-    },
-    {
-     "name": "Mixed dried herbs, salt-free",
-     "amount": 2.0,
-     "unit": "g"
-    },
-    {
-     "name": "Black pepper",
-     "amount": 1.0,
-     "unit": "g"
-    },
-    {
-     "name": "Ricotta",
-     "amount": 100.0,
-     "unit": "g"
-    },
-    {
-     "name": "Baby spinach",
-     "amount": 60.0,
-     "unit": "g"
-    }
-   ],
-   "steps": [
-    {
-     "text": "Place 1200 g water in the mixing bowl, heat",
-     "setting": {
-      "time": "10 min",
-      "temperature": "100°C",
-      "reverse": false,
-      "speed": "1",
-      "mode": ""
-     },
-     "then": ""
-    },
-    {
-     "text": "Add the 160 g whole-wheat pasta through the lid opening, cook without the measuring cup",
-     "setting": {
-      "time": "10 min",
-      "temperature": "100°C",
-      "reverse": true,
-      "speed": "1",
-      "mode": ""
-     },
-     "then": "Reserve 50 g of the pasta cooking water in a small cup, then drain the pasta using the simmering basket and set aside in a large warm bowl."
-    },
-    {
-     "text": "Empty and dry the mixing bowl, place the 2 peeled garlic cloves inside, chop",
+     "text": "Place 1 peeled garlic clove in the mixing bowl, chop",
      "setting": {
       "time": "3 sec",
       "temperature": "",
@@ -1388,56 +1244,86 @@
      "then": "Scrape down the sides of the mixing bowl with the spatula."
     },
     {
-     "text": "Add the 15 g extra-virgin olive oil and 300 g diced zucchini to the mixing bowl, sauté",
-     "setting": {
-      "time": "5 min",
-      "temperature": "120°C",
-      "reverse": true,
-      "speed": "spoon",
-      "mode": ""
-     },
-     "then": ""
-    },
-    {
-     "text": "Add the 200 g halved cherry tomatoes, 1 tsp salt-free mixed dried herbs, and 1 pinch of black pepper to the mixing bowl, cook",
+     "text": "Add 1 tsp extra-virgin olive oil and 150 g halved cherry tomatoes to the mixing bowl, sauté",
      "setting": {
       "time": "3 min",
-      "temperature": "100°C",
-      "reverse": true,
-      "speed": "spoon",
-      "mode": ""
-     },
-     "then": ""
-    },
-    {
-     "text": "Add the 100 g ricotta, 60 g baby spinach, and the 50 g reserved cooking water to the mixing bowl, warm and mix",
-     "setting": {
-      "time": "1 min",
-      "temperature": "90°C",
+      "temperature": "120°C",
       "reverse": true,
       "speed": "1",
       "mode": ""
      },
-     "then": "Pour the creamy zucchini, tomato, and ricotta sauce over the drained whole-wheat pasta, toss gently with the spatula, serve one portion warm, and store the second portion in an airtight container in the refrigerator."
+     "then": ""
+    },
+    {
+     "text": "Add 220 g low-sodium vegetable stock and 0.5 tsp salt-free mixed dried herbs to the mixing bowl, bring to a boil",
+     "setting": {
+      "time": "3 min",
+      "temperature": "100°C",
+      "reverse": true,
+      "speed": "1",
+      "mode": ""
+     },
+     "then": "Meanwhile, arrange 150 g zucchini half-moons in the Varoma dish, leaving some steam vents uncovered. Line the Varoma tray with wetted, crumpled baking paper, place 150 g cod fillets on top, and season with the remaining 0.5 tsp salt-free mixed dried herbs and 1 pinch of black pepper."
+    },
+    {
+     "text": "Add 70 g whole-wheat pasta to the boiling liquid in the mixing bowl, set the Varoma in position, and steam",
+     "setting": {
+      "time": "12 min",
+      "temperature": "Varoma",
+      "reverse": true,
+      "speed": "1",
+      "mode": "Steaming"
+     },
+     "then": "Carefully remove the Varoma."
+    },
+    {
+     "text": "Transfer the tomato whole-wheat pasta and steamed zucchini to a warm plate, top with the flaky cod fillet, and drizzle with the remaining 1 tsp extra-virgin olive oil and the juice of 0.5 lemon.",
+     "setting": null,
+     "then": ""
     }
    ],
    "tips": [
-    "Reserving a splash of the starchy pasta water helps the ricotta melt into a smooth, glossy sauce without needing extra oil or cream.",
-    "When reheating the refrigerated second portion, add a tablespoon of water before warming to keep the sauce creamy."
+    "Wetting and crumpling the baking paper makes it easy to fit into the Varoma tray while leaving the side slots open so steam circulates freely."
    ],
-   "why": "Whole-wheat pasta is paired with zucchini, cherry tomatoes, baby spinach, ricotta, garlic, and salt-free herbs with no added salt.",
-   "evidence": "Everyone older than 10 years of age should, on average, aim for at least 400 grams of fruits and vegetables per day and at least 25 grams of naturally-occurring dietary fibre from foods such as whole grains, vegetables, fruits, and pulses [WHO — Healthy diet (fact sheet)].",
+   "why": "Steamed cod, zucchini, cherry tomatoes, and whole-wheat pasta cooked in low-sodium vegetable stock and seasoned with garlic, lemon, and salt-free herbs.",
+   "evidence": "For adults, WHO recommends less than 2000 mg/day of sodium (equivalent to less than 5 g/day salt), or just under a teaspoon [WHO — Sodium reduction (fact sheet)].",
    "removed": [],
-   "kitchen_flags": []
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 534.1,
+    "protein_g": 40.8,
+    "fat_g": 13.2,
+    "sat_fat_g": 2.0,
+    "carbs_g": 69.9,
+    "fiber_g": 11.3,
+    "sugars_g": 12.1,
+    "sodium_mg": 773.0,
+    "counted": [
+     "3 g garlic → Garlic, raw",
+     "150 g cherry tomatoes → Tomatoes, red, ripe, raw, year round average",
+     "9 g extra-virgin olive oil → Oil, olive, salad or cooking",
+     "0.2 g black pepper → Spices, pepper, black",
+     "220 g vegetable stock, low sodium → Soup, SWANSON, vegetable broth (regular version: its sodium is counted)",
+     "70 g whole-wheat pasta → Pasta, whole-wheat, dry (Includes foods for USDA's Food Distribution Program)",
+     "150 g zucchini → Squash, summer, zucchini, includes skin, raw",
+     "150 g cod fillets → Fish, cod, Atlantic, raw",
+     "50 g lemons → Lemons, raw, without peel"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": true,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
   },
   {
-   "day": "Sat",
+   "day": "Fri",
    "meal": "lunch",
-   "title": "Ricotta, Zucchini and Tomato Whole-Wheat Pasta",
+   "title": "Cannellini Bean, Tuna-Style Chickpea and Avocado Salad with Whole-Grain Bread",
    "servings": 1,
    "leftovers_for": "",
-   "from_leftovers": "Fri dinner",
-   "prep_minutes": 3,
+   "from_leftovers": "",
+   "prep_minutes": 8,
    "total_minutes": 10,
    "difficulty": "easy",
    "accessories": [
@@ -1445,94 +1331,209 @@
    ],
    "ingredients": [
     {
-     "amount": "350 g",
-     "name": "leftover whole-wheat pasta with ricotta, zucchini and cherry tomatoes",
-     "note": "chilled, from Friday dinner"
+     "amount": "80 g",
+     "name": "cannellini beans, no salt added",
+     "grams": 80.0,
+     "note": "drained and rinsed"
     },
     {
-     "amount": "30 g",
-     "name": "water",
-     "note": ""
+     "amount": "80 g",
+     "name": "chickpeas, no salt added",
+     "grams": 80.0,
+     "note": "drained and rinsed"
     },
     {
-     "amount": "40 g",
-     "name": "baby spinach",
-     "note": "fresh leaves"
+     "amount": "15 g",
+     "name": "lemon juice",
+     "grams": 15.0,
+     "note": "freshly squeezed (from ½ lemon)"
     },
     {
      "amount": "5 ml",
+     "name": "apple cider vinegar",
+     "grams": 5.0,
+     "note": ""
+    },
+    {
+     "amount": "10 g",
      "name": "extra-virgin olive oil",
-     "note": "for drizzling"
+     "grams": 10.0,
+     "note": ""
+    },
+    {
+     "amount": "1 tsp",
+     "name": "mixed dried herbs, salt-free",
+     "grams": 1.0,
+     "note": ""
     },
     {
      "amount": "1 pinch",
      "name": "black pepper",
-     "note": "freshly ground"
+     "grams": 0.2,
+     "note": ""
+    },
+    {
+     "amount": "80 g",
+     "name": "bell pepper",
+     "grams": 80.0,
+     "note": "deseeded, in pieces (3 cm)"
+    },
+    {
+     "amount": "50 g",
+     "name": "avocado",
+     "grams": 50.0,
+     "note": "peeled, pitted, diced (1.5 cm)"
+    },
+    {
+     "amount": "40 g",
+     "name": "baby spinach",
+     "grams": 40.0,
+     "note": "fresh leaves"
+    },
+    {
+     "amount": "40 g",
+     "name": "whole-grain bread",
+     "grams": 40.0,
+     "note": "1 slice, toasted if desired"
     }
    ],
    "buy": [
+    {
+     "name": "Cannellini beans, no salt added",
+     "amount": 80.0,
+     "unit": "g"
+    },
+    {
+     "name": "Chickpeas, no salt added",
+     "amount": 80.0,
+     "unit": "g"
+    },
+    {
+     "name": "Lemons",
+     "amount": 0.5,
+     "unit": "piece"
+    },
+    {
+     "name": "Apple cider vinegar",
+     "amount": 5.0,
+     "unit": "ml"
+    },
+    {
+     "name": "Extra-virgin olive oil",
+     "amount": 10.0,
+     "unit": "ml"
+    },
+    {
+     "name": "Mixed dried herbs, salt-free",
+     "amount": 1.0,
+     "unit": "g"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 0.2,
+     "unit": "g"
+    },
+    {
+     "name": "Bell peppers",
+     "amount": 80.0,
+     "unit": "g"
+    },
+    {
+     "name": "Avocados",
+     "amount": 0.5,
+     "unit": "piece"
+    },
     {
      "name": "Baby spinach",
      "amount": 40.0,
      "unit": "g"
     },
     {
-     "name": "Extra-virgin olive oil",
-     "amount": 5.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Black pepper",
-     "amount": 1.0,
+     "name": "Whole-grain bread",
+     "amount": 40.0,
      "unit": "g"
     }
    ],
    "steps": [
     {
-     "text": "Place the 350 g leftover whole-wheat pasta with ricotta, zucchini and cherry tomatoes and 30 g water in the mixing bowl, warm through",
+     "text": "Place the bell pepper pieces in the mixing bowl, chop",
      "setting": {
-      "time": "5 min",
-      "temperature": "90°C",
-      "reverse": true,
-      "speed": "spoon",
+      "time": "3 sec",
+      "temperature": "",
+      "reverse": false,
+      "speed": "4.5",
       "mode": ""
      },
      "then": "Scrape down the sides of the mixing bowl with the spatula."
     },
     {
-     "text": "Add the 40 g baby spinach to the mixing bowl, wilt gently",
+     "text": "Add the drained cannellini beans, drained chickpeas, lemon juice, apple cider vinegar, extra-virgin olive oil, salt-free mixed dried herbs, and black pepper to the mixing bowl, mash coarsely",
      "setting": {
-      "time": "1 min 30 sec",
-      "temperature": "90°C",
+      "time": "4 sec",
+      "temperature": "",
+      "reverse": false,
+      "speed": "3.5",
+      "mode": ""
+     },
+     "then": "Check the texture; it should remain flaky and chunky rather than smooth."
+    },
+    {
+     "text": "Add the diced avocado and baby spinach to the mixing bowl, fold in gently",
+     "setting": {
+      "time": "10 sec",
+      "temperature": "",
       "reverse": true,
       "speed": "spoon",
       "mode": ""
      },
-     "then": "Check that the pasta is piping hot and the spinach is tender."
-    },
-    {
-     "text": "Transfer to a warm plate, drizzle with 5 ml extra-virgin olive oil and season with 1 pinch of black pepper before serving.",
-     "setting": null,
-     "then": ""
+     "then": "Transfer to a serving bowl and serve immediately alongside the slice of whole-grain bread."
     }
    ],
    "tips": [
-    "Adding a splash of water before reheating loosens the ricotta sauce so it coats the whole-wheat pasta evenly without drying out."
+    "Spoon the flaky bean and chickpea mixture directly onto the toasted whole-grain bread for an open-faced sandwich.",
+    "Drain the beans and chickpeas well before chopping so the salad stays thick and creamy without excess liquid."
    ],
-   "why": "Whole-wheat pasta and fresh baby spinach provide whole grains and vegetables with no added salt, seasoned with black pepper and extra-virgin olive oil.",
-   "evidence": "For most people, unrefined carbohydrates from whole grains, vegetables, fruits and pulses should represent approximately 45–75% of total daily energy [WHO — Healthy diet (fact sheet)].",
+   "why": "No-salt-added chickpeas and cannellini beans provide plant protein and dietary fibre, seasoned with lemon juice, apple cider vinegar, and salt-free herbs instead of salt, alongside avocado, bell pepper, spinach, and whole-grain bread.",
+   "evidence": "Carbohydrates in the diet should come primarily from whole grains, vegetables, fruits and pulses, and everyone older than 10 years of age should aim for a daily intake of at least 25 grams of naturally-occurring dietary fibre as found in foods [WHO — Healthy diet (fact sheet)].",
    "removed": [],
-   "kitchen_flags": []
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 466.1,
+    "protein_g": 18.0,
+    "fat_g": 21.1,
+    "sat_fat_g": 3.1,
+    "carbs_g": 55.7,
+    "fiber_g": 16.0,
+    "sugars_g": 7.7,
+    "sodium_mg": 568.1,
+    "counted": [
+     "80 g cannellini beans, no salt added → Beans, white, mature seeds, canned (regular version: its sodium is counted)",
+     "80 g chickpeas, no salt added → Chickpeas (garbanzo beans, bengal gram), mature seeds, canned, solids and liquids, low sodium",
+     "15 g lemon juice → Lemon juice, raw",
+     "5 g apple cider vinegar → Vinegar, cider",
+     "10 g extra-virgin olive oil → Oil, olive, salad or cooking",
+     "0.2 g black pepper → Spices, pepper, black",
+     "80 g bell pepper → Peppers, sweet, green, raw",
+     "50 g avocado → Avocados, raw, all commercial varieties",
+     "40 g baby spinach → Spinach, raw",
+     "40 g whole-grain bread → Bread, multi-grain (includes whole-grain)"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": true,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
   },
   {
-   "day": "Sat",
+   "day": "Fri",
    "meal": "dinner",
-   "title": "Browned Tofu and Bell Pepper Stir-Fry with Steamed Broccoli and Quinoa",
+   "title": "Browning-Mode Tofu and Broccoli with Brown Rice",
    "servings": 2,
-   "leftovers_for": "Sun lunch",
+   "leftovers_for": "Sat lunch",
    "from_leftovers": "",
-   "prep_minutes": 10,
-   "total_minutes": 35,
+   "prep_minutes": 15,
+   "total_minutes": 45,
    "difficulty": "easy",
    "accessories": [
     "simmering basket",
@@ -1541,65 +1542,70 @@
    ],
    "ingredients": [
     {
-     "amount": "120 g",
-     "name": "quinoa",
-     "note": "rinsed thoroughly under cold water"
-    },
-    {
      "amount": "1200 g",
      "name": "water",
+     "grams": 0.0,
      "note": ""
+    },
+    {
+     "amount": "140 g",
+     "name": "brown rice",
+     "grams": 140.0,
+     "note": "rinsed"
     },
     {
      "amount": "300 g",
      "name": "broccoli",
+     "grams": 300.0,
      "note": "cut into small florets"
     },
     {
-     "amount": "1",
-     "name": "garlic clove",
+     "amount": "2",
+     "name": "garlic cloves",
+     "grams": 6.0,
      "note": "peeled"
     },
     {
-     "amount": "80 g",
-     "name": "yellow onion",
-     "note": "halved"
-    },
-    {
-     "amount": "15 ml",
+     "amount": "20 g",
      "name": "extra-virgin olive oil",
+     "grams": 20.0,
      "note": ""
     },
     {
-     "amount": "250 g",
+     "amount": "300 g",
      "name": "firm tofu",
-     "note": "drained, patted dry and cut into 2 cm cubes"
+     "grams": 300.0,
+     "note": "drained, patted dry, cut into cubes (2 cm)"
     },
     {
      "amount": "200 g",
      "name": "bell peppers",
-     "note": "deseeded and cut into 2 cm pieces"
+     "grams": 200.0,
+     "note": "deseeded, cut into strips (1 cm)"
     },
     {
      "amount": "1 tsp",
      "name": "mixed dried herbs, salt-free",
+     "grams": 1.0,
      "note": ""
     },
     {
-     "amount": "1 pinch",
+     "amount": "2 pinches",
      "name": "black pepper",
+     "grams": 0.4,
      "note": ""
     },
     {
-     "amount": "0.5",
-     "name": "lemon",
-     "note": "juiced (about 15 g)"
+     "amount": "20 g",
+     "name": "lemon juice",
+     "grams": 20.0,
+     "note": "freshly squeezed (from ½ lemon)"
     }
    ],
    "buy": [
     {
-     "name": "Quinoa",
-     "amount": 120.0,
+     "name": "Brown rice",
+     "amount": 140.0,
      "unit": "g"
     },
     {
@@ -1609,22 +1615,17 @@
     },
     {
      "name": "Garlic",
-     "amount": 5.0,
-     "unit": "g"
-    },
-    {
-     "name": "Yellow onions",
-     "amount": 80.0,
+     "amount": 6.0,
      "unit": "g"
     },
     {
      "name": "Extra-virgin olive oil",
-     "amount": 15.0,
+     "amount": 20.0,
      "unit": "ml"
     },
     {
      "name": "Firm tofu",
-     "amount": 250.0,
+     "amount": 300.0,
      "unit": "g"
     },
     {
@@ -1634,12 +1635,12 @@
     },
     {
      "name": "Mixed dried herbs, salt-free",
-     "amount": 2.0,
+     "amount": 1.0,
      "unit": "g"
     },
     {
      "name": "Black pepper",
-     "amount": 1.0,
+     "amount": 0.4,
      "unit": "g"
     },
     {
@@ -1650,96 +1651,284 @@
    ],
    "steps": [
     {
-     "text": "Place 1200 g water in the mixing bowl. Insert the simmering basket and weigh in 120 g rinsed quinoa. Place the Varoma dish in position, weigh in 300 g broccoli florets, secure the Varoma lid and steam",
+     "text": "Pour 1200 g of water into the mixing bowl, insert the simmering basket and weigh in 140 g of brown rice. Set the Varoma into position, weigh 300 g of broccoli florets into the Varoma dish, secure the Varoma lid and steam",
      "setting": {
-      "time": "20 min",
+      "time": "28 min",
       "temperature": "Varoma",
       "reverse": false,
       "speed": "1",
       "mode": "Steaming"
      },
-     "then": "Set the Varoma aside, use the spatula to remove the simmering basket, and empty the cooking water from the mixing bowl. Keep the quinoa and broccoli warm."
+     "then": "Remove the Varoma and set aside. Use the spatula to remove the simmering basket, transfer the rice and broccoli to a large serving bowl to keep warm, and empty and dry the mixing bowl."
     },
     {
-     "text": "Place 1 peeled garlic clove and 80 g halved yellow onion in the empty mixing bowl, chop",
+     "text": "Place 2 peeled garlic cloves in the dry mixing bowl, chop",
      "setting": {
       "time": "3 sec",
       "temperature": "",
       "reverse": false,
-      "speed": "5",
+      "speed": "8",
       "mode": ""
      },
      "then": "Scrape down the sides of the mixing bowl with the spatula."
     },
     {
-     "text": "Add 15 ml extra-virgin olive oil, 250 g cubed firm tofu, 200 g bell pepper pieces, 1 tsp salt-free mixed dried herbs and 1 pinch of black pepper to the mixing bowl, sear",
+     "text": "Add 20 g of extra-virgin olive oil, 300 g of patted-dry tofu cubes, 200 g of bell pepper strips, 1 tsp of salt-free mixed dried herbs, and 2 pinches of black pepper to the mixing bowl, sear",
      "setting": {
-      "time": "6 min",
+      "time": "7 min",
       "temperature": "160°C",
-      "reverse": false,
+      "reverse": true,
       "speed": "spoon",
       "mode": "Browning"
      },
-     "then": "Pour the juice of 0.5 lemon over the browned tofu and peppers and stir gently with the spatula."
+     "then": "Drizzle 20 g of lemon juice over the browned tofu and bell peppers."
     },
     {
-     "text": "Divide the cooked quinoa, steamed broccoli and browned tofu stir-fry into 2 equal portions: serve 1 portion hot for dinner and transfer the remaining 1 portion to an airtight container, once cooled, and refrigerate for Sunday lunch.",
+     "text": "Transfer the tofu and bell peppers to the bowl with the steamed broccoli and brown rice, and toss gently with the spatula. Serve half of the dish warm now and pack the remaining half in an airtight container for the next meal.",
      "setting": null,
      "then": ""
     }
    ],
    "tips": [
-    "Patting the firm tofu thoroughly dry with kitchen paper before cutting helps it brown cleanly in the mixing bowl.",
-    "Keep the leftover portion of tofu, broccoli and quinoa in a sealed container in the refrigerator for Sunday's lunch bowl."
+    "Patting the tofu cubes thoroughly dry with paper towels before putting them in the bowl helps them sear cleanly in Browning mode.",
+    "Cool the second portion promptly and refrigerate in a sealed container for the next meal."
    ],
-   "why": "Plant-based protein from firm tofu is paired with whole-grain quinoa, broccoli and bell peppers, flavoured with lemon and salt-free herbs instead of salt.",
-   "evidence": "For adults, the World Health Organization recommends consuming less than 2000 mg of sodium per day, which is equivalent to less than 5 g of salt per day [WHO — Sodium reduction (fact sheet)].",
+   "why": "Prepared with no added salt, this meal pairs plant-based protein from firm tofu with whole-grain brown rice, steamed broccoli, bell peppers, extra-virgin olive oil, garlic, and lemon.",
+   "evidence": "For adults, the World Health Organization recommends consuming less than 2000 mg of sodium per day, which is equivalent to less than 5 grams of salt [WHO — Sodium reduction (fact sheet)].",
    "removed": [],
-   "kitchen_flags": []
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 639.5,
+    "protein_g": 36.5,
+    "fat_g": 26.1,
+    "sat_fat_g": 3.9,
+    "carbs_g": 74.0,
+    "fiber_g": 11.7,
+    "sugars_g": 5.7,
+    "sodium_mg": 77.9,
+    "counted": [
+     "140 g brown rice → Rice, brown, long-grain, raw (Includes foods for USDA's Food Distribution Program)",
+     "300 g broccoli → Broccoli, raw",
+     "6 g garlic cloves → Garlic, raw",
+     "20 g extra-virgin olive oil → Oil, olive, salad or cooking",
+     "300 g firm tofu → Tofu, raw, firm, prepared with calcium sulfate",
+     "200 g bell peppers → Peppers, sweet, green, raw",
+     "0.4 g black pepper → Spices, pepper, black",
+     "20 g lemon juice → Lemon juice, raw"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": false,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
   },
   {
-   "day": "Sun",
+   "day": "Sat",
    "meal": "lunch",
-   "title": "Tofu, Broccoli and Quinoa Power Bowl with Walnuts",
+   "title": "Browning-Mode Tofu and Broccoli with Brown Rice (from Friday dinner)",
    "servings": 1,
    "leftovers_for": "",
-   "from_leftovers": "Sat dinner",
+   "from_leftovers": "Fri dinner",
    "prep_minutes": 5,
-   "total_minutes": 10,
+   "total_minutes": 20,
    "difficulty": "easy",
    "accessories": [
+    "Varoma",
+    "spatula"
+   ],
+   "ingredients": [
+    {
+     "amount": "1 portion",
+     "name": "reserved tofu, broccoli, bell peppers, and brown rice from Friday dinner",
+     "grams": 400.0,
+     "note": "chilled"
+    },
+    {
+     "amount": "500 g",
+     "name": "water",
+     "grams": 0.0,
+     "note": "for steaming"
+    },
+    {
+     "amount": "0.5",
+     "name": "lemon",
+     "grams": 30.0,
+     "note": "juiced"
+    },
+    {
+     "amount": "1 tsp",
+     "name": "extra-virgin olive oil",
+     "grams": 4.5,
+     "note": "for drizzling"
+    },
+    {
+     "amount": "1 pinch",
+     "name": "black pepper",
+     "grams": 0.5,
+     "note": "ground"
+    }
+   ],
+   "buy": [
+    {
+     "name": "Lemons",
+     "amount": 0.5,
+     "unit": "piece"
+    },
+    {
+     "name": "Extra-virgin olive oil",
+     "amount": 4.5,
+     "unit": "ml"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 0.5,
+     "unit": "g"
+    }
+   ],
+   "steps": [
+    {
+     "text": "Pour 500 g water into the mixing bowl. Arrange the reserved brown rice, tofu, broccoli, and bell peppers in the Varoma dish, leaving a few small vents uncovered so steam can circulate. Set the Varoma in place and warm in Steaming mode",
+     "setting": {
+      "time": "12 min",
+      "temperature": "Varoma",
+      "reverse": false,
+      "speed": "1",
+      "mode": "Steaming"
+     },
+     "then": "Carefully remove the Varoma lid away from the face and transfer the warmed rice, tofu, and vegetables to a serving bowl."
+    },
+    {
+     "text": "Squeeze the juice of 0.5 lemon over the bowl, drizzle with 1 tsp extra-virgin olive oil, and season with 1 pinch of black pepper. Toss gently with the spatula and serve warm.",
+     "setting": null,
+     "then": ""
+    }
+   ],
+   "tips": [
+    "If preferred cold on a warm day, skip the steaming step and toss the chilled leftovers directly with the lemon juice, olive oil, and black pepper."
+   ],
+   "why": "Plant-based protein from firm tofu paired with whole-grain brown rice, broccoli, and bell peppers, seasoned with fresh lemon juice and black pepper instead of added salt.",
+   "evidence": "The World Health Organization recommends that adults consume less than 2000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+   "removed": [],
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 639.5,
+    "protein_g": 36.5,
+    "fat_g": 26.1,
+    "sat_fat_g": 3.9,
+    "carbs_g": 74.0,
+    "fiber_g": 11.7,
+    "sugars_g": 5.7,
+    "sodium_mg": 77.9,
+    "counted": [
+     "140 g brown rice → Rice, brown, long-grain, raw (Includes foods for USDA's Food Distribution Program)",
+     "300 g broccoli → Broccoli, raw",
+     "6 g garlic cloves → Garlic, raw",
+     "20 g extra-virgin olive oil → Oil, olive, salad or cooking",
+     "300 g firm tofu → Tofu, raw, firm, prepared with calcium sulfate",
+     "200 g bell peppers → Peppers, sweet, green, raw",
+     "0.4 g black pepper → Spices, pepper, black",
+     "20 g lemon juice → Lemon juice, raw"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": false,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
+  },
+  {
+   "day": "Sat",
+   "meal": "dinner",
+   "title": "Whole-Wheat Pasta with Creamy Ricotta, Steamed Zucchini and Walnuts",
+   "servings": 1,
+   "leftovers_for": "",
+   "from_leftovers": "",
+   "prep_minutes": 10,
+   "total_minutes": 25,
+   "difficulty": "easy",
+   "accessories": [
+    "Varoma",
     "spatula"
    ],
    "ingredients": [
     {
      "amount": "20 g",
      "name": "unsalted walnuts",
+     "grams": 20.0,
      "note": "halves"
     },
     {
-     "amount": "350 g",
-     "name": "leftover browned tofu, bell pepper, broccoli, and quinoa",
-     "note": "from Saturday dinner"
+     "amount": "60 g",
+     "name": "yellow onion",
+     "grams": 60.0,
+     "note": "peeled, halved"
     },
     {
-     "amount": "20 g",
-     "name": "water",
-     "note": ""
+     "amount": "1",
+     "name": "garlic clove",
+     "grams": 3.0,
+     "note": "peeled"
     },
     {
-     "amount": "5 ml",
+     "amount": "10 g",
      "name": "extra-virgin olive oil",
+     "grams": 10.0,
      "note": ""
     },
     {
-     "amount": "0.5",
-     "name": "lemon",
-     "note": "juiced (approx. 15 g)"
+     "amount": "250 g",
+     "name": "low-sodium vegetable stock",
+     "grams": 250.0,
+     "note": ""
+    },
+    {
+     "amount": "50 g",
+     "name": "water",
+     "grams": 0.0,
+     "note": ""
+    },
+    {
+     "amount": "75 g",
+     "name": "whole-wheat pasta",
+     "grams": 75.0,
+     "note": "short shapes such as penne or fusilli"
+    },
+    {
+     "amount": "200 g",
+     "name": "zucchini",
+     "grams": 200.0,
+     "note": "trimmed, in half-moons (1 cm)"
+    },
+    {
+     "amount": "60 g",
+     "name": "ricotta",
+     "grams": 60.0,
+     "note": ""
+    },
+    {
+     "amount": "60 g",
+     "name": "baby spinach",
+     "grams": 60.0,
+     "note": "leaves"
+    },
+    {
+     "amount": "0.5 tsp",
+     "name": "salt-free mixed dried herbs",
+     "grams": 1.0,
+     "note": ""
     },
     {
      "amount": "1 pinch",
      "name": "black pepper",
+     "grams": 0.5,
      "note": "ground"
+    },
+    {
+     "amount": "0.5",
+     "name": "lemon",
+     "grams": 30.0,
+     "note": "juiced"
     }
    ],
    "buy": [
@@ -1749,19 +1938,59 @@
      "unit": "g"
     },
     {
+     "name": "Yellow onions",
+     "amount": 60.0,
+     "unit": "g"
+    },
+    {
+     "name": "Garlic",
+     "amount": 3.0,
+     "unit": "g"
+    },
+    {
      "name": "Extra-virgin olive oil",
-     "amount": 5.0,
+     "amount": 10.0,
      "unit": "ml"
+    },
+    {
+     "name": "Vegetable stock, low sodium",
+     "amount": 250.0,
+     "unit": "ml"
+    },
+    {
+     "name": "Whole-wheat pasta",
+     "amount": 75.0,
+     "unit": "g"
+    },
+    {
+     "name": "Zucchini",
+     "amount": 200.0,
+     "unit": "g"
+    },
+    {
+     "name": "Ricotta",
+     "amount": 60.0,
+     "unit": "g"
+    },
+    {
+     "name": "Baby spinach",
+     "amount": 60.0,
+     "unit": "g"
+    },
+    {
+     "name": "Mixed dried herbs, salt-free",
+     "amount": 1.0,
+     "unit": "g"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 0.5,
+     "unit": "g"
     },
     {
      "name": "Lemons",
      "amount": 0.5,
      "unit": "piece"
-    },
-    {
-     "name": "Black pepper",
-     "amount": 1.0,
-     "unit": "g"
     }
    ],
    "steps": [
@@ -1771,163 +2000,13 @@
       "time": "2 sec",
       "temperature": "",
       "reverse": false,
-      "speed": "4",
+      "speed": "5",
       "mode": ""
      },
-     "then": "Transfer to a serving bowl and set aside."
+     "then": "Transfer to a small bowl and set aside."
     },
     {
-     "text": "Place the 350 g leftover browned tofu, bell pepper, broccoli, and quinoa along with 20 g water in the mixing bowl, then warm through",
-     "setting": {
-      "time": "4 min",
-      "temperature": "90°C",
-      "reverse": true,
-      "speed": "spoon",
-      "mode": ""
-     },
-     "then": "Use the spatula to transfer the warm mixture into the serving bowl."
-    },
-    {
-     "text": "Drizzle with 5 ml extra-virgin olive oil and the juice of 0.5 lemon, top with the chopped walnuts and 1 pinch black pepper, and toss gently before serving",
-     "setting": null,
-     "then": "Serve immediately."
-    }
-   ],
-   "tips": [
-    "This bowl can also be enjoyed cold straight from the fridge as a quick salad with the lemon juice, olive oil, and walnuts."
-   ],
-   "why": "Plant-based protein from tofu and unsalted walnuts paired with whole-grain quinoa and broccoli, seasoned with lemon and black pepper with no added salt.",
-   "evidence": "For adults, the World Health Organization recommends consuming less than 2,000 mg of sodium per day, which is equivalent to less than 5 grams of salt [WHO — Sodium reduction (fact sheet)].",
-   "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Sun",
-   "meal": "dinner",
-   "title": "Steamed Vegetable Frittata with Herbed Tomato Salad",
-   "servings": 1,
-   "leftovers_for": "",
-   "from_leftovers": "",
-   "prep_minutes": 10,
-   "total_minutes": 30,
-   "difficulty": "easy",
-   "accessories": [
-    "Varoma",
-    "baking paper",
-    "spatula"
-   ],
-   "ingredients": [
-    {
-     "amount": "1",
-     "name": "garlic clove",
-     "note": "peeled"
-    },
-    {
-     "amount": "80 g",
-     "name": "bell pepper",
-     "note": "in pieces (3-4 cm)"
-    },
-    {
-     "amount": "2",
-     "name": "eggs",
-     "note": ""
-    },
-    {
-     "amount": "50 g",
-     "name": "ricotta",
-     "note": ""
-    },
-    {
-     "amount": "40 g",
-     "name": "baby spinach",
-     "note": "leaves"
-    },
-    {
-     "amount": "1 tsp",
-     "name": "mixed dried herbs, salt-free",
-     "note": "divided"
-    },
-    {
-     "amount": "1 pinch",
-     "name": "black pepper",
-     "note": "ground"
-    },
-    {
-     "amount": "500 g",
-     "name": "water",
-     "note": "for steaming"
-    },
-    {
-     "amount": "120 g",
-     "name": "cherry tomatoes",
-     "note": "halved"
-    },
-    {
-     "amount": "5 ml",
-     "name": "extra-virgin olive oil",
-     "note": ""
-    },
-    {
-     "amount": "5 ml",
-     "name": "apple cider vinegar",
-     "note": ""
-    }
-   ],
-   "buy": [
-    {
-     "name": "Garlic",
-     "amount": 5.0,
-     "unit": "g"
-    },
-    {
-     "name": "Bell peppers",
-     "amount": 80.0,
-     "unit": "g"
-    },
-    {
-     "name": "Eggs",
-     "amount": 2.0,
-     "unit": "piece"
-    },
-    {
-     "name": "Ricotta",
-     "amount": 50.0,
-     "unit": "g"
-    },
-    {
-     "name": "Baby spinach",
-     "amount": 40.0,
-     "unit": "g"
-    },
-    {
-     "name": "Mixed dried herbs, salt-free",
-     "amount": 2.0,
-     "unit": "g"
-    },
-    {
-     "name": "Black pepper",
-     "amount": 1.0,
-     "unit": "g"
-    },
-    {
-     "name": "Cherry tomatoes",
-     "amount": 120.0,
-     "unit": "g"
-    },
-    {
-     "name": "Extra-virgin olive oil",
-     "amount": 5.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Apple cider vinegar",
-     "amount": 5.0,
-     "unit": "ml"
-    }
-   ],
-   "steps": [
-    {
-     "text": "Place 1 peeled garlic clove and 80 g bell pepper pieces in the mixing bowl, then chop",
+     "text": "Place 60 g halved yellow onion and 1 garlic clove in the mixing bowl and chop",
      "setting": {
       "time": "3 sec",
       "temperature": "",
@@ -1938,49 +2017,488 @@
      "then": "Scrape down the sides of the mixing bowl with the spatula."
     },
     {
-     "text": "Add 2 eggs, 50 g ricotta, 0.5 tsp salt-free mixed dried herbs, and 1 pinch black pepper to the mixing bowl, then mix",
+     "text": "Add 10 g extra-virgin olive oil and sauté",
      "setting": {
-      "time": "10 sec",
-      "temperature": "",
+      "time": "3 min",
+      "temperature": "120°C",
       "reverse": false,
-      "speed": "4",
+      "speed": "1",
       "mode": ""
      },
-     "then": "Line the Varoma tray with a sheet of wetted, wrung-out baking paper, scatter 40 g baby spinach leaves over the paper, and pour the egg mixture on top."
+     "then": ""
     },
     {
-     "text": "Rinse the mixing bowl, pour 500 g water into the bowl, set the Varoma with the tray in position, and steam",
+     "text": "Add 250 g low-sodium vegetable stock, 50 g water, and 0.5 tsp salt-free mixed dried herbs to the mixing bowl, then heat",
      "setting": {
-      "time": "18 min",
+      "time": "4 min",
+      "temperature": "100°C",
+      "reverse": false,
+      "speed": "1",
+      "mode": ""
+     },
+     "then": ""
+    },
+    {
+     "text": "Add 75 g whole-wheat pasta to the mixing bowl. Arrange 200 g sliced zucchini in the Varoma dish, set the Varoma in place, and cook in Steaming mode",
+     "setting": {
+      "time": "11 min",
+      "temperature": "Varoma",
+      "reverse": true,
+      "speed": "spoon",
+      "mode": "Steaming"
+     },
+     "then": "Remove the Varoma and set aside."
+    },
+    {
+     "text": "Add the steamed zucchini, 60 g baby spinach, 60 g ricotta, the juice of 0.5 lemon, and 1 pinch of black pepper to the mixing bowl, then stir gently to wilt the spinach and coat the pasta",
+     "setting": {
+      "time": "1 min",
+      "temperature": "90°C",
+      "reverse": true,
+      "speed": "spoon",
+      "mode": ""
+     },
+     "then": "Transfer to a warm plate, top with the reserved chopped walnuts, and serve immediately."
+    }
+   ],
+   "tips": [
+    "Finely grate a little lemon zest before juicing the lemon half and scatter it over the finished pasta with the walnuts for extra aroma without adding salt."
+   ],
+   "why": "Whole-wheat pasta cooked in low-sodium vegetable stock with steamed zucchini, baby spinach, ricotta, and unsalted walnuts provides whole grains, vegetables, and unsaturated fats with no added salt.",
+   "evidence": "The World Health Organization states that everyone older than 10 years of age should aim for at least 400 grams of fruits and vegetables per day and at least 25 grams of naturally-occurring dietary fibre [WHO — Healthy diet (fact sheet)].",
+   "removed": [],
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 674.4,
+    "protein_g": 23.9,
+    "fat_g": 32.6,
+    "sat_fat_g": 7.1,
+    "carbs_g": 82.8,
+    "fiber_g": 13.6,
+    "sugars_g": 12.7,
+    "sodium_mg": 895.6,
+    "counted": [
+     "20 g unsalted walnuts → Nuts, walnuts, english (regular version: its sodium is counted)",
+     "60 g yellow onion → Onions, raw",
+     "3 g garlic clove → Garlic, raw",
+     "10 g extra-virgin olive oil → Oil, olive, salad or cooking",
+     "250 g low-sodium vegetable stock → Soup, SWANSON, vegetable broth (regular version: its sodium is counted)",
+     "75 g whole-wheat pasta → Pasta, whole-wheat, dry (Includes foods for USDA's Food Distribution Program)",
+     "200 g zucchini → Squash, summer, zucchini, includes skin, raw",
+     "60 g ricotta → Cheese, ricotta, whole milk",
+     "60 g baby spinach → Spinach, raw",
+     "0.5 g black pepper → Spices, pepper, black",
+     "30 g lemon → Lemons, raw, without peel"
+    ],
+    "left_out": [
+     "salt-free mixed dried herbs"
+    ],
+    "sodium_at_most": true,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
+  },
+  {
+   "day": "Sun",
+   "meal": "lunch",
+   "title": "Steamed Eggs with Spinach, Cherry Tomatoes and Avocado Toast",
+   "servings": 1,
+   "leftovers_for": "",
+   "from_leftovers": "",
+   "prep_minutes": 5,
+   "total_minutes": 18,
+   "difficulty": "easy",
+   "accessories": [
+    "Varoma",
+    "spatula"
+   ],
+   "ingredients": [
+    {
+     "amount": "500 g",
+     "name": "water",
+     "grams": 0.0,
+     "note": "for steaming"
+    },
+    {
+     "amount": "2",
+     "name": "eggs",
+     "grams": 100.0,
+     "note": "in their shells"
+    },
+    {
+     "amount": "150 g",
+     "name": "cherry tomatoes",
+     "grams": 150.0,
+     "note": "halved"
+    },
+    {
+     "amount": "60 g",
+     "name": "baby spinach",
+     "grams": 60.0,
+     "note": "washed"
+    },
+    {
+     "amount": "60 g",
+     "name": "whole-grain bread",
+     "grams": 60.0,
+     "note": "2 slices, toasted"
+    },
+    {
+     "amount": "75 g",
+     "name": "avocado",
+     "grams": 75.0,
+     "note": "half a fruit, peeled and pitted"
+    },
+    {
+     "amount": "15 ml",
+     "name": "lemon juice",
+     "grams": 15.0,
+     "note": "freshly squeezed (from half a lemon)"
+    },
+    {
+     "amount": "1 tsp",
+     "name": "mixed dried herbs, salt-free",
+     "grams": 1.0,
+     "note": ""
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "grams": 0.5,
+     "note": "freshly ground"
+    }
+   ],
+   "buy": [
+    {
+     "name": "Eggs",
+     "amount": 2.0,
+     "unit": "piece"
+    },
+    {
+     "name": "Cherry tomatoes",
+     "amount": 150.0,
+     "unit": "g"
+    },
+    {
+     "name": "Baby spinach",
+     "amount": 60.0,
+     "unit": "g"
+    },
+    {
+     "name": "Whole-grain bread",
+     "amount": 60.0,
+     "unit": "g"
+    },
+    {
+     "name": "Avocados",
+     "amount": 0.5,
+     "unit": "piece"
+    },
+    {
+     "name": "Lemons",
+     "amount": 0.5,
+     "unit": "piece"
+    },
+    {
+     "name": "Mixed dried herbs, salt-free",
+     "amount": 1.0,
+     "unit": "g"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 0.5,
+     "unit": "g"
+    }
+   ],
+   "steps": [
+    {
+     "text": "Pour 500 g water into the mixing bowl. Place the 2 eggs in the Varoma dish, set the Varoma in position and steam",
+     "setting": {
+      "time": "10 min",
       "temperature": "Varoma",
       "reverse": false,
       "speed": "1",
       "mode": "Steaming"
      },
-     "then": "Carefully remove the Varoma lid away from your face to avoid escaping steam."
+     "then": "Carefully remove the Varoma lid away from the face to let the steam escape."
     },
     {
-     "text": "While the frittata steams, toss 120 g halved cherry tomatoes in a serving bowl with 5 ml extra-virgin olive oil, 5 ml apple cider vinegar, and the remaining 0.5 tsp salt-free mixed dried herbs",
+     "text": "Insert the Varoma tray with 150 g halved cherry tomatoes and 60 g baby spinach, cover and steam",
+     "setting": {
+      "time": "3 min",
+      "temperature": "Varoma",
+      "reverse": false,
+      "speed": "1",
+      "mode": "Steaming"
+     },
+     "then": "Remove the Varoma and rinse the eggs under cold water to peel easily."
+    },
+    {
+     "text": "Meanwhile, mash 75 g avocado in a small bowl with 15 ml lemon juice, 1 tsp salt-free mixed dried herbs, and a pinch of black pepper. Spread the mashed avocado over 60 g toasted whole-grain bread, top with the warm spinach, cherry tomatoes, and halved steamed eggs, and serve immediately.",
      "setting": null,
-     "then": "Slide the steamed frittata onto a plate and serve alongside the herbed tomato salad."
+     "then": ""
     }
    ],
    "tips": [
-    "Wetting and crumpling the baking paper before lining the Varoma tray helps it mould neatly to the tray while keeping the steam vents along the edges unobstructed."
+    "For firmer hard-boiled yolks, add 2 extra minutes in the first steaming step before adding the Varoma tray.",
+    "Leaving a few steam vents uncovered in the Varoma tray helps the spinach wilt evenly."
    ],
-   "why": "Steamed rather than fried, combining eggs, ricotta, and 240 g of vegetables flavoured with garlic, vinegar, and salt-free herbs.",
-   "evidence": "Everyone older than 10 years of age should aim for at least 400 grams of fruits and vegetables per day as part of a healthy diet [WHO — Healthy diet (fact sheet)].",
+   "why": "This lunch uses fresh spinach, cherry tomatoes, avocado, and whole-grain bread with lemon and salt-free herbs instead of added salt.",
+   "evidence": "The World Health Organization states that everyone older than 10 years of age should aim for at least 400 grams of fruits and vegetables per day [WHO — Healthy diet (fact sheet)].",
    "removed": [],
-   "kitchen_flags": []
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 467.4,
+    "protein_g": 25.2,
+    "fat_g": 23.6,
+    "sat_fat_g": 5.3,
+    "carbs_g": 42.5,
+    "fiber_g": 12.8,
+    "sugars_g": 9.3,
+    "sodium_mg": 431.0,
+    "counted": [
+     "100 g eggs → Egg, whole, raw, fresh",
+     "150 g cherry tomatoes → Tomatoes, red, ripe, raw, year round average",
+     "60 g baby spinach → Spinach, raw",
+     "60 g whole-grain bread → Bread, multi-grain (includes whole-grain)",
+     "75 g avocado → Avocados, raw, all commercial varieties",
+     "15 g lemon juice → Lemon juice, raw",
+     "0.5 g black pepper → Spices, pepper, black"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": false,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
+  },
+  {
+   "day": "Sun",
+   "meal": "dinner",
+   "title": "One-Pot Chicken, Cannellini Bean and Vegetable Soup",
+   "servings": 1,
+   "leftovers_for": "",
+   "from_leftovers": "",
+   "prep_minutes": 10,
+   "total_minutes": 30,
+   "difficulty": "easy",
+   "accessories": [
+    "spatula"
+   ],
+   "ingredients": [
+    {
+     "amount": "60 g",
+     "name": "yellow onion",
+     "grams": 60.0,
+     "note": "peeled, halved"
+    },
+    {
+     "amount": "80 g",
+     "name": "carrot",
+     "grams": 80.0,
+     "note": "peeled, in pieces (3-4 cm)"
+    },
+    {
+     "amount": "1",
+     "name": "garlic clove",
+     "grams": 3.0,
+     "note": "peeled"
+    },
+    {
+     "amount": "1 tsp",
+     "name": "extra-virgin olive oil",
+     "grams": 4.5,
+     "note": ""
+    },
+    {
+     "amount": "120 g",
+     "name": "chicken breast",
+     "grams": 120.0,
+     "note": "cut into 2 cm cubes"
+    },
+    {
+     "amount": "120 g",
+     "name": "cannellini beans, no salt added",
+     "grams": 120.0,
+     "note": "drained and rinsed"
+    },
+    {
+     "amount": "100 g",
+     "name": "broccoli",
+     "grams": 100.0,
+     "note": "cut into small florets"
+    },
+    {
+     "amount": "350 ml",
+     "name": "vegetable stock, low sodium",
+     "grams": 350.0,
+     "note": ""
+    },
+    {
+     "amount": "1 tsp",
+     "name": "mixed dried herbs, salt-free",
+     "grams": 1.0,
+     "note": ""
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "grams": 0.5,
+     "note": "freshly ground"
+    },
+    {
+     "amount": "10 ml",
+     "name": "lemon juice",
+     "grams": 10.0,
+     "note": "freshly squeezed"
+    }
+   ],
+   "buy": [
+    {
+     "name": "Yellow onions",
+     "amount": 60.0,
+     "unit": "g"
+    },
+    {
+     "name": "Carrots",
+     "amount": 80.0,
+     "unit": "g"
+    },
+    {
+     "name": "Garlic",
+     "amount": 3.0,
+     "unit": "g"
+    },
+    {
+     "name": "Extra-virgin olive oil",
+     "amount": 4.5,
+     "unit": "ml"
+    },
+    {
+     "name": "Chicken breast",
+     "amount": 120.0,
+     "unit": "g"
+    },
+    {
+     "name": "Cannellini beans, no salt added",
+     "amount": 120.0,
+     "unit": "g"
+    },
+    {
+     "name": "Broccoli",
+     "amount": 100.0,
+     "unit": "g"
+    },
+    {
+     "name": "Vegetable stock, low sodium",
+     "amount": 350.0,
+     "unit": "ml"
+    },
+    {
+     "name": "Mixed dried herbs, salt-free",
+     "amount": 1.0,
+     "unit": "g"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 0.5,
+     "unit": "g"
+    },
+    {
+     "name": "Lemons",
+     "amount": 0.5,
+     "unit": "piece"
+    }
+   ],
+   "steps": [
+    {
+     "text": "Place 60 g halved yellow onion, 80 g carrot pieces, and 1 garlic clove in the mixing bowl, chop",
+     "setting": {
+      "time": "5 sec",
+      "temperature": "",
+      "reverse": false,
+      "speed": "5",
+      "mode": ""
+     },
+     "then": "Scrape down the sides of the mixing bowl with the spatula."
+    },
+    {
+     "text": "Add 1 tsp extra-virgin olive oil and 1 tsp salt-free mixed dried herbs to the mixing bowl, sauté",
+     "setting": {
+      "time": "4 min",
+      "temperature": "120°C",
+      "reverse": false,
+      "speed": "1",
+      "mode": ""
+     },
+     "then": ""
+    },
+    {
+     "text": "Add 120 g cubed chicken breast, 120 g drained no-salt-added cannellini beans, and 350 ml low-sodium vegetable stock, cook",
+     "setting": {
+      "time": "10 min",
+      "temperature": "100°C",
+      "reverse": true,
+      "speed": "spoon",
+      "mode": ""
+     },
+     "then": ""
+    },
+    {
+     "text": "Add 100 g small broccoli florets and a pinch of black pepper to the mixing bowl, cook",
+     "setting": {
+      "time": "5 min",
+      "temperature": "100°C",
+      "reverse": true,
+      "speed": "spoon",
+      "mode": ""
+     },
+     "then": "Pour into a soup bowl, stir in 10 ml fresh lemon juice, and serve hot."
+    }
+   ],
+   "tips": [
+    "Cut the chicken breast into even 2 cm cubes so it cooks through gently while staying tender.",
+    "Adding fresh lemon juice right at the end brightens the broth without needing table salt."
+   ],
+   "why": "Lean chicken breast, no-salt-added cannellini beans, carrot, onion, and broccoli simmer in low-sodium stock with herbs and lemon instead of added salt.",
+   "evidence": "For adults, the World Health Organization recommends consuming less than 2000 mg of sodium per day, which is equivalent to less than 5 g of salt per day [WHO — Sodium reduction (fact sheet)].",
+   "removed": [],
+   "kitchen_flags": [],
+   "nutrition": {
+    "kcal": 440.3,
+    "protein_g": 41.0,
+    "fat_g": 8.9,
+    "sat_fat_g": 1.7,
+    "carbs_g": 50.9,
+    "fiber_g": 11.8,
+    "sugars_g": 10.7,
+    "sodium_mg": 1613.9,
+    "counted": [
+     "60 g yellow onion → Onions, raw",
+     "80 g carrot → Carrots, raw",
+     "3 g garlic clove → Garlic, raw",
+     "4.5 g extra-virgin olive oil → Oil, olive, salad or cooking",
+     "120 g chicken breast → Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw",
+     "120 g cannellini beans, no salt added → Beans, white, mature seeds, canned (regular version: its sodium is counted)",
+     "100 g broccoli → Broccoli, raw",
+     "350 g vegetable stock, low sodium → Soup, SWANSON, vegetable broth (regular version: its sodium is counted)",
+     "0.5 g black pepper → Spices, pepper, black",
+     "10 g lemon juice → Lemon juice, raw"
+    ],
+    "left_out": [
+     "mixed dried herbs, salt-free"
+    ],
+    "sodium_at_most": true,
+    "source": "USDA FoodData Central (SR Legacy)"
+   }
   }
  ],
  "movement": [
-  "Mon: Take a 25-minute brisk walk around your neighborhood after lunch.",
-  "Tue: Do a 20-minute walk and 15 minutes of light bodyweight strength exercises (such as wall push-ups and chair squats).",
-  "Wed: Walk briskly for 30 minutes, choosing a route with a few gentle hills or stairs.",
-  "Thu: Take two 15-minute walks—one in the morning and one before dinner.",
-  "Fri: Do 20 minutes of light strength exercises using household items or bodyweight, followed by a 15-minute easy walk.",
-  "Sat: Enjoy a longer 35-minute brisk walk in a local park or scenic area.",
-  "Sun: Take a relaxed 25-minute walk and spend 10 minutes stretching your legs and back."
+  "Mon: 30-minute brisk walk outdoors or around your neighborhood.",
+  "Tue: 20-minute walk plus 15 minutes of light bodyweight strength exercises (wall push-ups, chair squats).",
+  "Wed: 30-minute brisk walk, taking stairs instead of elevators where possible.",
+  "Thu: 25-minute brisk walk split into two short bouts (morning and evening).",
+  "Fri: 20-minute walk plus 15 minutes of light muscle-strengthening exercises.",
+  "Sat: 35-minute enjoyable pace walk in a local park.",
+  "Sun: 20-minute relaxed walk and gentle stretching."
  ]
 }

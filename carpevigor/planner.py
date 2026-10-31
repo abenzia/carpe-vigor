@@ -18,8 +18,9 @@ from typing import Callable, Literal
 
 from pydantic import BaseModel, Field
 
-from . import config, guidelines, kitchen, llm, rag, review_board, sources
+from . import config, guidelines, kitchen, llm, nutrition, rag, review_board, sources
 from .catalog import Catalog
+from .nutrition import Nutrition
 from .profile import Guidance
 
 DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -36,6 +37,8 @@ class Buy(BaseModel):
 class Ingredient(BaseModel):
     amount: str = Field(description="For all the servings: '150 g', '1 tsp', '2', 'a pinch'")
     name: str = Field(description="'zucchini', 'extra-virgin olive oil'")
+    grams: float = Field(description="That amount as raw weight in grams, for all the servings: '1 tsp' of oil is 4.5, "
+                                     "'1 garlic clove' is 3, '2 eggs' is 100; 0 for water")
     note: str = Field(default="", description="How it goes in, as a recipe card says it: 'peeled, in pieces (3-4 cm)', "
                                               "'leaves only'; or empty")
 
@@ -85,6 +88,7 @@ class Recipe(BaseModel):
                                       "speaks of people in general, with the source name in brackets; never a prediction for this person")
     removed: list[str] = Field(default_factory=list, description="Always empty: filled by the review board")
     kitchen_flags: list[str] = Field(default_factory=list, description="Always empty: filled by the kitchen check")
+    nutrition: Nutrition | None = Field(default=None, description="Always empty: filled by code from USDA FoodData Central")
 
 
 class MealOutline(BaseModel):
@@ -209,6 +213,10 @@ def make(guidance: Guidance, device: str, people: int = 1,
         report = {"approved": False, "provider": llm.provider(), "reviewers": [], "corrections": [], "set_aside": [],
                   "statements": review_board.statements_of(claims), "note": "Sources not fetched: run `python -m carpevigor.sources fetch`."}
     report["kitchen"] = kitchen_report
+    # The numbers of each dish come last, from the final recipes: plain code and USDA FoodData Central, not a model
+    if nutrition.available():
+        progress("Adding up each dish with USDA FoodData Central", 96)
+        nutrition.for_recipes(plan.recipes)
     return plan, report, used
 
 

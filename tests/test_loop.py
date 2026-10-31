@@ -20,6 +20,10 @@ def _no_index_in_the_repo(tmp_path, monkeypatch):
     monkeypatch.setattr(rag, "INDEX", tmp_path / "index.json")
     # the machine's .env may send the reward through PayPal's MCP server: tests never start it (the MCP test fakes it)
     monkeypatch.setattr(config, "PAYPAL_REWARD_VIA", "rest")
+    # nor the USDA database downloaded on this machine: a test that counts builds its own
+    from carpevigor import nutrition
+    monkeypatch.setattr(nutrition, "DB", tmp_path / "fdc.sqlite")
+    monkeypatch.setattr(nutrition, "MATCHES", tmp_path / "matches.json")
 
 
 @pytest.fixture
@@ -153,6 +157,49 @@ def test_cart_says_what_the_week_needs_before_cutting_and_never_cuts_protein_or_
     assert cart.within_budget and not cart.over_budget
 
 
+def _tiny_usda(tmp_path):
+    """A four-food SR Legacy zip, built into the same SQLite file as the real one."""
+    import zipfile
+    from carpevigor import nutrition
+    foods = {1: ("Pasta, dry, enriched", {1008: 371, 1003: 13, 1093: 6}),
+             2: ("Cheese, romano", {1008: 387, 1003: 32, 1258: 17, 1093: 1433}),
+             3: ("Soup, vegetable broth, ready to serve", {1008: 5, 1093: 300}),
+             4: ("Beans, white, mature seeds, canned", {1008: 114, 1079: 6.3, 1093: 5})}
+    path = tmp_path / "sr.zip"
+    with zipfile.ZipFile(path, "w") as z:
+        z.writestr("sr/food.csv", "fdc_id,data_type,description,food_category_id,publication_date\n" +
+                   "".join(f'{i},sr_legacy_food,"{d}",1,2019-04-01\n' for i, (d, _) in foods.items()))
+        z.writestr("sr/food_nutrient.csv", "id,fdc_id,nutrient_id,amount\n" +
+                   "".join(f"{i}{n},{i},{n},{a}\n" for i, (_, v) in foods.items() for n, a in v.items()))
+    assert nutrition.build(path, nutrition.DB) == 4
+
+
+def test_a_dish_is_counted_from_usda_foods_and_the_model_only_picks_among_them(tmp_path, monkeypatch):
+    from carpevigor import nutrition
+    _tiny_usda(tmp_path)
+    rounds = []
+
+    def picker(system, task, shape, **k):
+        asked = [l[len("INGREDIENT: "):] for l in task.splitlines() if l.startswith("INGREDIENT: ")]
+        rounds.append(asked)
+        if len(rounds) == 1:
+            return nutrition.Picks(picks=[
+                nutrition.Pick(name="spaghetti", fdc_id=0, search_instead="pasta dry"),   # not found as written
+                nutrition.Pick(name="pecorino romano", fdc_id=2),
+                nutrition.Pick(name="vegetable broth, low sodium", fdc_id=3),
+                nutrition.Pick(name="mystery powder", fdc_id=1)])                          # an id it was not offered
+        return nutrition.Picks(picks=[nutrition.Pick(name="spaghetti", fdc_id=1)])
+    monkeypatch.setattr(nutrition.llm, "ask", picker)
+    dish = [("spaghetti", 100), ("pecorino romano", 40), ("vegetable broth, low sodium", 200), ("mystery powder", 5),
+            ("water", 300)]
+    n = nutrition.count(dish, servings=2)
+    assert rounds[1] == ["spaghetti"]                       # the second round, with the database's own words
+    assert n.left_out == ["mystery powder"]                 # refused: never offered, so never counted
+    assert n.kcal == round((371 + 387 * 0.4 + 5 * 2) / 2, 1) and n.sodium_mg == round((6 + 1433 * 0.4 + 300 * 2) / 2, 1)
+    assert n.sodium_at_most and "regular version" in n.counted[2]   # a low-sodium broth counted as the regular one
+    assert nutrition.count(dish, servings=2) == n and len(rounds) == 2  # decided once: no model the second time
+
+
 def test_the_cart_buys_the_packs_the_recipes_use():
     catalog = Catalog.load()
     recipes = [{"title": "Chicken and peppers", "buy": [{"name": "Chicken breast", "amount": 300, "unit": "g"},
@@ -228,7 +275,7 @@ def test_a_recipe_still_wrong_after_the_fix_is_flagged_on_screen_not_hidden():
                          setting=planner.Setting(time="3 min", temperature="120°C", reverse=True, speed="spoon"),
                          then="Scrape down the sides with the spatula.")
     bad = planner.Recipe(day="Mon", meal="dinner", title="Sautéed chicken", servings=1, prep_minutes=5, total_minutes=15,
-                         difficulty="easy", ingredients=[planner.Ingredient(amount="150 g", name="chicken breast",
+                         difficulty="easy", ingredients=[planner.Ingredient(amount="150 g", name="chicken breast", grams=150,
                                                                             note="in pieces (2 cm)")],
                          steps=[sauté], why="w", evidence="e")
     # the step as the week page prints it, and as the check reads it: one wording for both
@@ -644,7 +691,8 @@ def test_the_waiting_screen_shows_each_step_and_says_when_it_fails(client, monke
     real = planner.make
     monkeypatch.setattr(planner, "make", lambda g, device, people, progress:
                         real(g, device, people, lambda s, p: (steps.append((s, p)), progress(s, p))))
-    client.post("/doctor", data={"doctor_said": "Eat less salt, walk more", "device": "Thermomix / Bimby TM7", "budget": "140"})
+    client.post("/doctor", data={"doctor_said": "Eat less salt, walk more", "device": "Thermomix / Bimby TM7", "budget": "140"},
+                follow_redirects=False)  # one build: the one _built_week starts
     _built_week(client)
     percents = [p for _, p in steps]
     assert percents == sorted(percents) and percents[0] < 10 and steps[-1][1] >= 62
