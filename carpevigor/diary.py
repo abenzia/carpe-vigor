@@ -17,6 +17,8 @@ from pydantic import BaseModel, Field
 from . import llm, nutrition
 
 PORTIONS = {"small": 0.7, "normal": 1.0, "large": 1.4}   # times a typical portion
+MAX_TEXT = 500    # characters of one sentence
+MAX_PARTS = 20    # ingredients counted for one sentence
 
 
 class Part(BaseModel):
@@ -46,11 +48,13 @@ def say(text: str, portion: Literal["small", "normal", "large"] = "normal") -> d
     text = text.strip()
     if not text:
         raise ValueError("Say what you are eating, for example: a plate of cacio e pepe.")
+    if len(text) > MAX_TEXT:  # a meal is a sentence; a page of text would only cost model calls
+        raise ValueError(f"Keep it to a sentence (under {MAX_TEXT} characters).")
     split = llm.ask(SPLIT, f"THE PERSON SAYS: {text}", Breakdown, tier="mid")
     if not split.parts:
         raise ValueError(f'"{text}" does not sound like food or drink: nothing was added.')
     factor = PORTIONS.get(portion, 1.0)
-    values = nutrition.count([(p.name, p.grams * factor) for p in split.parts], 1)
+    values = nutrition.count([(p.name, p.grams * factor) for p in split.parts[:MAX_PARTS]], 1)
     if values is None:
         raise ValueError("The food database is not on this machine: run python -m carpevigor.nutrition fetch.")
     return {"at": _now().isoformat(timespec="minutes"), "said": text, "dish": split.dish or text, "portion": portion,

@@ -31,7 +31,7 @@ def read(doctor_said: str, device: str, extra_constraints: str = "", attached_re
     task = (f"WHAT THE DOCTOR SAID (the person's words): {doctor_said}\n"
             f"COOKS WITH: {device}\nOTHER CONSTRAINTS: {extra_constraints or 'none given'}\n"
             f"LAB REPORT ATTACHED: {'yes — use it only to pick topics, never quote a value' if attached_report else 'no'}")
-    guidance = llm.ask(SYSTEM, task, Guidance)
+    guidance = llm.ask(SYSTEM, task, Guidance, tier="mid")  # a short reading: the fast model (argon took 25 s)
     # Code, not the model, has the last word on topics and on what goes back to the doctor.
     guidance.topics = [t for t in dict.fromkeys(guidance.topics + sources.topics_for(doctor_said)) if t in sources.TOPICS]
     if sources.mentions_clinical(doctor_said) and not guidance.to_the_doctor:

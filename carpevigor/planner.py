@@ -26,6 +26,9 @@ from .profile import Guidance
 DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 # Days written at once: all seven ran into the project's per-minute quota on Gemini 2.5 Pro (429, 31 Oct 2026)
 DAYS_AT_ONCE = 4
+# Who writes: the mid tier (Gemini 3.8 Flash). The strong tier (Gemini 4 Argon) sits on the review board, checking.
+# On 31 Oct argon took 38-65 s per day of recipes and 63 s for the outline; the week went from 183 s to 514 s.
+WRITER = "mid"
 
 
 class Buy(BaseModel):
@@ -234,7 +237,7 @@ def write_week(task: str, progress: Callable[[str, int], None] = _quiet) -> Week
     agree on who cooks extra for whom."""
     progress("Outlining the week: 14 meals, portions and leftovers", 5)
     outline = llm.ask(SYSTEM, f"{task}\n\nFIRST OUTLINE THE WEEK: 14 meals, lunch and dinner for Mon..Sun.",
-                      WeekOutline, temperature=0.3)
+                      WeekOutline, tier=WRITER, temperature=0.3)
     lines = _outline_lines(outline)
     by_day: dict[str, list[MealOutline]] = {}
     for m in outline.meals:
@@ -243,7 +246,7 @@ def write_week(task: str, progress: Callable[[str, int], None] = _quiet) -> Week
     def day(meals: list[MealOutline]) -> list[Recipe]:
         wanted = ", ".join(f"{m.day} {m.meal}" for m in meals)
         written = llm.ask(SYSTEM, f"{task}\n\nTHE WEEK'S OUTLINE:\n{lines}\n\nWRITE THESE RECIPES IN FULL: {wanted}",
-                          RecipeBatch, temperature=0.3).recipes
+                          RecipeBatch, tier=WRITER, temperature=0.3).recipes
         # one day per call: lunch and dinner tell the recipes apart, whatever the day is spelt ('Mon', 'Monday')
         by_meal = {r.meal.strip().lower(): r for r in written}
         out = []
@@ -281,7 +284,7 @@ def fix_recipes(plan: WeekPlan, dev: kitchen.Device, people: int, progress: Call
         asked = "\n\n".join(f"INDEX {i}\n{plan.recipes[i].model_dump_json(exclude={'removed', 'kitchen_flags'})}\n"
                             f"WRONG: " + "; ".join(p) for i, p in first.items())
         fixed = llm.ask(FIX_RECIPES, f"COOKING FOR: {people}\nKITCHEN DEVICE: {dev.name}\nDEVICE RULES: {dev.rules}\n\n"
-                                     f"RECIPES TO FIX\n{asked}", FixedRecipes, temperature=0.1)
+                                     f"RECIPES TO FIX\n{asked}", FixedRecipes, tier=WRITER, temperature=0.1)
         for f in fixed.recipes:
             if f.index in first:
                 plan.recipes[f.index] = f.recipe.model_copy(update={"removed": [], "kitchen_flags": []})
@@ -325,7 +328,8 @@ def revise(plan: WeekPlan, report: dict, reference: str, topics: list[str] | Non
         return report  # the corrections could not be traced to a sentence: shown as sent back, nothing hidden
     asked = "\n\n".join(f"{fid}: {_text(plan, fid)}\nBOARD: " + " | ".join(f"{c['why']} Should be: {c['should_be']}" for c in cs)
                         for fid, cs in first.items())
-    fixed = llm.ask(REWRITE, f"SENTENCES TO FIX\n{asked}\n\nPUBLIC SOURCES\n{reference}", Rewrites, temperature=0.1)
+    fixed = llm.ask(REWRITE, f"SENTENCES TO FIX\n{asked}\n\nPUBLIC SOURCES\n{reference}", Rewrites, tier=WRITER,
+                    temperature=0.1)
     for rw in fixed.rewrites:
         if rw.id in first and rw.text.strip():
             i, field = rw.id[1:].split(".")

@@ -30,7 +30,8 @@ log = logging.getLogger("carpevigor.llm")
 T = TypeVar("T", bound=BaseModel)
 
 mock_answers: dict[str, Callable[[str], BaseModel]] = {}
-RETRY_WAITS = (3.0, 8.0, 20.0, 45.0)  # seconds before each new try of a call Vertex refused with 429: the quota is per minute
+RETRY_WAITS = (3.0, 8.0, 20.0, 45.0)  # seconds before each new try of a refused call: the quota is per minute
+RETRIED = {429, 503}  # too many calls; the service briefly unavailable
 
 
 def provider() -> str:
@@ -109,14 +110,15 @@ def _vertex(system: str, task: str, shape: Type[T], model: str, temperature: flo
             break
         except Exception as error:
             # 429: the board sends several calls to the same model at once and Vertex sometimes says "try again later".
-            # Only that is retried; anything else, or a 429 after the last wait, goes up to the caller as it is.
-            if wait is None or getattr(error, "code", None) != 429:
+            # 503: Vertex itself "currently unavailable" (31 Oct night: one day of recipes failed, and the week with it).
+            # Only those are retried; anything else, or one after the last wait, goes up to the caller as it is.
+            if wait is None or getattr(error, "code", None) not in RETRIED:
                 raise
             refused += 1
             time.sleep(wait)
     # Where a slow week spends its time: each call's model, shape, seconds and quota refusals (31 Oct: one week took
     # 183 s, the next 514 s with the same code)
-    log.info("%s %s %.1fs%s", model, shape.__name__, time.time() - started, f" after {refused} x 429" if refused else "")
+    log.info("%s %s %.1fs%s", model, shape.__name__, time.time() - started, f" after {refused} refusals" if refused else "")
     parsed = response.parsed
     return parsed if isinstance(parsed, shape) else shape.model_validate_json(response.text)
 

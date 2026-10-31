@@ -16,7 +16,7 @@ import json
 import secrets
 import threading
 from datetime import datetime, timezone
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
@@ -37,6 +37,17 @@ templates = Jinja2Templates(directory=str(config.ROOT / "templates"))
 templates.env.filters["step_parts"] = kitchen.step_parts
 store = Store()
 catalog = Catalog.load()
+
+
+@app.middleware("http")
+async def same_origin_posts(request: Request, call_next):
+    """A form on another site cannot post here: the app moves money (PayPal) and keeps a health diary. A browser sends
+    Origin with every cross-site post; one that names another host is refused. Shortcuts and tests send no Origin:
+    /api/meal has its own token."""
+    origin = request.headers.get("origin")
+    if request.method == "POST" and origin and urlparse(origin).netloc != request.headers.get("host", ""):
+        return JSONResponse({"error": "Posts are accepted from this app's own pages only."}, status_code=403)
+    return await call_next(request)
 
 
 def render(request: Request, name: str, **ctx) -> HTMLResponse:
@@ -244,10 +255,15 @@ async def api_meal(request: Request):
     given = request.headers.get("authorization", "").removeprefix("Bearer ").strip()
     if not config.API_TOKEN or not secrets.compare_digest(given, config.API_TOKEN):
         return JSONResponse({"spoken": "This shortcut is not allowed to write to the diary."}, status_code=403)
+    raw = await request.body()
+    if len(raw) > 4000:  # a sentence and a portion, not a document
+        return JSONResponse({"spoken": "That is too long for one meal."}, status_code=413)
     try:
-        body = await request.json()
+        body = json.loads(raw)
     except ValueError:
-        body = {"text": (await request.body()).decode("utf-8", "replace")}
+        body = {"text": raw.decode("utf-8", "replace")}
+    if not isinstance(body, dict):
+        body = {"text": str(body)}
     try:
         entry = diary.say(str(body.get("text", "")), body.get("portion") if body.get("portion") in diary.PORTIONS else "normal")
     except ValueError as error:

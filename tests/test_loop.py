@@ -222,6 +222,12 @@ def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(cli
     assert "Today so far:" in r.json()["spoken"]
     not_food = client.post("/api/meal", json={"text": "I walked the dog"}, headers={"Authorization": "Bearer s3cret-token"})
     assert not_food.status_code == 422 and "nothing was added" in not_food.json()["spoken"]
+    auth = {"Authorization": "Bearer s3cret-token"}
+    assert client.post("/api/meal", json={"text": "pasta " * 200}, headers=auth).status_code == 422   # not a sentence
+    assert client.post("/api/meal", content=b"x" * 5000, headers=auth).status_code == 413            # not a meal
+    # a form on another site cannot post into the diary (or press a PayPal button)
+    cross = client.post("/diary", data={"text": "cacio e pepe"}, headers={"Origin": "https://evil.example"})
+    assert cross.status_code == 403
     assert len(client.get("/api/state").json()["diary"]) == 2
 
 
@@ -480,7 +486,7 @@ def test_parallel_first_calls_share_one_vertex_client(monkeypatch):
     assert len(made) == 1
 
 
-def test_vertex_retries_a_429_and_nothing_else(monkeypatch):
+def test_vertex_retries_a_429_or_a_503_and_nothing_else(monkeypatch):
     from pydantic import BaseModel as Shape
     from carpevigor import llm
 
@@ -489,13 +495,18 @@ def test_vertex_retries_a_429_and_nothing_else(monkeypatch):
 
     class Busy(Exception):
         code = 429
+
+    class Down(Exception):
+        code = 503
     calls = []
 
     class Models:
         def generate_content(self, model, contents, config=None):
             calls.append(1)
-            if len(calls) < 3:
+            if len(calls) == 1:
                 raise Busy("RESOURCE_EXHAUSTED")
+            if len(calls) == 2:
+                raise Down("UNAVAILABLE")    # 31 Oct night: Vertex itself, for a while
             return type("R", (), {"parsed": A(answer="ok"), "text": ""})()
     monkeypatch.setattr(llm, "_vertex_client", type("C", (), {"models": Models()})())
     monkeypatch.setattr(llm, "RETRY_WAITS", (0, 0))
