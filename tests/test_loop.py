@@ -203,6 +203,25 @@ def test_fact_jurors_rule_only_on_the_health_claims_the_others_read_everything()
     assert len(report["statements"]) == 4  # safety and clarity read all four
 
 
+def test_the_second_reading_approves_only_when_every_rejection_is_found_and_removed(monkeypatch):
+    from carpevigor import planner
+    import re
+    plan = planner._mock_plan("")
+    repeated = plan.recipes[1].evidence  # used by several dishes: after the rewrite, one quote matches several sentences
+    report = {"approved": False, "corrections": [{"says": repeated, "should_be": "x", "why": "y"}]}
+    monkeypatch.setattr(planner.llm, "ask", lambda system, task, shape, **k: planner.Rewrites(rewrites=[
+        planner.Rewrite(id=i, text="Fixed.") for i in re.findall(r"^(r\d+\.(?:why|evidence)):", task, re.M)]))
+    # a second-round rejection that cannot be traced to a sentence must keep the plan unapproved,
+    # even when another rejection matches several sentences
+    monkeypatch.setattr(planner.review_board, "convene", lambda *a, **k: {
+        "approved": False, "reviewers": [], "corrections": [{"says": "Fixed."}, {"says": "something nobody wrote"}]})
+    assert not planner.revise(plan.model_copy(deep=True), report, "ref")["approved"]
+    # a reviewer missing from the second reading: not approved, whatever else
+    monkeypatch.setattr(planner.review_board, "convene", lambda *a, **k: {
+        "approved": False, "corrections": [], "reviewers": [{"absent": True}]})
+    assert not planner.revise(plan.model_copy(deep=True), report, "ref")["approved"]
+
+
 def test_review_board_mock_is_honest_about_itself():
     report = review_board.convene("Salt raises blood pressure. Walking helps.", "SOURCE: test\n\nsome text")
     assert report["provider"] == "mock" and report["approved"]

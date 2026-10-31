@@ -171,7 +171,10 @@ def convene(text: str, reference: str, strict: bool = True, facts: str | None = 
     claims = statements_of(facts) if facts is not None else statements
     with ThreadPoolExecutor(max_workers=AT_ONCE) as pool:
         experts = [pool.submit(expert, r, f"TEXT, as numbered statements\n{numbered}") for r in EXPERTS]
-        jurors, upheld, set_aside, present = jury(claims, reference, pool, strict) if claims else ([], [], [], len(JURORS))
+        if claims:
+            jurors, upheld, set_aside, present = jury(claims, reference, pool, strict)
+        else:  # no health claim in the text (only dish descriptions): nothing for the fact jurors, and the report says so
+            jurors, upheld, set_aside, present = [], [], [], 0
         experts = [job.result() for job in experts]
     for card in experts:
         upheld += [{**c, "raised_by": [card["name"]], "votes": card["name"]} for c in card["corrections"]]
@@ -181,7 +184,8 @@ def convene(text: str, reference: str, strict: bool = True, facts: str | None = 
         "provider": llm.provider(),
         "quorum": QUORUM,
         "statements": statements,
-        "approved": present >= QUORUM and not upheld and all(e["approved"] and not e["absent"] for e in experts),
+        "approved": (present >= QUORUM or not claims) and not upheld and all(e["approved"] and not e["absent"] for e in experts),
+        "fact_jury": "ruled" if claims else "nothing to rule on: no health claim in the text",
         "corrections": upheld,
         "set_aside": set_aside,
         "reviewers": jurors + experts,

@@ -140,8 +140,12 @@ def revise(plan: WeekPlan, report: dict, reference: str) -> dict:
         i, field = fid[1:].split(".")
         setattr(plan.recipes[int(i)], field, "")
         plan.recipes[int(i)].removed.append(field)
-    traced = sum(len(cs) for cs in still.values()) >= len(second["corrections"])  # every rejection found and removed
-    return {**report, "approved": second["approved"] or traced,
+    # Approved only if the second reading was complete and every one of its rejections (counted once, however many
+    # sentences it matched) was traced to a sentence that is now removed.
+    removed = {id(c) for cs in still.values() for c in cs}
+    resolved = all(id(c) in removed for c in second["corrections"])
+    complete = not any(r.get("absent") for r in second["reviewers"])
+    return {**report, "approved": complete and (second["approved"] or resolved),
             "revision": {"rewritten": len(first), "removed": len(still), "approved": second["approved"],
                          "seconds": round(time.time() - started, 1), "reviewers": second["reviewers"]}}
 
