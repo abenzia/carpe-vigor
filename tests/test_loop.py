@@ -275,10 +275,15 @@ def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(cli
     assert client.post("/api/meal", json=meal, headers={"Authorization": "Bearer wrong"}).status_code == 403
     r = client.post("/api/meal", json=meal, headers={"Authorization": "Bearer s3cret-token"})
     assert r.status_code == 200 and r.json()["spoken"].startswith("cacio e pepe: about ")
-    # the token is shown to copy into the shortcut only at this computer, never through the tunnel
-    assert "Bearer s3cret-token" in client.get("http://127.0.0.1/diary").text
-    assert "s3cret-token" not in client.get("http://127.0.0.1/diary", headers={"cf-connecting-ip": "203.0.113.9"}).text
-    assert "s3cret-token" not in client.get("/diary").text
+    # the token is shown to copy into the shortcut only at this computer, never through the tunnel: decided by the
+    # connection's own address, not by the Host header a client writes
+    from fastapi.testclient import TestClient
+    import app as webapp
+    at_this_computer = TestClient(webapp.app, client=("127.0.0.1", 50000))
+    assert "Bearer s3cret-token" in at_this_computer.get("/diary").text
+    assert "s3cret-token" not in at_this_computer.get("/diary", headers={"cf-connecting-ip": "203.0.113.9"}).text
+    assert "s3cret-token" not in at_this_computer.get("/diary", headers={"x-forwarded-for": "203.0.113.9"}).text
+    assert "s3cret-token" not in client.get("http://127.0.0.1/diary").text      # Host says local, connection is not
     assert "Today so far:" in r.json()["spoken"]
     not_food = client.post("/api/meal", json={"text": "I walked the dog"}, headers={"Authorization": "Bearer s3cret-token"})
     assert not_food.status_code == 422 and "nothing was added" in not_food.json()["spoken"]
