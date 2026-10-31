@@ -54,7 +54,7 @@ def doctor(request: Request):
 
 @app.post("/doctor")
 def doctor_submit(request: Request, doctor_said: str = Form(...), device: str = Form(...), constraints: str = Form(""),
-                  budget: float = Form(120.0), report_attached: str = Form(""), people: int = Form(1)):
+                  budget: float = Form(140.0), report_attached: str = Form(""), people: int = Form(1)):
     guidance = profile.read(doctor_said, device, constraints, bool(report_attached))
     people = min(6, max(1, people))
     store.put("profile", {"doctor_said": doctor_said, "device": device, "people": people, "constraints_text": constraints,

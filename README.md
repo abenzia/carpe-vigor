@@ -138,18 +138,20 @@ PayPal.
 **With `GOOGLE_CLOUD_PROJECT` set:**
 - Gemini on Vertex AI writes the plan and the board gives real verdicts. This needs
   `gcloud auth application-default login`.
-- A week takes three and a half to five minutes: the plan, one round of recipe fixes, the board and one
-  correction round. A question to Ask the sources
-  takes 15 to 20 seconds.
+- A week takes about three minutes (183 seconds measured on 31 Oct 2026): an outline, then the days written four
+  at a time, one round of recipe fixes, the board and one correction round. A question to Ask the sources took 15
+  to 20 seconds on the earlier Gemini 2.5 Flash.
 - The first run indexes all the sources once, in about a minute and a half.
 
 ## Models and services
 
 - **Google Vertex AI**, region `global`:
-  - Gemini 2.5 Pro writes the plan and runs the safety and clarity reviewers;
-  - the three fact jurors run on three different models: Gemini 2.5 Pro, 2.5 Flash and 3.1 Flash-Lite.
-    `gemini-2.5-flash-lite` answered 404 on our project, so the light juror runs 3.1 Flash-Lite, from `global`;
-  - Ask the sources answers on Gemini 2.5 Flash;
+  - Gemini 4 Argon (`gemini-4-argon`) writes the plan and runs the safety and clarity reviewers;
+  - the three fact jurors run on three different models: Gemini 4 Argon, Gemini 3.8 Flash and Gemini 3.5
+    Flash-Lite;
+  - Ask the sources answers on Gemini 3.8 Flash;
+  - on Gemini 2.5 Pro, 2.5 Flash and 3.1 Flash-Lite the same week took about six minutes and the board removed
+    more evidence lines; the models are set in `.env` (`GEMINI_STRONG`, `GEMINI_MID`, `GEMINI_LIGHT`);
   - retrieval uses `gemini-embedding-2`.
 - **Optional**: Amazon Nova through Strands Agents on Bedrock (`LLM_PROVIDER=bedrock`). The review board was
   first built on that stack for *Carpe Class* (Amazon Developer Hackathon, October 2026).

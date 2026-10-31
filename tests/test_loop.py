@@ -209,6 +209,19 @@ def test_the_kitchen_check_holds_recipes_to_the_device_and_their_portions():
     assert kitchen.NAMES[0] == "Thermomix / Bimby TM7"                         # the default, and the demo week's
 
 
+def test_the_week_is_written_day_by_day_and_keeps_the_outlines_portions(monkeypatch):
+    from carpevigor import planner
+    demo = planner._mock_plan("")
+    week = planner.write_week("task")              # an outline, then one call per day, all days at once
+    assert [(r.day, r.meal, r.title) for r in week.recipes] == [(r.day, r.meal, r.title) for r in demo.recipes]
+    # a day's call that says otherwise about portions or leftovers does not win: the outline decides
+    wrong = lambda task: planner.RecipeBatch(recipes=[r.model_copy(update={"servings": 9, "leftovers_for": ""})
+                                                      for r in planner._mock_day(task).recipes])
+    monkeypatch.setitem(planner.llm.mock_answers, "RecipeBatch", wrong)
+    rewritten = planner.write_week("task").recipes
+    assert [(r.servings, r.leftovers_for) for r in rewritten] == [(r.servings, r.leftovers_for) for r in demo.recipes]
+
+
 def test_a_recipe_still_wrong_after_the_fix_is_flagged_on_screen_not_hidden():
     from carpevigor import kitchen, planner
     sauté = planner.Step(text="Add the oil and the chicken, sauté",
@@ -539,6 +552,7 @@ def test_a_sent_back_plan_is_rewritten_once_and_what_stays_wrong_never_reaches_t
     plan.recipes[3].evidence = bad_evidence  # one sentence used by two dishes, whatever the demo week says
     # a fresh clone has no fetched sources: give the planner one, so the board path runs everywhere
     monkeypatch.setattr(planner.sources, "reference_for", lambda topics: ("SOURCE: test\n\nsome text", []))
+    monkeypatch.setattr(planner, "write_week", lambda task: plan.model_copy(deep=True))  # the week as written, at once
     import re
     monkeypatch.setattr(planner.llm, "ask", lambda system, task, shape, tier="strong", temperature=0.1:
                         plan.model_copy(deep=True) if shape is planner.WeekPlan else

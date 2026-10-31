@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor
 from typing import Literal
 
 from pydantic import BaseModel, Field
@@ -21,6 +22,8 @@ from .catalog import Catalog
 from .profile import Guidance
 
 DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+# Days written at once: all seven ran into the project's per-minute quota on Gemini 2.5 Pro (429, 31 Oct 2026)
+DAYS_AT_ONCE = 4
 
 
 class Buy(BaseModel):
@@ -81,6 +84,27 @@ class Recipe(BaseModel):
                                       "speaks of people in general, with the source name in brackets; never a prediction for this person")
     removed: list[str] = Field(default_factory=list, description="Always empty: filled by the review board")
     kitchen_flags: list[str] = Field(default_factory=list, description="Always empty: filled by the kitchen check")
+
+
+class MealOutline(BaseModel):
+    day: str = Field(description="Mon..Sun")
+    meal: str = Field(description="lunch or dinner")
+    title: str
+    servings: int = Field(description="The number of people, or twice that when it also makes another meal")
+    leftovers_for: str = Field(default="", description="The meal this dish also cooks for, as 'Tue lunch', or empty")
+    from_leftovers: str = Field(default="", description="The meal whose extra servings this dish is made from, or empty")
+    idea: str = Field(description="One line: the main ingredients and how the device cooks them")
+
+
+class WeekOutline(BaseModel):
+    title: str
+    summary: str = Field(description="Two sentences: what this week does for the goals, in plain words")
+    meals: list[MealOutline] = Field(description="14 meals: lunch and dinner for each of the 7 days, varied over the week")
+    movement: list[str] = Field(description="7 short lines, one per day, of movement a person can do (walk, stairs, light strength); never a medical exercise prescription")
+
+
+class RecipeBatch(BaseModel):
+    recipes: list[Recipe]
 
 
 class WeekPlan(BaseModel):
@@ -156,7 +180,7 @@ def make(guidance: Guidance, device: str, people: int = 1) -> tuple[WeekPlan, di
             f"PUBLIC NUMBERS FOR PEOPLE IN GENERAL (plan within them; cite these, never numbers of your own):\n"
             f"{guidelines.as_task(guidelines.for_week(guidance.topics))}\n\n"
             f"PUBLIC SOURCES YOU MAY CITE (use only what they say):\n{reference or '(sources not fetched yet)'}")
-    plan = llm.ask(SYSTEM, task, WeekPlan, temperature=0.3)
+    plan = write_week(task)
     # Before the board reads a word: the recipes must be cookable on this device and keep their own portions
     kitchen_report = fix_recipes(plan, dev, people)
     claims = " ".join(f"{r.why} {r.evidence}" for r in plan.recipes)
@@ -174,6 +198,44 @@ def make(guidance: Guidance, device: str, people: int = 1) -> tuple[WeekPlan, di
                   "statements": review_board.statements_of(claims), "note": "Sources not fetched: run `python -m carpevigor.sources fetch`."}
     report["kitchen"] = kitchen_report
     return plan, report, used
+
+
+def _outline_lines(outline: WeekOutline) -> str:
+    return "\n".join(f"- {m.day} {m.meal}: {m.title} ({m.servings} servings"
+                     + (f", also makes {m.leftovers_for}" if m.leftovers_for else "")
+                     + (f", from the leftovers of {m.from_leftovers}" if m.from_leftovers else "") + f"). {m.idea}"
+                     for m in outline.meals)
+
+
+def write_week(task: str) -> WeekPlan:
+    """The week in two moves, so the slow part runs in parallel: one call outlines the 14 meals (titles, servings,
+    leftovers, the week's variety), then one call per day writes that day's two recipes in full, all days at once.
+    Day, meal, servings and leftovers are taken from the outline, not from each day's call: days written apart still
+    agree on who cooks extra for whom."""
+    outline = llm.ask(SYSTEM, f"{task}\n\nFIRST OUTLINE THE WEEK: 14 meals, lunch and dinner for Mon..Sun.",
+                      WeekOutline, temperature=0.3)
+    lines = _outline_lines(outline)
+    by_day: dict[str, list[MealOutline]] = {}
+    for m in outline.meals:
+        by_day.setdefault(m.day, []).append(m)
+
+    def day(meals: list[MealOutline]) -> list[Recipe]:
+        wanted = ", ".join(f"{m.day} {m.meal}" for m in meals)
+        written = llm.ask(SYSTEM, f"{task}\n\nTHE WEEK'S OUTLINE:\n{lines}\n\nWRITE THESE RECIPES IN FULL: {wanted}",
+                          RecipeBatch, temperature=0.3).recipes
+        # one day per call: lunch and dinner tell the recipes apart, whatever the day is spelt ('Mon', 'Monday')
+        by_meal = {r.meal.strip().lower(): r for r in written}
+        out = []
+        for m in meals:
+            r = by_meal.get(m.meal.strip().lower())
+            if r is None:
+                raise RuntimeError(f"The planner did not write {m.day} {m.meal} ({m.title}); plan the week again.")
+            out.append(r.model_copy(update={"day": m.day, "meal": m.meal, "servings": m.servings,
+                                            "leftovers_for": m.leftovers_for, "from_leftovers": m.from_leftovers}))
+        return out
+    with ThreadPoolExecutor(max_workers=DAYS_AT_ONCE) as pool:
+        recipes = [r for rs in pool.map(day, by_day.values()) for r in rs]
+    return WeekPlan(title=outline.title, summary=outline.summary, recipes=recipes, movement=outline.movement)
 
 
 def fix_recipes(plan: WeekPlan, dev: kitchen.Device, people: int) -> dict:
@@ -259,6 +321,20 @@ def _mock_plan(task: str) -> WeekPlan:
         return WeekPlan.model_validate(json.load(f))
 
 
+def _mock_outline(task: str) -> WeekOutline:
+    plan = _mock_plan(task)
+    return WeekOutline(title=plan.title, summary=plan.summary, movement=plan.movement,
+                       meals=[MealOutline(**r.model_dump(include={"day", "meal", "title", "servings", "leftovers_for",
+                                                                  "from_leftovers"}), idea="") for r in plan.recipes])
+
+
+def _mock_day(task: str) -> RecipeBatch:
+    wanted = task.rsplit("WRITE THESE RECIPES IN FULL:", 1)[-1].strip().lower().split(", ")
+    return RecipeBatch(recipes=[r for r in _mock_plan(task).recipes if kitchen.meal_key(r.model_dump()) in wanted])
+
+
 llm.mock_answers.setdefault("WeekPlan", _mock_plan)
+llm.mock_answers.setdefault("WeekOutline", _mock_outline)
+llm.mock_answers.setdefault("RecipeBatch", _mock_day)
 # No model, no fixes: what the kitchen check finds stays on the recipe as a flag
 llm.mock_answers.setdefault("FixedRecipes", lambda task: FixedRecipes(recipes=[]))

@@ -27,7 +27,7 @@ from . import config
 T = TypeVar("T", bound=BaseModel)
 
 mock_answers: dict[str, Callable[[str], BaseModel]] = {}
-RETRY_WAITS = (3.0, 8.0)  # seconds before the 2nd and 3rd try of a call Vertex refused with 429
+RETRY_WAITS = (3.0, 8.0, 20.0, 45.0)  # seconds before each new try of a call Vertex refused with 429: the quota is per minute
 
 
 def provider() -> str:
