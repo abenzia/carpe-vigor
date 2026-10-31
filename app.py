@@ -42,12 +42,13 @@ catalog = Catalog.load()
 
 @app.middleware("http")
 async def same_origin_posts(request: Request, call_next):
-    """A form on another site cannot post here: the app moves money (PayPal) and keeps a health diary. A browser sends
-    Origin with every cross-site post; one that names another host is refused. Shortcuts and tests send no Origin:
-    /api/meal has its own token."""
-    origin = request.headers.get("origin")
-    if request.method == "POST" and origin and urlparse(origin).netloc != request.headers.get("host", ""):
-        return JSONResponse({"error": "Posts are accepted from this app's own pages only."}, status_code=403)
+    """A form on another site cannot post here: the app moves money (PayPal) and keeps health data. Browsers send
+    Origin (or at least Referer) with every POST; a post must show it came from this app's own pages, or it is refused
+    (fail closed). /api/meal is the exception, for a phone shortcut that sends no Origin: it has its own token."""
+    if request.method == "POST" and request.url.path != "/api/meal":
+        source = request.headers.get("origin") or request.headers.get("referer") or ""
+        if not source or urlparse(source).netloc != request.headers.get("host", ""):
+            return JSONResponse({"error": "Posts are accepted from this app's own pages only."}, status_code=403)
     return await call_next(request)
 
 

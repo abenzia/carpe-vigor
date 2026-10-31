@@ -38,9 +38,20 @@ Simple things done at home or outdoors, no gym needed. Anything the doctor said 
 mention medicines, never promise a result. Each day: one line, its moderate minutes, whether it strengthens."""
 
 
+_MINUTES = re.compile(r"(\d+)\s*(?:-\s*)?(?:minute|min\b)", re.I)
+_STRENGTH = re.compile(r"push-?up|squat|lunge|plank|strength|band|weights?|bridge|step-?up|dip|row", re.I)
+
+
+def written(day: Day) -> tuple[int, bool]:
+    """What the day's line itself says: its minutes and whether it strengthens. The model's own numbers count only as
+    far as the words carry them: a day claiming 60 minutes for '20-minute walk' counts 20."""
+    said = sum(int(m) for m in _MINUTES.findall(day.text))
+    return min(max(day.moderate_minutes, 0), said), day.strength and bool(_STRENGTH.search(day.text))
+
+
 def totals(plan: MovementPlan) -> dict:
-    minutes = sum(max(d.moderate_minutes, 0) for d in plan.days)
-    strength = sum(1 for d in plan.days if d.strength)
+    minutes = sum(written(d)[0] for d in plan.days)
+    strength = sum(1 for d in plan.days if written(d)[1])
     problems = []
     if len(plan.days) != 7:
         problems.append(f"the week has {len(plan.days)} days, not 7")

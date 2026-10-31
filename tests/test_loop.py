@@ -31,7 +31,7 @@ def client(tmp_path, monkeypatch):
     import app as webapp
     webapp.store = Store(tmp_path / "t.sqlite")
     paypal.use(paypal.MockPayPal())
-    return TestClient(webapp.app)
+    return TestClient(webapp.app, headers={"Origin": "http://testserver"})  # a browser on the app's own pages
 
 
 def test_paypal_mock_authorize_capture_void_refund():
@@ -210,7 +210,9 @@ def test_the_coach_is_held_to_the_activity_guidelines_by_code(monkeypatch):
     asked = []
     monkeypatch.setattr(coach.llm, "ask", lambda system, task, shape, **k: asked.append(task) or (lazy if len(asked) == 1 else good))
     lines, report = coach.plan_week(["Walk more"], "light", [4000, 5000])
-    assert "70 moderate minutes" in asked[1] and "0 strength days" in asked[1]   # sent back once, with the numbers
+    assert "0 moderate minutes" in asked[1] and "0 strength days" in asked[1]   # "rest" claims 10: the words say 0
+    overclaim = coach.Day(day="Mon", text="20-minute walk", moderate_minutes=60, strength=True)
+    assert coach.written(overclaim) == (20, False)                    # counted as written: 20 minutes, no strength
     assert report == {"minutes": 175, "strength_days": 2, "problems": [], "within": True, "fixed": True}
     assert lines[0] == "Mon: 25-minute brisk walk, 10 squats" and "RECENT STEPS A DAY: 4500" in asked[0]
     assert coach.areas_worked(lines[0]) == ["legs", "glutes"]
@@ -237,6 +239,10 @@ def test_the_persons_measures_give_bmi_energy_and_a_goal_estimate_inside_public_
     doctor = health.read({**man, "goal_kg": 86, "doctor_kcal": 1900})
     assert doctor["target_kcal"] == 1900                                               # the doctor's number wins
     assert "about 1900 kcal a day" in health.for_planner({**man, "doctor_kcal": 1900})
+    low = health.read({**man, "doctor_kcal": 900})                     # typed as the doctor's: under the floor
+    assert low["target_kcal"] == 1500 and any("confirm" in n for n in low["notes"])
+    assert "weeks" not in health.read({k: v for k, v in man.items() if k != "age"} | {"goal_kg": 86})   # age unknown
+    assert health.for_planner({**man, "pregnant": True}) == ""        # no calorie number at all in pregnancy
 
 
 def test_measures_are_kept_only_with_consent_and_can_be_deleted(client):
@@ -277,6 +283,9 @@ def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(cli
     assert client.post("/api/meal", content=b"x" * 5000, headers=auth).status_code == 413            # not a meal
     # a form on another site cannot post into the diary (or press a PayPal button)
     cross = client.post("/diary", data={"text": "cacio e pepe"}, headers={"Origin": "https://evil.example"})
+    from fastapi.testclient import TestClient as Bare
+    import app as webapp
+    assert Bare(webapp.app).post("/numbers/measures/delete").status_code == 403   # no origin evidence: refused
     assert cross.status_code == 403
     assert len(client.get("/api/state").json()["diary"]) == 2
 

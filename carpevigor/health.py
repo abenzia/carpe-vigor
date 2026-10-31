@@ -53,9 +53,21 @@ def read(h: dict) -> dict:
         out["bmi_category"] = bmi_category(out["bmi"])
     keep = energy(h)
     out["energy"] = keep
-    out["target_kcal"] = h.get("doctor_kcal") or keep
-    if h.get("doctor_kcal"):
-        out["notes"].append(f"Your doctor's number: {h['doctor_kcal']} kcal a day. It is the one the plan uses.")
+    floor = FLOOR.get(h.get("sex"), 1500)
+    # Minors and pregnancy: no calorie number at all (the equation does not fit them); the doctor plans
+    if (h.get("age") is not None and h["age"] < 18) or h.get("pregnant"):
+        out["target_kcal"] = None
+        out["notes"].append("Under 18, or in pregnancy or breastfeeding: no calorie number or weight goal here; "
+                            "your doctor plans it.")
+        return out
+    doctor = h.get("doctor_kcal")
+    if doctor and doctor < floor:  # typed by the person: below the general minimum it is not taken on trust
+        out["notes"].append(f"{doctor:g} kcal is under the {floor} a day advised without supervision (Harvard Health): "
+                            f"the plan uses {floor} until you confirm the number with your doctor.")
+        doctor = floor
+    elif doctor:
+        out["notes"].append(f"Your doctor's number: {doctor:g} kcal a day. It is the one the plan uses.")
+    out["target_kcal"] = doctor or keep
     goal = h.get("goal_kg")
     if not goal or not h.get("weight_kg") or not h.get("height_cm"):
         return out
@@ -63,19 +75,18 @@ def read(h: dict) -> dict:
     if lose <= 0:
         out["notes"].append("Gaining weight is a plan for your doctor: the app keeps portions at today's needs.")
         return out
-    if (h.get("age") or 99) < 18 or h.get("pregnant"):
-        out["notes"].append("No weight-loss goal for people under 18 or in pregnancy or breastfeeding: ask your doctor.")
+    if h.get("age") is None:  # an adult's goal only: unknown age, no goal
+        out["notes"].append("Add your age to set a weight goal: goals are for adults only.")
         return out
     lowest = round(18.5 * (h["height_cm"] / 100) ** 2, 1)
     if goal < lowest:
         out["notes"].append(f"A goal under {lowest} kg would be a BMI under 18.5 (NHLBI: underweight): not set here.")
         return out
     pace = min(max(h.get("pace") or PACE, 0.25), MAX_PACE)
-    if h.get("doctor_kcal") or keep is None:
+    if doctor or keep is None:
         weeks = math.ceil(lose / pace)
         out.update(goal_kg=goal, lose_kg=lose, pace=pace, weeks=weeks)
         return out
-    floor = FLOOR.get(h.get("sex"), 1500)
     wanted = keep - pace * KCAL_PER_KG / 7
     target = max(round(wanted), floor)
     if target > wanted:   # the floor holds: slower than asked, and the page says why
