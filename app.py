@@ -343,8 +343,12 @@ def cooked(title: str = Form(...), back: str = Form("/week")):
 # What I ate -------------------------------------------------------------------------------------------------------
 @app.get("/diary", response_class=HTMLResponse)
 def diary_view(request: Request, error: str = "", on: str = ""):
+    # The shortcut's address and secret are shown only to someone sitting at this computer: a request through a
+    # Cloudflare tunnel carries cf-connecting-ip, and its host is the tunnel's, not 127.0.0.1
+    here = request.url.hostname in ("127.0.0.1", "localhost") and "cf-connecting-ip" not in request.headers
     return render(request, "diary.html", today=diary.day(store.get("diary", []), on or None), error=error,
-                  portions=list(diary.PORTIONS), food_db=nutrition.available(), watch=bool(config.API_TOKEN))
+                  portions=list(diary.PORTIONS), food_db=nutrition.available(), watch=bool(config.API_TOKEN),
+                  setup={"url": config.PUBLIC_URL, "token": config.API_TOKEN} if here and config.API_TOKEN else None)
 
 
 @app.post("/diary")

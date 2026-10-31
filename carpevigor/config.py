@@ -24,6 +24,8 @@ PAYPAL_BASE = "https://api-m.sandbox.paypal.com"
 PAYPAL_REWARD_VIA = os.environ.get("PAYPAL_REWARD_VIA", "rest")
 # The secret a phone or watch shortcut sends to /api/meal (the diary). Empty: that door is shut.
 API_TOKEN = os.environ.get("CARPE_API_TOKEN", "")
+# Where a phone reaches this app (a tunnel or a deployment), shown on the diary page to copy into the shortcut
+PUBLIC_URL = os.environ.get("CARPE_PUBLIC_URL", "").rstrip("/")
 CURRENCY = os.environ.get("CURRENCY", "USD")
 
 # The agents. Provider `vertex` = Gemini on Google Vertex AI (the default when GOOGLE_CLOUD_PROJECT is set);

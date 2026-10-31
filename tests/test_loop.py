@@ -275,6 +275,10 @@ def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(cli
     assert client.post("/api/meal", json=meal, headers={"Authorization": "Bearer wrong"}).status_code == 403
     r = client.post("/api/meal", json=meal, headers={"Authorization": "Bearer s3cret-token"})
     assert r.status_code == 200 and r.json()["spoken"].startswith("cacio e pepe: about ")
+    # the token is shown to copy into the shortcut only at this computer, never through the tunnel
+    assert "Bearer s3cret-token" in client.get("http://127.0.0.1/diary").text
+    assert "s3cret-token" not in client.get("http://127.0.0.1/diary", headers={"cf-connecting-ip": "203.0.113.9"}).text
+    assert "s3cret-token" not in client.get("/diary").text
     assert "Today so far:" in r.json()["spoken"]
     not_food = client.post("/api/meal", json={"text": "I walked the dog"}, headers={"Authorization": "Bearer s3cret-token"})
     assert not_food.status_code == 422 and "nothing was added" in not_food.json()["spoken"]

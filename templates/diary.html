@@ -48,8 +48,13 @@ The numbers come from USDA FoodData Central. They are for you to see, not a targ
   {% endif %}
 </div>
 
-<details class="card pad">
+<details class="card pad"{{ ' open' if setup }}>
   <summary>Add a meal from your watch or phone</summary>
+  {% if setup %}
+  <div class="flag"><b>Only on this computer:</b> what to copy into the Shortcut on your iPhone. Do not share the token.
+    <p style="margin-top:8px">URL: <code>{{ (setup.url or 'start the tunnel first: no public address yet') }}{{ '/api/meal' if setup.url }}</code></p>
+    <p>Header: <code>Authorization</code> = <code>Bearer {{ setup.token }}</code></p></div>
+  {% endif %}
   {% if watch %}
   <p class="tiny">In the Shortcuts app on your iPhone (it runs on the Apple Watch too): <b>Dictate Text</b> → <b>Get Contents of URL</b>, method POST, to <code>{{ request.base_url }}api/meal</code>, header <code>Authorization: Bearer</code> + your token, JSON body <code>{"text": Dictated Text}</code> → <b>Get Dictionary Value</b> "spoken" → <b>Speak Text</b>. Then "Hey Siri, Carpe Vigor" and say what you are eating.</p>
   {% else %}
