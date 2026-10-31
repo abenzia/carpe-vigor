@@ -153,6 +153,62 @@ def test_cart_says_what_the_week_needs_before_cutting_and_never_cuts_protein_or_
     assert cart.within_budget and not cart.over_budget
 
 
+def test_the_cart_buys_the_packs_the_recipes_use():
+    catalog = Catalog.load()
+    recipes = [{"title": "Chicken and peppers", "buy": [{"name": "Chicken breast", "amount": 300, "unit": "g"},
+                                                         {"name": "Lemons", "amount": 3, "unit": "piece"},
+                                                         {"name": "Black pepper", "amount": 2, "unit": "g"}]},
+               {"title": "Chicken soup", "buy": [{"name": "Chicken breast", "amount": 450, "unit": "g"},
+                                                 {"name": "Lemon", "amount": 2, "unit": "piece"},
+                                                 {"name": "Eggs", "amount": 4, "unit": "piece"}]},
+               {"title": "An older plan", "buy": ["Baby spinach"]}]
+    cart = cart_agent.build(recipes, Pantry(), catalog, budget=500.0)
+    line = {l.item.name: l for l in cart.lines}
+    assert line["Chicken breast"].quantity == 2                 # 750 g in 600 g packs
+    assert line["Chicken breast"].reason.startswith("750 g for Chicken and peppers, Chicken soup")
+    assert line["Lemons"].quantity == 2                         # "Lemons" and "Lemon" are one line: 5 lemons, packs of 4
+    assert line["Eggs"].quantity == 1 and line["Black pepper"].quantity == 1  # 2 g of pepper: the pack is sold by the piece
+    assert line["Baby spinach"].quantity == 1                   # no amount given: one pack, as before
+    stock = cart_agent.build([{"title": "Soup", "buy": [{"name": "Vegetable stock, low sodium", "amount": 1800, "unit": "g"}]}],
+                             Pantry(), catalog, budget=500.0)
+    assert stock.lines[0].quantity == 2                         # 1,800 g of stock in 1 l cartons: grams taken as millilitres
+
+
+def test_the_kitchen_check_holds_recipes_to_the_device_and_their_portions():
+    from carpevigor import kitchen
+    week = [
+        {"day": "Mon", "meal": "dinner", "servings": 2, "leftovers_for": "Tue lunch",
+         "steps": ["Sauté 3 min/120°C/speed 1.", "Steam 20 min/Varoma/speed 1."]},
+        {"day": "Tue", "meal": "lunch", "servings": 1, "from_leftovers": "Mon dinner", "ingredients": ["leftover salmon"]},
+        {"day": "Wed", "meal": "dinner", "servings": 1, "steps": ["Cook the rice as per Monday's quinoa."]},
+        {"day": "Thu", "meal": "lunch", "servings": 1, "ingredients": ["leftover chicken"]},
+        {"day": "Fri", "meal": "dinner", "servings": 1, "leftovers_for": "Sat lunch"},
+        {"day": "Sat", "meal": "dinner", "servings": 1, "steps": ["Bake the frittata 20 min at 180°C.",
+                                                                 "Brown the onion in Browning mode 4 min/160°C."]},
+    ]
+    found = lambda name, people=1: kitchen.check(week, kitchen.device(name), people)
+    tm6 = found("Thermomix / Bimby TM6")
+    assert set(tm6) == {2, 3, 4}           # 120°C, Varoma, the oven's 180°C and Browning mode are all fine on a TM6
+    assert "refers to another recipe" in tm6[2][0] and "which meal" in tm6[3][0]
+    assert len(tm6[4]) == 2                # Sat lunch is not cooked from it, and 1 serving cannot feed two meals
+    assert any("120°C" in p for p in found("Thermomix / Bimby TM31")[0])  # a TM31 stops at 100°C
+    assert any("Steaming mode" in p for p in found("Thermomix / Bimby TM7")[0])
+    assert any("160°C" in p for p in found("Thermomix / Bimby TM5")[5])   # no Browning mode on a TM5
+    two = found("Thermomix / Bimby TM6", people=2)
+    assert any("feeds 2 now" in p for p in two[0]) and any("1 serving for 2" in p for p in two[1])
+    assert kitchen.device("Thermomix / Bimby").name == "Thermomix / Bimby TM6"   # plans saved before the models
+
+
+def test_a_recipe_still_wrong_after_the_fix_is_flagged_on_screen_not_hidden():
+    from carpevigor import kitchen, planner
+    bad = planner.Recipe(day="Mon", meal="dinner", title="Sautéed chicken", servings=1, ingredients=["150 g chicken breast"],
+                         steps=["Sauté 3 min/120°C/speed 1."], why="w", evidence="e")
+    plan = planner.WeekPlan(title="t", summary="s", recipes=[bad], movement=[])
+    report = planner.fix_recipes(plan, kitchen.device("Thermomix / Bimby TM31"), 1)  # the mock fixes nothing
+    assert report["found"] == 1 and report["still"] == 1
+    assert "100°C" in plan.recipes[0].kitchen_flags[0]
+
+
 def test_cart_charges_delivery_again_when_cutting_drops_it_below_the_free_threshold():
     catalog = Catalog.load()
     free_over = catalog.store["delivery_free_over"]

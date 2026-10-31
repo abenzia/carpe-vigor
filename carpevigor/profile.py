@@ -10,9 +10,9 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
-from . import llm, sources
+from . import kitchen, llm, sources
 
-DEVICES = ["Thermomix / Bimby", "Instant Pot", "Air fryer", "Oven and stovetop", "Microwave only"]
+DEVICES = kitchen.NAMES  # each with its own rules and checks (kitchen.py)
 
 
 class Guidance(BaseModel):

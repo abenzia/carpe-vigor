@@ -37,15 +37,21 @@ class Item:
     unit: str
     price: float
     tags: tuple[str, ...]
+    per: tuple[tuple[str, float], ...] = ()  # what one pack holds, e.g. (("g", 600),)
 
     def has(self, *tags: str) -> bool:
         return all(t in self.tags for t in tags)
+
+    def pack(self, unit: str) -> float | None:
+        """How much of `unit` one pack holds, or None when the pack is not sold by that unit."""
+        return dict(self.per).get(unit)
 
 
 class Catalog:
     def __init__(self, data: dict):
         self.store = data["store"]
-        self.items = {i["sku"]: Item(i["sku"], i["name"], i["unit"], float(i["price"]), tuple(i.get("tags", ()))) for i in data["items"]}
+        self.items = {i["sku"]: Item(i["sku"], i["name"], i["unit"], float(i["price"]), tuple(i.get("tags", ())),
+                                     tuple((u, float(n)) for u, n in i.get("per", {}).items())) for i in data["items"]}
         self.swaps = data.get("swaps", {})
 
     @classmethod

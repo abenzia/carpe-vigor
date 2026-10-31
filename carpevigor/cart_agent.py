@@ -13,6 +13,7 @@ ordered (week.capture_order refuses any capture past the authorization anyway).
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 
 from .catalog import Catalog, Item, not_bought
@@ -67,14 +68,44 @@ ESSENTIAL_ORDER = ("protein", "vegetable", "legume", "grain", "fruit", "dairy", 
 PROTECTED = ("protein", "vegetable", "legume")  # the plan itself: never cut to fit the budget
 
 
-def needs(recipes: list[dict]) -> dict[str, list[str]]:
-    """Ingredient name → recipes that use it. A recipe is {"title", "ingredients": [...], "buy": [...]}: `buy` holds store
-    names chosen by the planner and is used when present; `ingredients` (as written for the cook) is the fallback."""
-    wanted: dict[str, list[str]] = {}
+@dataclass
+class Need:
+    used_in: list[str] = field(default_factory=list)            # recipe titles
+    amounts: dict[str, float] = field(default_factory=dict)     # unit → total the week's recipes use
+
+
+def needs(recipes: list[dict]) -> dict[str, Need]:
+    """Ingredient name → which recipes use it and how much in all. A recipe is {"title", "ingredients": [...], "buy": [...]}:
+    `buy` holds store names chosen by the planner, each {"name", "amount", "unit"} (older plans: a bare name), and is used
+    when present; `ingredients` (as written for the cook) is the fallback."""
+    wanted: dict[str, Need] = {}
     for recipe in recipes:
-        for ingredient in recipe.get("buy") or recipe.get("ingredients", []):
-            wanted.setdefault(ingredient.strip().lower(), []).append(recipe["title"])
+        for b in recipe.get("buy") or recipe.get("ingredients", []):
+            name = b["name"] if isinstance(b, dict) else b
+            need = wanted.setdefault(name.strip().lower(), Need())
+            need.used_in.append(recipe["title"])
+            if isinstance(b, dict) and b.get("amount"):
+                need.amounts[b["unit"]] = need.amounts.get(b["unit"], 0) + float(b["amount"])
     return wanted
+
+
+def packs(item: Item, need: Need) -> int:
+    """Packs that cover what the recipes use: 1.2 kg of chicken in 600 g packs is 2. One pack when the recipes give no
+    amount in a unit the pack is sold by (a pinch of pepper, a bare name from an older plan). Grams and millilitres are
+    taken as equal: recipes write stock and milk either way, and for them the difference is a few percent."""
+    counts = []
+    for unit, total in need.amounts.items():
+        size = item.pack(unit) or item.pack({"g": "ml", "ml": "g"}.get(unit, ""))
+        if size:
+            counts.append(math.ceil(total / size - 1e-9))
+    return max(counts + [1])
+
+
+def _reason(need: Need) -> str:
+    """Which recipes need the line, and how much they use in all: '450 g for Mon dinner salmon, Fri salmon bowl'."""
+    used = ", ".join(dict.fromkeys(need.used_in))
+    amount = " + ".join(f"{n:g} {'pieces' if u == 'piece' else u}" for u, n in need.amounts.items())
+    return f"{amount} for {used}" if amount else used
 
 
 def build(recipes: list[dict], pantry: Pantry, catalog: Catalog, budget: float, avoid: set[str] = frozenset()) -> Cart:
@@ -83,7 +114,9 @@ def build(recipes: list[dict], pantry: Pantry, catalog: Catalog, budget: float, 
     cart = Cart(budget=budget)
     at_home, blacklist = pantry.at_home(), pantry.blacklist()
     seen: dict[str, CartLine] = {}
-    for ingredient, used_in in needs(recipes).items():
+    per_sku: dict[str, Need] = {}
+    for ingredient, need in needs(recipes).items():
+        used_in = need.used_in
         item = catalog.find(ingredient)
         if not item:
             if not not_bought(ingredient):  # leftovers and water are not missing, just not bought
@@ -101,10 +134,16 @@ def build(recipes: list[dict], pantry: Pantry, catalog: Catalog, budget: float, 
             swapped_from, item = item.name, swap[0]
             if item.sku in at_home:
                 continue
-        if item.sku in seen:
-            seen[item.sku].reason += f", {', '.join(used_in)}"
+        if item.sku in seen:  # two names for one product ("lemon", "lemons"): one line, their amounts added up
+            total = per_sku[item.sku]
+            total.used_in += used_in
+            for unit, n in need.amounts.items():
+                total.amounts[unit] = total.amounts.get(unit, 0) + n
+            seen[item.sku].quantity = packs(item, total)
+            seen[item.sku].reason = _reason(total)
             continue
-        line = CartLine(item=item, quantity=1, reason=", ".join(dict.fromkeys(used_in)), swapped_from=swapped_from)
+        per_sku[item.sku] = Need(list(used_in), dict(need.amounts))
+        line = CartLine(item=item, quantity=packs(item, need), reason=_reason(need), swapped_from=swapped_from)
         seen[item.sku] = line
         cart.lines.append(line)
     set_delivery(cart, catalog)

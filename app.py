@@ -52,9 +52,10 @@ def doctor(request: Request):
 
 @app.post("/doctor")
 def doctor_submit(request: Request, doctor_said: str = Form(...), device: str = Form(...), constraints: str = Form(""),
-                  budget: float = Form(120.0), report_attached: str = Form("")):
+                  budget: float = Form(120.0), report_attached: str = Form(""), people: int = Form(1)):
     guidance = profile.read(doctor_said, device, constraints, bool(report_attached))
-    store.put("profile", {"doctor_said": doctor_said, "device": device, "constraints_text": constraints,
+    people = min(6, max(1, people))
+    store.put("profile", {"doctor_said": doctor_said, "device": device, "people": people, "constraints_text": constraints,
                           "budget": budget, "guidance": guidance.model_dump()})
     store.delete("plan")
     store.log("profile", {"topics": guidance.topics})
@@ -74,7 +75,7 @@ def week_view(request: Request, build: int = 0):
         focus = [v for v in checkup.view(store.get("numbers", [])) if v["target"] is not None and not v["status"].startswith("at ")]
         guidance.topics = list(dict.fromkeys(guidance.topics + [v["topic"] for v in focus]))
         guidance.goals = guidance.goals + [f"Food and habits that help with {v['label']}" for v in focus]
-        made, report, used = planner.make(guidance, prof["device"])
+        made, report, used = planner.make(guidance, prof["device"], prof.get("people", 1))
         plan = {"plan": made.model_dump(), "report": report, "sources": used, "cooked": [],
                 "focus": [f"{v['label']}: {v['status']}" for v in focus], "numbers": guidelines.for_week(guidance.topics)}
         store.put("plan", plan)

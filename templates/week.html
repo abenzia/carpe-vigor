@@ -75,6 +75,8 @@
     {% if field in (r.removed or []) %}<div class="{{ field }} muted tiny">Removed by the review board.</div>
     {% elif r[field] %}<div class="{{ field }}">{{ r[field] }}</div>{% endif %}
     {% endfor %}
+    {% if r.servings %}<p class="tiny muted">Serves {{ r.servings }}{% if r.leftovers_for %} · cooks enough for {{ r.leftovers_for }} too{% endif %}{% if r.from_leftovers %} · made from {{ r.from_leftovers }}{% endif %}</p>{% endif %}
+    {% for f in r.kitchen_flags or [] %}<p class="tiny flag">Check before cooking: {{ f }}.</p>{% endfor %}
     <details><summary>Ingredients and steps</summary>
       <p class="tiny">{{ r.ingredients|join(', ') }}</p>
       <ol class="steps">{% for s in r.steps %}<li>{{ s }}</li>{% endfor %}</ol>

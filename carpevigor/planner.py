@@ -12,30 +12,45 @@ from __future__ import annotations
 import json
 import re
 import time
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from . import config, guidelines, llm, rag, review_board, sources
+from . import config, guidelines, kitchen, llm, rag, review_board, sources
 from .catalog import Catalog
 from .profile import Guidance
 
 DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 
+class Buy(BaseModel):
+    name: str = Field(description="A name copied EXACTLY from the STORE list")
+    amount: float = Field(description="How much this dish uses, for all its servings")
+    unit: Literal["g", "ml", "piece"] = Field(description="g, ml, or piece (eggs, lemons, avocados)")
+
+
 class Recipe(BaseModel):
     day: str = Field(description="Mon..Sun")
     meal: str = Field(description="lunch or dinner")
     title: str
-    ingredients: list[str] = Field(description="Plain grocery names, one per line, e.g. 'chicken breast', 'spinach', 'olive oil'")
-    buy: list[str] = Field(default_factory=list,
-                           description="What to buy for this dish: names copied EXACTLY from the STORE list. Leave out water "
-                                       "and leftovers. An ingredient the store does not sell is simply not listed here.")
-    steps: list[str] = Field(description="3-6 steps written for the person's kitchen device, with real settings for that device")
+    servings: int = Field(description="How many servings this dish cooks: the number of people, or twice that when it "
+                                      "also makes another meal (leftovers_for)")
+    leftovers_for: str = Field(default="", description="The meal this dish also cooks for, as 'Tue lunch', or empty")
+    from_leftovers: str = Field(default="", description="The meal whose extra servings this dish is made from, as "
+                                                        "'Mon dinner', or empty")
+    ingredients: list[str] = Field(description="Each with its amount for all the servings, e.g. '300 g chicken breast', "
+                                               "'1 tbsp olive oil'")
+    buy: list[Buy] = Field(default_factory=list,
+                           description="What to buy for this dish, with the amount it uses. Leave out water and leftovers. "
+                                       "An ingredient the store does not sell is simply not listed here.")
+    steps: list[str] = Field(description="3-6 steps written for the person's kitchen device, with real settings for that "
+                                         "device and the amounts; complete on their own, never 'as in Monday's recipe'")
     why: str = Field(description="One sentence on what is IN this dish that fits the goals (e.g. 'No added salt: herbs and "
                                  "lemon instead'). Never an effect on health or weight, never 'you' or 'your'.")
     evidence: str = Field(description="One complete sentence saying only what the public source says, 'on average' when it "
                                       "speaks of people in general, with the source name in brackets; never a prediction for this person")
     removed: list[str] = Field(default_factory=list, description="Always empty: filled by the review board")
+    kitchen_flags: list[str] = Field(default_factory=list, description="Always empty: filled by the kitchen check")
 
 
 class WeekPlan(BaseModel):
@@ -45,12 +60,21 @@ class WeekPlan(BaseModel):
     movement: list[str] = Field(description="7 short lines, one per day, of movement a person can do (walk, stairs, light strength); never a medical exercise prescription")
 
 
-SYSTEM = """You plan one week of lunches and dinners for one person, following the lifestyle goals their doctor gave \
-them and the constraints they stated. You write for their kitchen device with real settings (times, temperatures, \
-speeds). You never mention medicines, never diagnose, never predict this person's values. Every 'why' line says what \
-is in the dish that fits a stated goal (no added salt, vegetables, whole grains, fish) and never claims what the dish \
-will do for the person's health or weight. Every 'evidence' line is one complete sentence stating only what the given \
-public source says, on average, with the source's name in brackets. Simple dishes, common ingredients, nothing exotic."""
+SYSTEM = """You plan one week of lunches and dinners for a household, following the lifestyle goals the person's \
+doctor gave them and the constraints they stated. You write for their kitchen device with its real settings (times, \
+temperatures, speeds), within the device rules you are given. Each recipe can be cooked on its own: amounts in grams \
+or pieces for all its servings, every time and setting written out, never 'as in Monday's recipe'. Lunch and dinner \
+are both full meals. A dinner may cook extra for the next day's lunch: then it cooks twice the servings, says so in \
+leftovers_for, and that lunch names it in from_leftovers. You never mention medicines, never diagnose, never predict \
+this person's values. Every 'why' line says what is in the dish that fits a stated goal (no added salt, vegetables, \
+whole grains, fish) and never claims what the dish will do for the person's health or weight. Every 'evidence' line is \
+one complete sentence stating only what the given public source says, on average, with the source's name in brackets. \
+Simple dishes, common ingredients, nothing exotic."""
+
+FIX_RECIPES = """You fix recipes of a week's meal plan that a check found wrong for the person's kitchen device or for \
+the plan's own portions. For each recipe you get its index, the recipe and what is wrong. Return the whole recipe \
+corrected, keeping its day, meal, idea and its why and evidence lines unchanged unless the dish itself changed. Follow \
+the device rules exactly. Each recipe is complete on its own, with amounts for all its servings."""
 
 REWRITE = """You fix sentences of a meal plan that its review board sent back. For each sentence you get its id, the \
 text and what the board said. A 'why' sentence says only what is in the dish (no added salt, vegetables, whole grains), \
@@ -73,17 +97,33 @@ class Rewrites(BaseModel):
     rewrites: list[Rewrite]
 
 
-def make(guidance: Guidance, device: str) -> tuple[WeekPlan, dict, list[dict]]:
+class FixedRecipe(BaseModel):
+    index: int = Field(description="The index you were given")
+    recipe: Recipe
+
+
+class FixedRecipes(BaseModel):
+    recipes: list[FixedRecipe]
+
+
+def make(guidance: Guidance, device: str, people: int = 1) -> tuple[WeekPlan, dict, list[dict]]:
     """The plan, the board's report on its claims, and the sources used."""
     reference, used = sources.reference_for(guidance.topics)
+    dev = kitchen.device(device)
     # The planner picks the products; plain code (cart_agent) prices them and keeps the cart under budget.
-    store = "\n".join(sorted(i.name for i in Catalog.load().items.values()))
+    # Junk (sweets, snacks, cured meat, butter) is not offered: the plan never buys what lowers the person's reward
+    catalog = Catalog.load()
+    store = "\n".join(sorted(i.name for i in catalog.items.values() if catalog.kind(i.sku) != "unhealthy"))
     task = (f"GOALS: {'; '.join(guidance.goals)}\nCONSTRAINTS: {'; '.join(guidance.constraints) or 'none'}\n"
-            f"KITCHEN DEVICE: {device}\n\nSTORE (cook mostly with what it sells; copy these names into 'buy'):\n{store}\n\n"
+            f"COOKING FOR: {people} {'person' if people == 1 else 'people'}\n"
+            f"KITCHEN DEVICE: {dev.name}\nDEVICE RULES: {dev.rules}\n\n"
+            f"STORE (cook mostly with what it sells; copy these names into 'buy'):\n{store}\n\n"
             f"PUBLIC NUMBERS FOR PEOPLE IN GENERAL (plan within them; cite these, never numbers of your own):\n"
             f"{guidelines.as_task(guidelines.for_week(guidance.topics))}\n\n"
             f"PUBLIC SOURCES YOU MAY CITE (use only what they say):\n{reference or '(sources not fetched yet)'}")
     plan = llm.ask(SYSTEM, task, WeekPlan, temperature=0.3)
+    # Before the board reads a word: the recipes must be cookable on this device and keep their own portions
+    kitchen_report = fix_recipes(plan, dev, people)
     claims = " ".join(f"{r.why} {r.evidence}" for r in plan.recipes)
     if reference:
         # 'why' describes the dish (no source speaks of this dish): safety and clarity read it; the fact jurors rule on
@@ -97,7 +137,29 @@ def make(guidance: Guidance, device: str) -> tuple[WeekPlan, dict, list[dict]]:
     else:
         report = {"approved": False, "provider": llm.provider(), "reviewers": [], "corrections": [], "set_aside": [],
                   "statements": review_board.statements_of(claims), "note": "Sources not fetched: run `python -m carpevigor.sources fetch`."}
+    report["kitchen"] = kitchen_report
     return plan, report, used
+
+
+def fix_recipes(plan: WeekPlan, dev: kitchen.Device, people: int) -> dict:
+    """One round of fixes: the recipes the kitchen check finds wrong go back to the model, whole, with what is wrong;
+    the check reads them again. What is still wrong stays on the recipe as a flag the person sees: never hidden."""
+    def problems() -> dict[int, list[str]]:
+        return kitchen.check([r.model_dump() for r in plan.recipes], dev, people)
+    first = problems()
+    if first:
+        asked = "\n\n".join(f"INDEX {i}\n{plan.recipes[i].model_dump_json(exclude={'removed', 'kitchen_flags'})}\n"
+                            f"WRONG: " + "; ".join(p) for i, p in first.items())
+        fixed = llm.ask(FIX_RECIPES, f"COOKING FOR: {people}\nKITCHEN DEVICE: {dev.name}\nDEVICE RULES: {dev.rules}\n\n"
+                                     f"RECIPES TO FIX\n{asked}", FixedRecipes, temperature=0.1)
+        for f in fixed.recipes:
+            if f.index in first:
+                plan.recipes[f.index] = f.recipe.model_copy(update={"removed": [], "kitchen_flags": []})
+    still = problems() if first else {}
+    for i, p in still.items():
+        plan.recipes[i].kitchen_flags = p
+    return {"device": dev.name, "people": people, "found": sum(map(len, first.values())), "recipes_fixed": len(first),
+            "still": sum(map(len, still.values()))}
 
 
 def _text(plan: WeekPlan, fid: str) -> str:
@@ -163,3 +225,5 @@ def _mock_plan(task: str) -> WeekPlan:
 
 
 llm.mock_answers.setdefault("WeekPlan", _mock_plan)
+# No model, no fixes: what the kitchen check finds stays on the recipe as a flag
+llm.mock_answers.setdefault("FixedRecipes", lambda task: FixedRecipes(recipes=[]))

@@ -18,6 +18,12 @@ Your test results can help, if you want: add them in <a href="/numbers">My numbe
       </select>
     </div>
     <div>
+      <label for="people">How many people?</label>
+      <select id="people" name="people">
+        {% for n in range(1, 7) %}<option {{ 'selected' if (profile.people if profile and profile.people else 1) == n }}>{{ n }}</option>{% endfor %}
+      </select>
+    </div>
+    <div>
       <label for="budget">Weekly grocery budget ({{ currency }})</label>
       <input type="number" id="budget" name="budget" step="1" min="20" max="500" value="{{ profile.budget if profile else 120 }}">
     </div>

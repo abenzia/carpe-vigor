@@ -13,8 +13,14 @@ Entry for the **PayPal AI Hackathon** (Devpost, November 2026).
 1. **My doctor said**: in your own words, for example "high blood pressure, less salt, lose a few pounds, walk
    more". The app plans food, movement, sleep and habits. A question about medicines or a diagnosis is set
    apart for your doctor.
-2. **The week**: 14 meals written for the kitchen device you have, plus a movement line for each day. Each meal
-   has a *why* line (what is in the dish) and an *evidence* line (what a named public source says, on average).
+2. **The week**: 14 meals for the number of people you cook for, written for the kitchen device you have, plus a
+   movement line for each day. Each meal has a *why* line (what is in the dish) and an *evidence* line (what a named
+   public source says, on average).
+   - **Recipes that work on your machine.** For a Thermomix (TM7, TM6, TM5, TM31) the planner gets that model's
+     limits from Vorwerk's published specs: a TM31 stops at 100 °C, a TM7 steams in its steaming mode. Plain code
+     then reads every step: a setting the machine cannot do, a step that says "as in Monday's recipe", a dinner
+     that is meant to feed tomorrow's lunch but cooks only tonight's servings. Those recipes go back to the model
+     once, and whatever is still wrong is shown on the recipe, never hidden.
    - The week is planned around **ten public numbers**, each quoting its source word for word, for example
      sodium under 2,000 mg a day (WHO) and 150 to 300 minutes of moderate activity a week (US HHS).
    - A **review board** of five language-model reviewers reads the meal lines before you see them: three fact
@@ -22,7 +28,8 @@ Entry for the **PayPal AI Hackathon** (Devpost, November 2026).
      anything clinical, and a clarity reviewer checks the wording.
 3. **Home**: tick what's in the pantry. What doesn't fit the plan is not thrown away: *finish it, don't rebuy
    it*, and a swap is proposed (butter → olive oil).
-4. **The agent's cart**: the recipes minus what's at home, swaps applied. You authorize the week's budget
+4. **The agent's cart**: the recipes minus what's at home, swaps applied. Each recipe says how many grams it uses,
+   so the cart buys the packs the week needs (1.2 kg of chicken in 600 g packs is two packs). You authorize the week's budget
    **once** with PayPal: the money is held, not charged. Each order is captured against that hold, and the
    remainder is released at the end of the week.
    - If the plan doesn't fit the budget, plain code trims the cart. It never cuts proteins, vegetables or
@@ -128,7 +135,8 @@ PayPal.
 **With `GOOGLE_CLOUD_PROJECT` set:**
 - Gemini on Vertex AI writes the plan and the board gives real verdicts. This needs
   `gcloud auth application-default login`.
-- A week takes about two minutes, including the board and one correction round. A question to Ask the sources
+- A week takes three and a half to five minutes: the plan, one round of recipe fixes, the board and one
+  correction round. A question to Ask the sources
   takes 15 to 20 seconds.
 - The first run indexes all the sources once, in about a minute and a half.
 
