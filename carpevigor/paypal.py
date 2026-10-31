@@ -8,7 +8,9 @@ guarantees capture for 3 days (the honor period) of the 29-day authorization, so
 is authorized on shopping day; a longer plan needs a saved payment method instead.
 
 Reward — the share of the week's spend that good behaviour earned (reward.py) is returned as a
-partial refund of the week's captures. Sandbox refunds are instant.
+partial refund of the month's captures. Sandbox refunds are instant. With PAYPAL_REWARD_VIA=mcp the refund
+goes through PayPal's MCP server (paypal_mcp.py) instead of the REST call; the amount is decided here either way.
+Each refund carries our own invoice_id, so a refund whose answer was lost can be found again on the order.
 
 Modes: `sandbox` (real PayPal sandbox API, credentials from .env) or `mock` (no network: a local
 ledger behaves like the API, every id prefixed `MOCK-`). Live PayPal is refused on purpose: this
@@ -21,11 +23,15 @@ from dataclasses import dataclass, field
 
 import requests
 
-from . import config
+from . import config, paypal_mcp
 
 
 class PayPalError(RuntimeError):
-    pass
+    """`sent`: the request may have reached PayPal although no answer came back, so the money may have moved."""
+
+    def __init__(self, message: str, sent: bool = False):
+        super().__init__(message)
+        self.sent = sent
 
 
 @dataclass
@@ -91,7 +97,7 @@ class MockPayPal:
         auth["status"] = "VOIDED"
         return {"status": "VOIDED", "released": round(auth["amount"] - auth["captured"], 2)}
 
-    def refund(self, capture_id: str, amount: float, note: str) -> dict:
+    def refund(self, capture_id: str, amount: float, note: str, invoice_id: str = "") -> dict:
         cap = self.captures.get(capture_id)
         if not cap:
             raise PayPalError(f"unknown capture {capture_id}")
@@ -99,8 +105,12 @@ class MockPayPal:
             raise PayPalError("REFUND_EXCEEDS_CAPTURE")
         rid = f"MOCK-REF-{uuid.uuid4().hex[:10].upper()}"
         cap["refunded"] = round(cap["refunded"] + amount, 2)
-        self.refunds.append({"id": rid, "capture": capture_id, "amount": round(amount, 2), "note": note})
-        return {"refund_id": rid, "status": "COMPLETED", "amount": round(amount, 2)}
+        self.refunds.append({"id": rid, "capture": capture_id, "amount": round(amount, 2), "note": note, "invoice_id": invoice_id})
+        return {"refund_id": rid, "status": "COMPLETED", "amount": round(amount, 2), "via": "mock"}
+
+    def find_refund(self, order_id: str, invoice_id: str) -> dict | None:
+        r = next((r for r in self.refunds if invoice_id and r["invoice_id"] == invoice_id), None)
+        return {"refund_id": r["id"], "status": "COMPLETED", "amount": r["amount"], "via": "mock"} if r else None
 
 
 class SandboxPayPal:
@@ -125,7 +135,10 @@ class SandboxPayPal:
                 "Prefer": "return=representation"}
 
     def _call(self, method: str, path: str, body: dict | None = None) -> dict:
-        r = requests.request(method, f"{self.base}{path}", headers=self._headers(), json=body, timeout=30)
+        try:
+            r = requests.request(method, f"{self.base}{path}", headers=self._headers(), json=body, timeout=30)
+        except requests.RequestException as error:  # sent, no answer: a POST may have moved money
+            raise PayPalError(f"{method} {path}: no answer ({type(error).__name__})", sent=method != "GET") from error
         if r.status_code == 401:  # token expired: once more with a fresh one
             self._token = None
             r = requests.request(method, f"{self.base}{path}", headers=self._headers(), json=body, timeout=30)
@@ -160,10 +173,28 @@ class SandboxPayPal:
         state = self._call("GET", f"/v2/payments/authorizations/{authorization_id}")
         return {"status": state.get("status", "VOIDED"), "released": None}
 
-    def refund(self, capture_id: str, amount: float, note: str) -> dict:
-        ref = self._call("POST", f"/v2/payments/captures/{capture_id}/refund", {
-            "amount": {"currency_code": config.CURRENCY, "value": f"{amount:.2f}"}, "note_to_payer": note[:255]})
-        return {"refund_id": ref["id"], "status": ref["status"], "amount": amount}
+    def refund(self, capture_id: str, amount: float, note: str, invoice_id: str = "") -> dict:
+        if config.PAYPAL_REWARD_VIA == "mcp":
+            self._headers()  # a valid token for the MCP server; the secret stays in this process
+            try:
+                return {**paypal_mcp.refund(self._token, capture_id, amount, config.CURRENCY, note, invoice_id), "via": "mcp"}
+            except paypal_mcp.McpError as error:
+                raise PayPalError(str(error), sent=error.sent) from error
+        body = {"amount": {"currency_code": config.CURRENCY, "value": f"{amount:.2f}"}, "note_to_payer": note[:255]}
+        if invoice_id:
+            body["invoice_id"] = invoice_id
+        ref = self._call("POST", f"/v2/payments/captures/{capture_id}/refund", body)
+        return {"refund_id": ref["id"], "status": ref["status"], "amount": amount, "via": "rest"}
+
+    def find_refund(self, order_id: str, invoice_id: str) -> dict | None:
+        """The refund with our invoice_id on this order, if PayPal made it: for a refund whose answer was lost."""
+        order = self._call("GET", f"/v2/checkout/orders/{order_id}")
+        for unit in order.get("purchase_units", []):
+            for r in (unit.get("payments") or {}).get("refunds", []):
+                if r.get("invoice_id") == invoice_id:
+                    return {"refund_id": r["id"], "status": r.get("status", ""),
+                            "amount": float((r.get("amount") or {}).get("value", 0)), "via": "found on the order"}
+        return None
 
 
 _client = None

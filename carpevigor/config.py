@@ -20,6 +20,8 @@ PAYPAL_CLIENT_ID = os.environ.get("PAYPAL_CLIENT_ID", "")
 PAYPAL_CLIENT_SECRET = os.environ.get("PAYPAL_CLIENT_SECRET", "")
 PAYPAL_MODE = os.environ.get("PAYPAL_MODE", "mock" if not PAYPAL_CLIENT_ID else "sandbox")  # mock | sandbox
 PAYPAL_BASE = "https://api-m.sandbox.paypal.com"
+# How the reward refund reaches PayPal: rest (the Payments API) or mcp (PayPal's MCP server, needs Node.js)
+PAYPAL_REWARD_VIA = os.environ.get("PAYPAL_REWARD_VIA", "rest")
 CURRENCY = os.environ.get("CURRENCY", "USD")
 
 # The agents. Provider `vertex` = Gemini on Google Vertex AI (the default when GOOGLE_CLOUD_PROJECT is set);

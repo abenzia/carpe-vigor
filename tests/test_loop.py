@@ -16,8 +16,10 @@ from carpevigor.store import Store
 @pytest.fixture(autouse=True)
 def _no_index_in_the_repo(tmp_path, monkeypatch):
     """The retrieval index is a cache next to the real sources: tests keep theirs in a temporary folder."""
-    from carpevigor import rag
+    from carpevigor import config, rag
     monkeypatch.setattr(rag, "INDEX", tmp_path / "index.json")
+    # the machine's .env may send the reward through PayPal's MCP server: tests never start it (the MCP test fakes it)
+    monkeypatch.setattr(config, "PAYPAL_REWARD_VIA", "rest")
 
 
 @pytest.fixture
@@ -629,3 +631,79 @@ def test_guideline_numbers_have_a_source_and_show_only_when_the_source_says_them
     assert guidelines.found(salt) is False
     assert not any(e["source"] == "who-sodium" for e in guidelines.for_week(["blood_pressure"]))
     assert "WHO — Sodium reduction" not in guidelines.as_task(guidelines.for_week(["blood_pressure"]))
+
+
+def _two_closed_weeks(tmp_path, client, earned=(45.0, 40.0)):
+    """Two closed weeks of 80 and 60 dollars on the given client; 85 earned by default, more than the larger capture."""
+    from carpevigor import week as w
+    paypal.use(client)
+    s = Store(tmp_path / "m.sqlite")
+    for spent, e in zip((80.0, 60.0), earned):
+        order = w.start_authorization(s, 100.0, "http://x/ok", "http://x/ko")
+        w.complete_authorization(s, order["id"])
+        w.capture_order(s, spent, "groceries")
+        w.release_remainder(s)
+        w.close_week(s, reward.Reward(score=0.7, cashback_rate=e / spent, cashback=e, reasons=[]))
+    return s
+
+
+def test_a_refund_failing_halfway_never_pays_twice(tmp_path):
+    from carpevigor import week as w
+
+    class SecondFails(paypal.MockPayPal):
+        fail = True
+
+        def refund(self, capture_id, amount, note, invoice_id=""):
+            if self.refunds and self.fail:  # the first refund goes through, the second does not
+                raise paypal.PayPalError("422 UNPROCESSABLE", sent=False)
+            return super().refund(capture_id, amount, note, invoice_id)
+
+    pp = SecondFails()
+    s = _two_closed_weeks(tmp_path, pp)
+    with pytest.raises(paypal.PayPalError, match="trying again is safe"):
+        w.settle_month(s)
+    assert [r["amount"] for r in pp.refunds] == [80.0]                           # the first refund was made...
+    assert w.month(s)["paid"][0]["amount"] == 80.0 and w.month(s)["weeks"]        # ...and saved; the month stays open
+    pp.fail = False
+    w.settle_month(s)                                                             # the retry pays only the rest
+    assert round(sum(r["amount"] for r in pp.refunds), 2) == 85.0
+    assert len({r["invoice_id"] for r in pp.refunds}) == len(pp.refunds)          # each refund its own invoice id
+    assert round(sum(r["amount"] for r in s.get("refunds")), 2) == 85.0
+
+
+def test_a_refund_whose_answer_was_lost_is_found_on_the_order_not_paid_again(tmp_path):
+    from carpevigor import week as w
+
+    class AnswerLost(paypal.MockPayPal):
+        def refund(self, capture_id, amount, note, invoice_id=""):
+            super().refund(capture_id, amount, note, invoice_id)       # PayPal refunds...
+            raise paypal.PayPalError("no answer (ReadTimeout)", sent=True)  # ...and the answer never arrives
+
+    pp = AnswerLost()
+    s = _two_closed_weeks(tmp_path, pp, earned=(9.0, 12.0))
+    paid = w.settle_month(s)
+    assert len(pp.refunds) == 1 and paid[0]["amount"] == 21.0 and paid[0]["refund_id"] == pp.refunds[0]["id"]
+    assert w.month(s)["last_paid"]["paid"] == 21.0
+
+
+def test_the_reward_can_go_through_paypals_mcp_server_with_a_token_not_the_secret(monkeypatch):
+    from carpevigor import config as c, paypal_mcp
+    seen = {}
+
+    def fake_refund(token, capture_id, amount, currency, note, invoice_id):
+        seen.update(token=token, capture_id=capture_id, value=f"{amount:.2f}", invoice_id=invoice_id)
+        return {"refund_id": "5RF12345AB678901C", "status": "COMPLETED", "amount": amount}
+
+    monkeypatch.setattr(paypal_mcp, "refund", fake_refund)
+    monkeypatch.setattr(c, "PAYPAL_REWARD_VIA", "mcp")
+    sandbox = paypal.SandboxPayPal("id", "the-secret")
+    monkeypatch.setattr(sandbox, "_headers", lambda: setattr(sandbox, "_token", "short-lived-token") or {})
+    ref = sandbox.refund("27994506801896151", 4.5, "reward", invoice_id="CV-REWARD-27994506801896151-1")
+    assert ref["via"] == "mcp" and ref["refund_id"] == "5RF12345AB678901C"
+    assert seen == {"token": "short-lived-token", "capture_id": "27994506801896151", "value": "4.50",
+                    "invoice_id": "CV-REWARD-27994506801896151-1"}
+    # PayPal said no through the server: nothing moved, the error says so
+    monkeypatch.setattr(paypal_mcp, "refund", lambda *a: (_ for _ in ()).throw(paypal_mcp.McpError("refused", sent=False)))
+    with pytest.raises(paypal.PayPalError) as e:
+        sandbox.refund("27994506801896151", 4.5, "reward")
+    assert e.value.sent is False

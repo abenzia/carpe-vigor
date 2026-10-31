@@ -6,6 +6,8 @@ python-multipart>=0.0.9
 pydantic>=2.7
 requests>=2.32
 python-dotenv>=1.0
+# The reward through PayPal's MCP server (PAYPAL_REWARD_VIA=mcp; the server itself is the npm package @paypal/mcp)
+mcp>=1.9
 # Models on Google Vertex AI (default provider when GOOGLE_CLOUD_PROJECT is set)
 google-genai>=1.20
 # Optional: Amazon Bedrock via Strands Agents (LLM_PROVIDER=bedrock)

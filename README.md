@@ -68,8 +68,17 @@ an employer inside its welfare plan, an insurer, or a retailer whose basket beco
 - **The weekly budget** uses the Orders API v2 with intent `AUTHORIZE`. Each order is a
   `POST /v2/payments/authorizations/{id}/capture` with `final_capture=false`. `void` releases the remainder, and
   the reward is a partial `refund` of the month's captures.
+- **The reward goes back through PayPal's own MCP server** (`@paypal/mcp`, the PayPal Agent Toolkit), with its
+  `create_refund` tool: the same interface an AI assistant would be given. Plain code fixes the capture and the
+  amount before the tool is called; the server gets a short-lived access token, never the client secret.
+  `PAYPAL_REWARD_VIA=rest` uses the Payments API instead. The toolkit has no authorization, capture or void, so
+  the weekly budget stays on the REST API.
+- **A refund is never paid twice.** Each refund is saved the moment PayPal confirms it and carries our own
+  `invoice_id`. If an answer is lost, the app reads the order back and records the refund PayPal made under that
+  id; a second try pays only what is still owed.
 - **Verified end to end on the sandbox**: authorize USD 120, two captures (110.00 and 5.00), void, partial refund
-  of 9.58. A capture after the void is refused with 422.
+  of 9.58. A capture after the void is refused with 422. A reward refund through the MCP server (0.50, in about
+  7 seconds), found again on the order by its `invoice_id`.
 - **Known limit**: PayPal guarantees a capture for 3 days (the honor period) of the 29-day authorization. So the
   weekly budget is authorized on shopping day; longer plans would use a saved payment method.
 - **Sandbox only**: `paypal.py` refuses live. With no credentials the app runs in mock mode and says so on
@@ -126,7 +135,8 @@ PayPal.
   - retrieval uses `gemini-embedding-2`.
 - **Optional**: Amazon Nova through Strands Agents on Bedrock (`LLM_PROVIDER=bedrock`). The review board was
   first built on that stack for *Carpe Class* (Amazon Developer Hackathon, October 2026).
-- **PayPal** REST, sandbox.
+- **PayPal** REST, sandbox, and PayPal's MCP server (`@paypal/mcp` 1.8.1, through `npx`: needs Node.js) for the
+  reward.
 - **Store**: a mock grocery catalog (`data/catalog.json`). A real deployment would plug in a retailer API.
 - **Ledger table**: AG Grid Community, loaded from jsDelivr with integrity hashes.
 

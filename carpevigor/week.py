@@ -107,8 +107,8 @@ def close_week(store: Store, result: reward.Reward) -> dict:
     spent = round(sum(c["amount"] for c in store.get("captures", [])), 2)
     entry = {"authorization_id": auth.get("authorization_id"), "spent": spent, "earned": result.cashback,
              "rate": result.cashback_rate, "score": result.score, "reasons": result.reasons,
-             "captures": [{"capture_id": c["capture_id"], "amount": c["amount"], "refunded": c.get("refunded", 0.0)}
-                          for c in store.get("captures", [])]}
+             "captures": [{"capture_id": c["capture_id"], "amount": c["amount"], "refunded": c.get("refunded", 0.0),
+                           "order_id": auth.get("order_id")} for c in store.get("captures", [])]}
     m["weeks"].append(entry)
     store.put("month", m)
     store.log("week_closed", {k: entry[k] for k in ("authorization_id", "spent", "earned", "rate", "score")})
@@ -117,24 +117,40 @@ def close_week(store: Store, result: reward.Reward) -> dict:
 
 def settle_month(store: Store) -> list[dict]:
     """End of the month: what the closed weeks earned is refunded across the month's captures, largest first, up to
-    each capture's amount (PayPal refunds a capture for 180 days, a month is well inside). Then a new month starts."""
+    each capture's amount (PayPal refunds a capture for 180 days, a month is well inside). Then a new month starts.
+
+    Each refund is saved the moment PayPal confirms it, so a failure halfway never loses the ones already made and a
+    second try pays only what is still owed. Each carries our invoice_id; when a refund was sent but its answer was
+    lost, the order is read back and the refund with that invoice_id, if PayPal made it, is recorded instead."""
     m = month(store)
-    left = m["earned"]
-    if left <= 0:
+    if m["earned"] <= 0:
         raise paypal.PayPalError("Nothing earned this month yet: close a week first.")
+    paid_now = m.setdefault("paid", [])  # this month's refunds so far: a retry continues from here
+    left = round(m["earned"] - sum(r["amount"] for r in paid_now), 2)
+    note = "Carpe Vigor reward: you did your part this month"
     captures = [c for w in m["weeks"] for c in w["captures"]]
-    paid_now = []
     for cap in sorted(captures, key=lambda c: -c["amount"]):
-        if left <= 0:
-            break
         room = round(cap["amount"] - cap.get("refunded", 0.0), 2)
-        if room <= 0:
+        if left <= 0 or room <= 0:
             continue
         amount = min(left, room)
-        ref = paypal.client().refund(cap["capture_id"], amount, "Carpe Vigor reward: you did your part this month")
-        cap["refunded"] = round(cap.get("refunded", 0.0) + amount, 2)
-        paid_now.append({"refund_id": ref["refund_id"], "capture_id": cap["capture_id"], "amount": amount})
-        left = round(left - amount, 2)
+        n = sum(1 for r in store.get("refunds", []) + paid_now if r["capture_id"] == cap["capture_id"])
+        invoice_id = f"CV-REWARD-{cap['capture_id']}-{n + 1}"
+        try:
+            ref = paypal.client().refund(cap["capture_id"], amount, note, invoice_id=invoice_id)
+        except paypal.PayPalError as error:
+            ref = paypal.client().find_refund(cap["order_id"], invoice_id) if error.sent and cap.get("order_id") else None
+            if ref is None:
+                store.put("month", m)
+                maybe = (f" It may have gone through: look for invoice {invoice_id} in the PayPal sandbox before trying again."
+                         if error.sent else " Nothing was paid for it; trying again is safe.")
+                raise paypal.PayPalError(f"Paid {sum(r['amount'] for r in paid_now):.2f} of {m['earned']:.2f}; the refund "
+                                         f"of {amount:.2f} on {cap['capture_id']} failed: {error}.{maybe}", sent=error.sent) from error
+        cap["refunded"] = round(cap.get("refunded", 0.0) + ref["amount"], 2)
+        paid_now.append({"refund_id": ref["refund_id"], "capture_id": cap["capture_id"], "amount": ref["amount"],
+                         "invoice_id": invoice_id, "via": ref.get("via", "")})
+        left = round(left - ref["amount"], 2)
+        store.put("month", m)  # saved now: never paid twice
     store.put("refunds", store.get("refunds", []) + paid_now)
     # `unpaid` > 0 only if the month's captures had less room than it earned (e.g. a bonus with few orders): said, kept
     store.put("month", {"weeks": [], "bonuses": [], "last_paid": {"weeks": len(m["weeks"]), "spent": m["spent"],
@@ -160,8 +176,10 @@ def ledger(store: Store) -> list[dict]:
         elif e["kind"] == "reward_paid":
             for r in e.get("refunds", []):
                 rows.append({"at": e["at"], "what": "Reward paid back", "paypal_id": r["refund_id"], "amount": r["amount"],
-                             "effect": "paid to you", "note": f"refund of {r['capture_id']} · the month's reward"
-                                                              + (f" ({e['weeks']} week{'s' if e['weeks'] != 1 else ''})" if e.get("weeks") else "")})
+                             "effect": "paid to you",
+                             "note": f"refund of {r['capture_id']} · the month's reward"
+                             + (f" ({e['weeks']} week{'s' if e['weeks'] != 1 else ''})" if e.get("weeks") else "")
+                             + (" · through PayPal's MCP server" if r.get("via") == "mcp" else "")})
         elif e["kind"] == "checkup_bonus":
             rows.append({"at": e["at"], "what": "Check-up bonus", "paypal_id": "", "amount": e["earned"], "effect": "earned",
                          "note": f"your doctor: goals {e['verdict']} · on {e['spent']:.2f} spent since the last check-up · "
