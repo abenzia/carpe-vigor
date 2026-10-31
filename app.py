@@ -45,6 +45,10 @@ async def same_origin_posts(request: Request, call_next):
     """A form on another site cannot post here: the app moves money (PayPal) and keeps health data. Browsers send
     Origin (or at least Referer) with every POST; a post must show it came from this app's own pages, or it is refused
     (fail closed). /api/meal is the exception, for a phone shortcut that sends no Origin: it has its own token."""
+    # Through the Cloudflare tunnel (marked by cf-connecting-ip) only the watch's door is open: the tunnel exists for
+    # the shortcut, and anyone holding its address must not read measures, the diary or press PayPal buttons
+    if "cf-connecting-ip" in request.headers and request.url.path != "/api/meal":
+        return JSONResponse({"error": "Not available here."}, status_code=404)
     if request.method == "POST" and request.url.path != "/api/meal":
         source = request.headers.get("origin") or request.headers.get("referer") or ""
         if not source or urlparse(source).netloc != request.headers.get("host", ""):

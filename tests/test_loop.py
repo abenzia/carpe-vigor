@@ -285,6 +285,11 @@ def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(cli
     assert "s3cret-token" not in at_this_computer.get("/diary", headers={"cf-connecting-ip": "203.0.113.9"}).text
     assert "s3cret-token" not in at_this_computer.get("/diary", headers={"x-forwarded-for": "203.0.113.9"}).text
     assert "s3cret-token" not in client.get("http://127.0.0.1/diary").text      # Host says local, connection is not
+    # through the tunnel only the watch's door answers: no measures, no diary page, no PayPal buttons
+    tunnel = {"cf-connecting-ip": "203.0.113.9"}
+    assert client.get("/numbers", headers=tunnel).status_code == 404
+    assert client.get("/api/state", headers=tunnel).status_code == 404
+    assert client.post("/api/meal", json=meal, headers={**tunnel, "Authorization": "Bearer s3cret-token"}).status_code == 200
     assert "Today so far:" in r.json()["spoken"]
     not_food = client.post("/api/meal", json={"text": "I walked the dog"}, headers={"Authorization": "Bearer s3cret-token"})
     assert not_food.status_code == 422 and "nothing was added" in not_food.json()["spoken"]
