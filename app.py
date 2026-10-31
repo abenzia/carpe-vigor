@@ -13,15 +13,18 @@ Budget / spent / released is shown on every screen (base.html).
 from __future__ import annotations
 
 import json
+import secrets
 import threading
 from datetime import datetime, timezone
+from urllib.parse import quote
 
 from fastapi import FastAPI, Form, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from carpevigor import __version__, ask, cart_agent, checkup, config, guidelines, kitchen, planner, profile, rag, reward, sources, week
+from carpevigor import (__version__, ask, cart_agent, checkup, config, diary, guidelines, kitchen, nutrition, planner, profile,
+                        rag, reward, sources, week)
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -196,7 +199,61 @@ def cooked(title: str = Form(...)):
         done.symmetric_difference_update({title})
         plan["cooked"] = sorted(done)
         store.put("plan", plan)
+        # a cooked meal of the plan goes into today's diary with its recipe's values; unticked, it comes out again
+        entries = [e for e in store.get("diary", []) if not (e.get("plan") and e["dish"] == title
+                                                              and e["at"][:10] == diary.day([])["on"])]
+        recipe = next((r for r in plan["plan"]["recipes"] if r["title"] == title), None)
+        if title in done and recipe and (entry := diary.from_plan(recipe)):
+            entries.append(entry)
+        store.put("diary", entries)
     return RedirectResponse("/week", status_code=303)
+
+
+# What I ate -------------------------------------------------------------------------------------------------------
+@app.get("/diary", response_class=HTMLResponse)
+def diary_view(request: Request, error: str = "", on: str = ""):
+    return render(request, "diary.html", today=diary.day(store.get("diary", []), on or None), error=error,
+                  portions=list(diary.PORTIONS), food_db=nutrition.available(), watch=bool(config.API_TOKEN))
+
+
+@app.post("/diary")
+def diary_add(text: str = Form(...), portion: str = Form("normal")):
+    try:
+        entry = diary.say(text, portion)
+    except ValueError as error:
+        return RedirectResponse(f"/diary?error={quote(str(error))}", status_code=303)
+    store.put("diary", store.get("diary", []) + [entry])
+    return RedirectResponse("/diary", status_code=303)
+
+
+@app.post("/diary/remove")
+def diary_remove(at: str = Form(...), dish: str = Form(...)):
+    entries = store.get("diary", [])
+    gone = next((i for i, e in enumerate(entries) if e["at"] == at and e["dish"] == dish), None)
+    if gone is not None:
+        del entries[gone]
+        store.put("diary", entries)
+    return RedirectResponse("/diary", status_code=303)
+
+
+@app.post("/api/meal")
+async def api_meal(request: Request):
+    """For a phone or watch shortcut: {"text": "cacio e pepe", "portion": "normal"} with the header
+    'Authorization: Bearer <CARPE_API_TOKEN>'. Answers {"spoken": "...", "entry": {...}}. Without a token set in .env
+    the door stays shut: on a deployed app anyone could otherwise write into the diary."""
+    given = request.headers.get("authorization", "").removeprefix("Bearer ").strip()
+    if not config.API_TOKEN or not secrets.compare_digest(given, config.API_TOKEN):
+        return JSONResponse({"spoken": "This shortcut is not allowed to write to the diary."}, status_code=403)
+    try:
+        body = await request.json()
+    except ValueError:
+        body = {"text": (await request.body()).decode("utf-8", "replace")}
+    try:
+        entry = diary.say(str(body.get("text", "")), body.get("portion") if body.get("portion") in diary.PORTIONS else "normal")
+    except ValueError as error:
+        return JSONResponse({"spoken": str(error)}, status_code=422)
+    store.put("diary", store.get("diary", []) + [entry])
+    return {"spoken": diary.spoken(entry, diary.day(store.get("diary", []))), "entry": entry}
 
 
 # 3 ------------------------------------------------------------------------------------------------------------------
@@ -378,4 +435,5 @@ def api_ledger():
 @app.get("/api/state")
 def api_state():
     return {"money": week.status(store), "profile": store.get("profile"), "plan": store.get("plan"),
-            "pantry": store.get("pantry"), "cart": store.get("cart"), "steps": store.get("steps"), "log": store.events()}
+            "pantry": store.get("pantry"), "cart": store.get("cart"), "steps": store.get("steps"),
+            "diary": store.get("diary", []), "log": store.events()}

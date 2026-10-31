@@ -200,6 +200,44 @@ def test_a_dish_is_counted_from_usda_foods_and_the_model_only_picks_among_them(t
     assert nutrition.count(dish, servings=2) == n and len(rounds) == 2  # decided once: no model the second time
 
 
+def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(client, tmp_path, monkeypatch):
+    from carpevigor import config, diary, nutrition
+    _tiny_usda(tmp_path)
+    monkeypatch.setitem(nutrition.llm.mock_answers, "Breakdown", lambda task: diary.Breakdown(
+        dish="cacio e pepe", parts=[diary.Part(name="pasta dry", grams=100), diary.Part(name="cheese romano", grams=40)]
+        if "cacio" in task else [], assumed="100 g of dry pasta"))
+    r = client.post("/diary", data={"text": "a plate of cacio e pepe", "portion": "large"}, follow_redirects=False)
+    assert r.headers["location"] == "/diary"
+    page = client.get("/diary").text
+    assert "cacio e pepe" in page and "estimated" in page
+    entry = client.get("/api/state").json()["diary"][0]
+    assert entry["nutrition"]["kcal"] == round((371 * 1.0 + 387 * 0.4) * 1.4, 1)   # a large portion: 1.4 typical
+    # the watch's door: shut without a token, refused with a wrong one, open with the right one
+    meal = {"text": "cacio e pepe"}
+    assert client.post("/api/meal", json=meal).status_code == 403
+    monkeypatch.setattr(config, "API_TOKEN", "s3cret-token")
+    assert client.post("/api/meal", json=meal, headers={"Authorization": "Bearer wrong"}).status_code == 403
+    r = client.post("/api/meal", json=meal, headers={"Authorization": "Bearer s3cret-token"})
+    assert r.status_code == 200 and r.json()["spoken"].startswith("cacio e pepe: about ")
+    assert "Today so far:" in r.json()["spoken"]
+    not_food = client.post("/api/meal", json={"text": "I walked the dog"}, headers={"Authorization": "Bearer s3cret-token"})
+    assert not_food.status_code == 422 and "nothing was added" in not_food.json()["spoken"]
+    assert len(client.get("/api/state").json()["diary"]) == 2
+
+
+def test_a_cooked_meal_of_the_plan_goes_in_and_out_of_the_diary(client):
+    client.post("/doctor", data={"doctor_said": "Eat less salt, walk more", "device": "Thermomix / Bimby TM7", "budget": "140"},
+                follow_redirects=False)
+    _built_week(client)
+    first = client.get("/api/state").json()["plan"]["plan"]["recipes"][0]
+    client.post("/week/cooked", data={"title": first["title"]})
+    entries = client.get("/api/state").json()["diary"]
+    assert [e["dish"] for e in entries] == [first["title"]] and not entries[0]["estimate"]
+    assert entries[0]["nutrition"] == first["nutrition"]          # its own recipe, not an estimate
+    client.post("/week/cooked", data={"title": first["title"]})   # unticked
+    assert client.get("/api/state").json()["diary"] == []
+
+
 def test_the_cart_buys_the_packs_the_recipes_use():
     catalog = Catalog.load()
     recipes = [{"title": "Chicken and peppers", "buy": [{"name": "Chicken breast", "amount": 300, "unit": "g"},

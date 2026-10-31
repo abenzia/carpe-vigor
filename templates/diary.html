@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — What I ate{% endblock %}
+{% block content %}
+<div class="eyebrow">Your day</div>
+<h2>What I ate</h2>
+<p class="muted">Say it in a few words — typed, dictated, or from a shortcut on your watch. The meals of your plan you mark as cooked are added on their own.
+The numbers come from USDA FoodData Central. They are for you to see, not a target: if you need one, that is your doctor's to set. The diary does not count toward your reward.</p>
+
+{% if error %}<div class="flag">{{ error }}</div>{% endif %}
+{% if not food_db %}<div class="flag">The food database is not on this machine yet: run <code>python -m carpevigor.nutrition fetch</code>.</div>{% endif %}
+
+<form method="post" action="/diary" class="card accent">
+  <label for="text">What are you eating or drinking?</label>
+  <input type="text" id="text" name="text" required placeholder="a plate of cacio e pepe and a glass of red wine" autocomplete="off">
+  <div class="row" style="margin-top:10px">
+    <label for="portion" style="margin:0">Portion</label>
+    <select id="portion" name="portion" style="width:auto">{% for p in portions %}<option {{ 'selected' if p == 'normal' }}>{{ p }}</option>{% endfor %}</select>
+    <button type="submit">Add</button>
+  </div>
+</form>
+
+<div class="card">
+  <h3>Today{% if today.estimated %} <span class="pill warn">some values estimated</span>{% endif %}</h3>
+  {% if today.entries %}
+  <table>
+    <tr><th>When</th><th>What</th><th class="num">kcal</th><th class="num">Protein</th><th class="num">Fiber</th><th class="num">Sat. fat</th><th class="num">Sodium</th><th></th></tr>
+    {% for e in today.entries %}{% set n = e.nutrition %}
+    <tr>
+      <td class="tiny">{{ e.at[11:16] }}</td>
+      <td><b>{{ e.dish }}</b> <span class="tiny muted">{{ e.portion }}{% if e.plan %} · from your plan ({{ e.plan }}){% else %} · estimated{% endif %}</span>
+        <details class="tiny"><summary>how it was counted</summary>
+          {% if e.assumed %}<p class="muted">Assumed: {{ e.assumed }}</p>{% endif %}
+          <ul>{% for c in n.counted %}<li>{{ c }}</li>{% endfor %}</ul>
+          {% if n.left_out %}<p class="muted">Not counted: {{ n.left_out|join(', ') }}.</p>{% endif %}
+        </details></td>
+      <td class="num">{{ n.kcal|round|int }}</td><td class="num">{{ n.protein_g|round|int }} g</td><td class="num">{{ n.fiber_g|round|int }} g</td>
+      <td class="num">{{ n.sat_fat_g|round|int }} g</td><td class="num">{{ '≤ ' if n.sodium_at_most }}{{ n.sodium_mg|round|int }} mg</td>
+      <td><form method="post" action="/diary/remove" class="inline"><input type="hidden" name="at" value="{{ e.at }}"><input type="hidden" name="dish" value="{{ e.dish }}"><button class="link" title="Remove">×</button></form></td>
+    </tr>{% endfor %}
+    {% set t = today.total %}
+    <tr><td></td><td><b>Today</b></td><td class="num"><b>{{ t.kcal|round|int }}</b></td><td class="num"><b>{{ t.protein_g|round|int }} g</b></td><td class="num"><b>{{ t.fiber_g|round|int }} g</b></td>
+      <td class="num"><b>{{ t.sat_fat_g|round|int }} g</b></td><td class="num"><b>{{ '≤ ' if today.sodium_at_most }}{{ t.sodium_mg|round|int }} mg</b></td><td></td></tr>
+  </table>
+  <p class="tiny muted">For comparison, WHO's number for adults is under 2,000 mg of sodium a day. "Estimated" means a typical portion of what you said, counted on its raw ingredients: what was really on the plate can differ by a third or more. Meals from your plan are counted on their recipe.</p>
+  {% else %}
+  <p class="muted">Nothing yet today.</p>
+  {% endif %}
+</div>
+
+<details class="card">
+  <summary>Add a meal from your watch or phone</summary>
+  {% if watch %}
+  <p class="tiny">In the Shortcuts app on your iPhone (it runs on the Apple Watch too): <b>Dictate Text</b> → <b>Get Contents of URL</b>, method POST, to <code>{{ request.base_url }}api/meal</code>, header <code>Authorization: Bearer</code> + your token, JSON body <code>{"text": Dictated Text}</code> → <b>Get Dictionary Value</b> "spoken" → <b>Speak Text</b>. Then "Hey Siri, Carpe Vigor" and say what you are eating.</p>
+  {% else %}
+  <p class="tiny muted">Set <code>CARPE_API_TOKEN</code> in <code>.env</code> to open this door, and put the app where your phone can reach it.</p>
+  {% endif %}
+</details>
+{% endblock %}

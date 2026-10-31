@@ -50,6 +50,12 @@ The header of every screen shows budget · spent · released · paid back. Three
 - **My numbers** (optional): test results you choose to enter, shown next to the target your doctor set. A
   measure above the doctor's target makes it a focus of the next week's plan. The page also quotes what the
   public sources say about each measure. The app never judges your numbers: your doctor does.
+- **What I ate**: nobody weighs what they eat, so the diary takes a sentence ("a plate of cacio e pepe"), typed or
+  dictated, or sent from an iPhone or Apple Watch shortcut to `POST /api/meal` (with a secret token). A model turns it
+  into the raw ingredients of a typical portion; USDA FoodData Central gives the values; the answer comes back as a
+  line Siri can read ("cacio e pepe: about 572 calories, 29 grams of protein, 723 milligrams of sodium"). Meals of the
+  plan marked as cooked join the day with their recipe's values. Estimates are labelled as such, there is no calorie
+  target, and the diary never touches the reward.
 - **Ask the sources**: a free question, answered only from passages of the public sources, each sentence citing
   its passage. The safety reviewer reads the answer before you do. If the reviewer still blocks it after one
   rewrite, you see the passages and the reason, never the answer.

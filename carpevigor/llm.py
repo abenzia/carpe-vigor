@@ -12,6 +12,7 @@ Providers:
 """
 from __future__ import annotations
 
+import logging
 import os
 import re
 import threading
@@ -23,6 +24,8 @@ from typing import Callable, Type, TypeVar
 from pydantic import BaseModel
 
 from . import config
+
+log = logging.getLogger("carpevigor.llm")
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -99,6 +102,7 @@ def _vertex(system: str, task: str, shape: Type[T], model: str, temperature: flo
 
     settings = types.GenerateContentConfig(system_instruction=system, temperature=temperature,
                                            response_mime_type="application/json", response_schema=shape)
+    started, refused = time.time(), 0
     for wait in RETRY_WAITS + (None,):
         try:
             response = _client().models.generate_content(model=model, contents=task, config=settings)
@@ -108,7 +112,11 @@ def _vertex(system: str, task: str, shape: Type[T], model: str, temperature: flo
             # Only that is retried; anything else, or a 429 after the last wait, goes up to the caller as it is.
             if wait is None or getattr(error, "code", None) != 429:
                 raise
+            refused += 1
             time.sleep(wait)
+    # Where a slow week spends its time: each call's model, shape, seconds and quota refusals (31 Oct: one week took
+    # 183 s, the next 514 s with the same code)
+    log.info("%s %s %.1fs%s", model, shape.__name__, time.time() - started, f" after {refused} x 429" if refused else "")
     parsed = response.parsed
     return parsed if isinstance(parsed, shape) else shape.model_validate_json(response.text)
 
