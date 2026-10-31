@@ -17,7 +17,7 @@ Entry for the **PayPal AI Hackathon** (Devpost, November 2026).
    movement line for each day. Each meal has a *why* line (what is in the dish) and an *evidence* line (what a named
    public source says, on average).
    - **Recipes that work on your machine.** For a Thermomix (TM7, TM6, TM5, TM31) the planner gets that model's
-     limits from Vorwerk's published specs: a TM31 stops at 100 °C, a TM7 steams in its steaming mode. Plain code
+     limits from Vorwerk's published specs: a TM31 stops at 100 °C, a TM7 does not heat above speed 6. Plain code
      then reads every step: a setting the machine cannot do, a step that says "as in Monday's recipe", a dinner
      that is meant to feed tomorrow's lunch but cooks only tonight's servings. Those recipes go back to the model
      once, and whatever is still wrong is shown on the recipe, never hidden.

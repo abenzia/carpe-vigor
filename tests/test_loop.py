@@ -192,7 +192,7 @@ def test_the_kitchen_check_holds_recipes_to_the_device_and_their_portions():
     assert "refers to another recipe" in tm6[2][0] and "which meal" in tm6[3][0]
     assert len(tm6[4]) == 2                # Sat lunch is not cooked from it, and 1 serving cannot feed two meals
     assert any("120°C" in p for p in found("Thermomix / Bimby TM31")[0])  # a TM31 stops at 100°C
-    assert any("Steaming mode" in p for p in found("Thermomix / Bimby TM7")[0])
+    assert 0 not in found("Thermomix / Bimby TM7")   # "Varoma" in a TM7 step is fine: Cookidoo prints it for the TM7 too
     hot_blend = [{"day": "Sun", "meal": "lunch", "servings": 1, "steps": ["Blend the soup 1 min/90°C/speed 8."]}]
     assert "does not heat" in kitchen.check(hot_blend, kitchen.device("Thermomix / Bimby TM7"), 1)[0][0]
     assert any("160°C" in p for p in found("Thermomix / Bimby TM5")[5])   # no Browning mode on a TM5

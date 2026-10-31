@@ -2,7 +2,7 @@
 
 A model writes the recipes; whether a step can be done on the machine the person has is not its call. The limits here
 come from the makers' published specs (Vorwerk support pages, Oct 2026), and `check()` reads every step against them:
-a Thermomix TM31 cannot be set to 120 °C, a TM7 steams in its steaming mode, not at a "Varoma" temperature. The same
+a Thermomix TM31 cannot be set to 120 °C, a TM7 does not heat above speed 6. The same
 check holds the plan to its own word on portions and leftovers: a dinner that feeds tomorrow's lunch is cooked for it.
 """
 from __future__ import annotations
@@ -17,24 +17,25 @@ class Device:
     rules: str                    # what the planner is told about this device
     max_c: int | None = None      # highest temperature a step may set by hand; None = not checked
     mode_c: int | None = None     # higher temperature reachable only in a named mode (TM6, TM7)
-    varoma_setting: bool = True   # whether "Varoma" is a temperature setting on this machine
     heats_to_speed: float | None = None  # above this speed the machine does not heat (TM7: 6)
 
 
 _BIMBY = ("Settings are written as time/temperature/speed, e.g. '5 min/100°C/speed 1', with 'Reverse' and "
           "'speed spoon' for gentle stirring and the butterfly whisk where needed. Never fill the bowl past its "
-          "capacity. ")
+          "capacity. A grain in the simmering basket needs water to cook through: 500 g at least, about 1200 g "
+          "when the Varoma steams on top for 25-30 minutes. ")
 
 # The first is the form's default and the device the demo week (data/demo_plan.json) is written for.
-# TM7 (Vorwerk support, read 31 Oct 2026): "Varoma is not a temperature" but a steaming function, used through the
+# TM7 (Vorwerk support, read 31 Oct 2026): "Varoma is not a temperature" but a steaming function, chosen through the
 # steaming mode at speed 5 at most; 160°C only through specific high-temperature modes; no heating above speed 6.
+# Cookidoo still prints "30 min./Varoma/vel. 1" in recipes tagged TM7 (seen 31 Oct 2026), so 'Varoma' in a TM7 step is
+# not an error: the planner is asked to name the steaming mode, the check does not flag the old wording.
 DEVICES = [
     Device("Thermomix / Bimby TM7",
            _BIMBY + "TM7: bowl 2.2 litres. Manual temperatures up to 120°C; up to 160°C only inside its high-temperature "
-           "modes, named as 'Browning mode'. It does not heat above speed 6. Steaming uses the 'Steaming mode' "
-           "(maximum speed 5) with the Varoma on top, never a temperature called 'Varoma': write e.g. "
-           "'Steaming mode 20 min/speed 1'.",
-           max_c=120, mode_c=160, varoma_setting=False, heats_to_speed=6),
+           "modes, named as 'Browning mode'. It does not heat above speed 6. Steaming is done in 'Steaming mode' "
+           "(maximum speed 5) with the Varoma on top: write e.g. 'Steaming mode (Varoma) 20 min/speed 1'.",
+           max_c=120, mode_c=160, heats_to_speed=6),
     Device("Thermomix / Bimby TM6",
            _BIMBY + "TM6: bowl 2.2 litres. Manual temperatures up to 120°C, or 'Varoma' for steaming; up to 160°C only "
            "in 'Browning mode', named as such.", max_c=120, mode_c=160),
@@ -64,7 +65,6 @@ def device(name: str) -> Device:
 DAYS = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 # A machine setting ("12 min/120°C/speed 1"), not any temperature: a Bimby week may still bake a frittata at 180°C
 _TEMP = re.compile(r"(?:min|sec)\.?\s*/\s*(\d{2,3})\s*°\s*C", re.I)
-_VAROMA_SETTING = re.compile(r"/\s*varoma\s*/|varoma\s*/\s*speed", re.I)
 _MODE = re.compile(r"browning|high[- ]temperature", re.I)
 _HEATED_SPEED = re.compile(r"(?:min|sec)\.?\s*/\s*\d{2,3}\s*°\s*C\s*/\s*speed\s*(\d+(?:\.\d+)?)", re.I)
 # "as per Monday's quinoa", "same as Tue lunch", "see Wednesday": a recipe has to be cookable on its own
@@ -96,8 +96,6 @@ def check(recipes: list[dict], dev: Device, people: int) -> dict[int, list[str]]
                            + (f" (up to {dev.mode_c}°C only in Browning mode, named in the step)" if dev.mode_c else ""))
             if dev.heats_to_speed and any(float(s) > dev.heats_to_speed for s in _HEATED_SPEED.findall(step)):
                 out.append(f"Step {n} heats above speed {dev.heats_to_speed:g}: the {dev.name} does not heat there")
-            if not dev.varoma_setting and _VAROMA_SETTING.search(step):
-                out.append(f"Step {n} sets 'Varoma' as a temperature: the {dev.name} steams in Steaming mode")
             if _ELSEWHERE.search(step):
                 out.append(f"Step {n} refers to another recipe: write the times and amounts here")
         servings = r.get("servings") or 0
