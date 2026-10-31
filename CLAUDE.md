@@ -13,11 +13,15 @@ Five screens, one loop: `/doctor` → `/week` → `/home` → `/cart` → `/rewa
 
 ## Rules that are not negotiable
 
-- **Never medical.** The app does not diagnose, interpret lab values, mention medicines, or predict the
-  person's own values. Clinical text goes back to the doctor (`profile.py`, `review_board.py` safety role).
-  If a change would make the app say "your pressure will…", it is wrong, whoever asked for it.
-- **Reward behaviour, never weight.** `reward.py` scores meals cooked, days moved, blacklist kept. Do not add
-  weight, BMI or any body measure to the score.
+- **Not a doctor, but a real help** (Ale, 31 Oct 2026). The app does not diagnose, does not mention or adjust
+  medicines, and does not predict the person's own values ("your pressure will…" is wrong, whoever asked for it).
+  If the person CHOOSES to enter their test results (`checkup.py`), the app keeps them, shows them back next to the
+  target THEIR DOCTOR set, quotes what the public sources say about each measure (retrieved, with the source's
+  name), and lets "above the doctor's target" steer what the week's plan focuses on. Judging the numbers stays
+  with the doctor. Entering results is optional: without them the app works on the doctor's words and the cart.
+- **Reward what people do; outcomes only as the doctor judges them.** `reward.py` scores the basket (verified by
+  PayPal), days moved and meals cooked. The only outcome that pays is the check-up bonus: the doctor's verdict on
+  the goals they set (met / improving / not yet), never a single number read by the app, never weight alone.
 - **PayPal sandbox only.** `paypal.py` refuses live. Credentials in `.env`, never in code or commits.
 - **No personal data in the repo.** No real lab values, no real names, no files from Segnavia. The repo goes
   public under AGPL-3.0 on 11 Nov.

@@ -34,7 +34,7 @@
       <span><em>spent</em> {{ currency }} {{ '%.2f'|format(money.spent) }}</span>
       <span><em>released</em> {{ currency }} {{ '%.2f'|format(money.released) }}</span>
       <span><em>paid back</em> {{ currency }} {{ '%.2f'|format(money.cashback) }}</span>
-      <span><a href="/ledger">ledger →</a></span>
+      <span><a href="/ledger">ledger →</a> · <a href="/numbers">my numbers →</a></span>
       <span class="mode">PayPal {{ money.mode }}{% if money.authorized %} · budget held{% elif money.authorization %} · week closed{% else %} · not authorized yet{% endif %}</span>
     </div>
   </div>

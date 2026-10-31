@@ -80,11 +80,22 @@ def release_remainder(store: Store) -> dict:
 
 
 def month(store: Store) -> dict:
-    """The weeks closed since the last payment, each with its captures and what it earned."""
+    """The weeks closed since the last payment, each with its captures and what it earned, plus check-up bonuses."""
     m = store.get("month") or {"weeks": []}
-    m["earned"] = round(sum(w["earned"] for w in m["weeks"]), 2)
+    m.setdefault("bonuses", [])
+    m["earned"] = round(sum(w["earned"] for w in m["weeks"]) + sum(b["earned"] for b in m["bonuses"]), 2)
     m["spent"] = round(sum(w["spent"] for w in m["weeks"]), 2)
     return m
+
+
+def add_checkup_bonus(store: Store, verdict: str, spent_since_last: float, earned: float) -> dict:
+    """The doctor's verdict at a check-up adds its bonus to the month: paid with the rest on its last day."""
+    m = store.get("month") or {"weeks": []}
+    entry = {"verdict": verdict, "spent": spent_since_last, "earned": earned}
+    m.setdefault("bonuses", []).append(entry)
+    store.put("month", m)
+    store.log("checkup_bonus", entry)
+    return entry
 
 
 def close_week(store: Store, result: reward.Reward) -> dict:
@@ -125,7 +136,9 @@ def settle_month(store: Store) -> list[dict]:
         paid_now.append({"refund_id": ref["refund_id"], "capture_id": cap["capture_id"], "amount": amount})
         left = round(left - amount, 2)
     store.put("refunds", store.get("refunds", []) + paid_now)
-    store.put("month", {"weeks": [], "last_paid": {"weeks": len(m["weeks"]), "spent": m["spent"], "paid": round(m["earned"] - left, 2)}})
+    # `unpaid` > 0 only if the month's captures had less room than it earned (e.g. a bonus with few orders): said, kept
+    store.put("month", {"weeks": [], "bonuses": [], "last_paid": {"weeks": len(m["weeks"]), "spent": m["spent"],
+                                                                  "paid": round(m["earned"] - left, 2), "unpaid": left}})
     store.log("reward_paid", {"cashback": round(m["earned"] - left, 2), "weeks": len(m["weeks"]), "refunds": paid_now})
     return paid_now
 
@@ -149,6 +162,10 @@ def ledger(store: Store) -> list[dict]:
                 rows.append({"at": e["at"], "what": "Reward paid back", "paypal_id": r["refund_id"], "amount": r["amount"],
                              "effect": "paid to you", "note": f"refund of {r['capture_id']} · the month's reward"
                                                               + (f" ({e['weeks']} week{'s' if e['weeks'] != 1 else ''})" if e.get("weeks") else "")})
+        elif e["kind"] == "checkup_bonus":
+            rows.append({"at": e["at"], "what": "Check-up bonus", "paypal_id": "", "amount": e["earned"], "effect": "earned",
+                         "note": f"your doctor: goals {e['verdict']} · on {e['spent']:.2f} spent since the last check-up · "
+                                 "paid at the end of the month"})
         elif e["kind"] == "week_closed":
             rows.append({"at": e["at"], "what": "Week closed", "paypal_id": e.get("authorization_id") or "", "amount": e["earned"],
                          "effect": "earned", "note": f"{round(e['rate'] * 100, 1)}% of {e['spent']:.2f} · score "

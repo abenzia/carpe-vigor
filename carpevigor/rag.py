@@ -79,6 +79,21 @@ def _cosine(a: list[float], b: list[float]) -> float:
     return dot / norm if norm else 0.0
 
 
+def quotes(question: str, topic_keys: list[str], k: int = 2) -> list[dict]:
+    """The k passages of the topics' sources closest to a question, to quote word for word with the source's name
+    ("What do the sources say about LDL cholesterol?"). Empty if retrieval is not possible: the screen says so."""
+    srcs = [s for s in _source_ids(topic_keys) if sources.text_of(s["id"])]
+    try:
+        idx = index(srcs)
+        q = llm.embed([question], "RETRIEVAL_QUERY")[0]
+    except Exception:
+        return []
+    scored = sorted(((_cosine(q, vec), src, i) for src in srcs
+                     for i, vec in enumerate(idx["sources"].get(src["id"], {}).get("vectors", []))),
+                    key=lambda t: t[0], reverse=True)[:k]
+    return [{"name": src["name"], "url": src["url"], "text": idx["sources"][src["id"]]["passages"][i]} for _, src, i in scored]
+
+
 def reference(claims: list[str], topic_keys: list[str], k: int = K) -> tuple[str, dict]:
     """The reference text the fact jurors read for these claims, and how it was made (for the board's report)."""
     srcs = [s for s in _source_ids(topic_keys) if sources.text_of(s["id"])]

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — My numbers{% endblock %}
+{% block content %}
+<div class="eyebrow">Optional</div>
+<h2>My numbers</h2>
+<p class="muted">If you want, keep your test results here, next to the targets your doctor gave you. The week's plan then focuses on
+what is off target, and you can read what public sources say about each measure. Carpe Vigor does not judge these numbers and
+never predicts them: your doctor does. Without them, the app works the same on what your doctor said and on your cart.</p>
+
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+<form method="post" action="/numbers" class="card accent">
+  <h3 style="margin-top:0">Add a result</h3>
+  <div class="grid">
+    <div><label for="key">Measure</label>
+      <select id="key" name="key">{% for k, m in measures.items() %}<option value="{{ k }}">{{ m.label }} ({{ m.unit }})</option>{% endfor %}</select></div>
+    <div><label for="value">Value</label><input type="number" id="value" name="value" step="any" min="0" required></div>
+    <div><label for="on">Date of the test</label><input type="text" id="on" name="on" placeholder="2026-10-20" pattern="\d{4}-\d{2}-\d{2}" required></div>
+    <div><label for="target">Your doctor's target <span class="tiny muted">(optional, kept for next time)</span></label><input type="number" id="target" name="target" step="any" min="0"></div>
+  </div>
+  <p style="margin-top:12px"><button type="submit">Save</button></p>
+</form>
+
+{% for v in shown %}
+<div class="card">
+  <div class="row">
+    <h3 style="margin:0">{{ v.label }}</h3>
+    <span class="pill {{ 'ok' if v.status.startswith('at ') else ('' if v.target is none else 'warn') }}">{{ v.status }}</span>
+    {% if v.trend %}<span class="pill">{{ v.trend }}</span>{% endif %}
+  </div>
+  <p style="margin-top:6px"><span class="big">{{ v.latest.value|round(1) }}</span> {{ v.unit }}
+    <span class="muted tiny">on {{ v.latest.date }}{% if v.target is not none %} · your doctor's target: {{ 'under' if v.good == 'below' else 'over' }} {{ v.target|round(1) }} {{ v.unit }}{% endif %}</span></p>
+  {% if v.readings|length > 1 %}
+  <div class="scroll-x"><table class="tiny"><tr>{% for r in v.readings %}<th>{{ r.date }}</th>{% endfor %}</tr>
+    <tr>{% for r in v.readings %}<td class="num">{{ r.value|round(1) }}</td>{% endfor %}</tr></table></div>
+  {% endif %}
+  <details style="margin-top:8px"><summary>What the public sources say</summary>
+    {% for q in quotes.get(v.key, []) %}
+    <div class="evidence" style="white-space:pre-line">{{ q.text }}</div>
+    <p class="tiny muted">— <a href="{{ q.url }}">{{ q.name }}</a>, quoted as written</p>
+    {% else %}<p class="tiny muted">The sources cannot be searched right now. Ask your doctor, or read them from the list on the first screen.</p>{% endfor %}
+  </details>
+</div>
+{% endfor %}
+
+<div class="card">
+  <div class="eyebrow">Check-up bonus</div>
+  <h3 style="margin-top:4px">At your next check-up, your doctor's verdict pays</h3>
+  <p class="tiny">On the goals your doctor set: <b>met</b> adds {{ (bonus_rates['met'] * 100)|round(1) }}% and <b>improving</b>
+  {{ (bonus_rates['improving'] * 100)|round(1) }}% of what you spent on groceries since the last check-up
+  ({{ currency }} {{ '%.2f'|format(spent_since) }} so far) to this month's reward. Your doctor judges; the app pays.</p>
+  <form method="post" action="/numbers/checkup" class="row">
+    {% for vd in verdicts %}<label class="check" style="border:0"><input type="radio" name="verdict" value="{{ vd }}" {{ 'checked' if loop.first }}> goals {{ vd }}</label>{% endfor %}
+    <input type="text" name="on" placeholder="date, 2026-11-10" pattern="\d{4}-\d{2}-\d{2}" required style="width:170px">
+    <button type="submit" class="secondary">Record the check-up</button>
+  </form>
+  <p class="tiny muted">In the product your doctor confirms the verdict from their own portal, so nobody can claim it for them. In this demo you enter it here.</p>
+  {% if checkups %}
+  <table class="tiny"><tr><th>Check-up</th><th>Verdict</th><th class="num">Spent since the last</th><th class="num">Bonus</th></tr>
+    {% for c in checkups %}<tr><td>{{ c.on }}</td><td>{{ c.verdict }}</td><td class="num">{{ '%.2f'|format(c.spent) }}</td><td class="num">{{ '%.2f'|format(c.earned) }}</td></tr>{% endfor %}
+  </table>
+  {% endif %}
+</div>
+{% endblock %}

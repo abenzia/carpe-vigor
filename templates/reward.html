@@ -46,9 +46,10 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
 
 <div class="card">
   <div class="eyebrow">This month</div>
-  {% if month.weeks %}
+  {% if month.weeks or month.bonuses %}
   <table><tr><th>Week</th><th class="num">Spent</th><th class="num">Rate</th><th class="num">Earned</th></tr>
     {% for w in month.weeks %}<tr><td>Week {{ loop.index }}</td><td class="num">{{ '%.2f'|format(w.spent) }}</td><td class="num">{{ (w.rate * 100)|round(1) }}%</td><td class="num">{{ '%.2f'|format(w.earned) }}</td></tr>{% endfor %}
+    {% for b in month.bonuses %}<tr><td>Check-up bonus — your doctor: goals {{ b.verdict }}</td><td class="num tiny">on {{ '%.2f'|format(b.spent) }}</td><td></td><td class="num">{{ '%.2f'|format(b.earned) }}</td></tr>{% endfor %}
     <tr><td><b>To be paid at the end of the month</b></td><td class="num">{{ '%.2f'|format(month.spent) }}</td><td></td><td class="num"><b>{{ '%.2f'|format(month.earned) }}</b></td></tr>
   </table>
   {% if month.earned > 0 %}

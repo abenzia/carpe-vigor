@@ -11,6 +11,9 @@
     {% for t in profile.guidance.topics %}<span class="pill">{{ t }}</span>{% endfor %}
     <span class="pill">cooks with {{ profile.device }}</span>
   </div>
+  {% if plan and plan.focus %}
+  <div class="flag"><b>From My numbers:</b> this week also focuses on {{ plan.focus|join(' · ') }}.</div>
+  {% endif %}
   {% if profile.guidance.to_the_doctor %}
   <div class="flag"><b>For your doctor, not for this app:</b> {{ profile.guidance.to_the_doctor|join(' · ') }}</div>
   {% endif %}

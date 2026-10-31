@@ -42,4 +42,7 @@ EMBED_DIMENSIONS = int(os.environ.get("GEMINI_EMBED_DIMENSIONS", "768"))
 
 # Reward rules (reward.py): what a week of good behaviour pays back, as a share of what was spent.
 CASHBACK_MAX = float(os.environ.get("CASHBACK_MAX", "0.20"))  # up to 20% of the grocery spend, by basket and behaviour
+# Check-up bonus (checkup.py): the doctor's verdict on their goals, as a share of the spend since the last check-up
+CHECKUP_BONUS = {"met": float(os.environ.get("CHECKUP_BONUS_MET", "0.05")),
+                 "improving": float(os.environ.get("CHECKUP_BONUS_IMPROVING", "0.025")), "not yet": 0.0}
 STEPS_GOAL = int(os.environ.get("STEPS_GOAL", "7000"))  # daily steps that count as "moved today"

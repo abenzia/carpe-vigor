@@ -13,13 +13,14 @@ Budget / spent / released is shown on every screen (base.html).
 from __future__ import annotations
 
 import json
+from datetime import datetime, timezone
 
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from carpevigor import __version__, cart_agent, config, planner, profile, reward, sources, week
+from carpevigor import __version__, cart_agent, checkup, config, planner, profile, rag, reward, sources, week
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -69,12 +70,67 @@ def week_view(request: Request, build: int = 0):
     plan = store.get("plan")
     if build or not plan:
         guidance = profile.Guidance.model_validate(prof["guidance"])
+        # My numbers (optional): a measure off the doctor's target adds its topic and a lifestyle goal for the week
+        focus = [v for v in checkup.view(store.get("numbers", [])) if v["target"] is not None and not v["status"].startswith("at ")]
+        guidance.topics = list(dict.fromkeys(guidance.topics + [v["topic"] for v in focus]))
+        guidance.goals = guidance.goals + [f"Food and habits that help with {v['label']}" for v in focus]
         made, report, used = planner.make(guidance, prof["device"])
-        plan = {"plan": made.model_dump(), "report": report, "sources": used, "cooked": []}
+        plan = {"plan": made.model_dump(), "report": report, "sources": used, "cooked": [],
+                "focus": [f"{v['label']}: {v['status']}" for v in focus]}
         store.put("plan", plan)
         store.log("plan", {"approved": report.get("approved"), "provider": report.get("provider")})
     return render(request, "week.html", week_plan=plan["plan"], report=plan["report"], used=plan["sources"],
                   cooked=set(plan.get("cooked", [])), days=planner.DAYS)
+
+
+# My numbers (optional) -------------------------------------------------------------------------------------------
+@app.get("/numbers", response_class=HTMLResponse)
+def numbers_view(request: Request, error: str = ""):
+    rows = store.get("numbers", [])
+    shown = checkup.view(rows)
+    quotes = store.get("quotes", {})  # what the sources say about each measure: retrieved once, kept
+    for v in shown:
+        if v["key"] not in quotes:
+            quotes[v["key"]] = rag.quotes(f"What is a healthy {v['label']} level for adults, and how do food and habits affect it?",
+                                          [v["topic"]])
+    store.put("quotes", quotes)
+    return render(request, "numbers.html", measures=checkup.MEASURES, shown=shown, quotes=quotes, error=error,
+                  checkups=store.get("checkups", []), verdicts=checkup.VERDICTS, bonus_rates=config.CHECKUP_BONUS,
+                  spent_since=spent_since_last_checkup(), month=week.month(store))
+
+
+@app.post("/numbers")
+def numbers_add(key: str = Form(...), value: float = Form(...), on: str = Form(...), target: str = Form("")):
+    try:
+        rows = checkup.add(store.get("numbers", []), key, value, on, float(target) if target.strip() else None)
+    except ValueError as e:
+        return RedirectResponse(f"/numbers?error={e}", status_code=303)
+    store.put("numbers", rows)
+    store.log("numbers", {"key": key, "on": on})  # the value stays in the store, not in the log
+    return RedirectResponse("/numbers", status_code=303)
+
+
+def spent_since_last_checkup() -> float:
+    last = (store.get("checkups") or [{}])[-1].get("at", "")
+    return round(sum(e["amount"] for e in store.events("captured") if e["at"] > last), 2)
+
+
+@app.post("/numbers/checkup")
+def numbers_checkup(verdict: str = Form(...), on: str = Form(...)):
+    """The doctor's verdict at a check-up. In the product the doctor confirms it from their own portal; in the demo it
+    is entered here, and the screen says so."""
+    try:
+        spent = spent_since_last_checkup()
+        earned = checkup.bonus(verdict, spent)
+    except ValueError as e:
+        return RedirectResponse(f"/numbers?error={e}", status_code=303)
+    checkups = store.get("checkups", [])
+    checkups.append({"on": on, "verdict": verdict, "spent": spent, "earned": earned,
+                     "at": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")})  # same clock as the log
+    store.put("checkups", checkups)
+    if earned > 0:
+        week.add_checkup_bonus(store, verdict, spent, earned)
+    return RedirectResponse("/numbers", status_code=303)
 
 
 @app.post("/week/cooked")

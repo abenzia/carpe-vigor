@@ -43,6 +43,7 @@ TOPICS: dict[str, dict] = {
         "match": ["cholesterol", "ldl", "lipid", "saturated"],
         "sources": [
             {"id": "medlineplus-chol", "name": "MedlinePlus — How to lower cholesterol with diet", "url": "https://medlineplus.gov/howtolowercholesterolwithdiet.html"},
+            {"id": "medlineplus-chol-levels", "name": "MedlinePlus — Cholesterol levels: what you need to know", "url": "https://medlineplus.gov/cholesterollevelswhatyouneedtoknow.html"},
             {"id": "aha-fats", "name": "American Heart Association — Saturated fat", "url": "https://www.heart.org/en/healthy-living/healthy-eating/eat-smart/fats/saturated-fats"},
             AHA_LE8,
         ],
@@ -76,6 +77,8 @@ TOPICS: dict[str, dict] = {
         "match": ["sugar", "glucose", "diabet", "soda", "sweet"],
         "sources": [
             {"id": "who-sugar", "name": "WHO — Healthy diet (fact sheet), free sugars", "url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"},
+            {"id": "medlineplus-glucose", "name": "MedlinePlus — Blood glucose", "url": "https://medlineplus.gov/bloodglucose.html"},
+            {"id": "medlineplus-a1c", "name": "MedlinePlus — A1C test", "url": "https://medlineplus.gov/lab-tests/hemoglobin-a1c-hba1c-test/"},
         ],
     },
 }

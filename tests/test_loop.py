@@ -243,6 +243,14 @@ def test_rag_gives_the_jurors_the_passages_closest_to_each_claim(tmp_path, monke
     assert "150 minutes" in text and "salt" not in text                       # only the topics' sources are searched
 
 
+def test_rag_quotes_the_sources_word_for_word_about_a_measure(tmp_path, monkeypatch):
+    rag = _two_sources(tmp_path, monkeypatch)
+    found = rag.quotes("How much salt should adults eat a day?", ["blood_pressure", "activity"], k=1)
+    assert len(found) == 1 and "less than 5 g of salt" in found[0]["text"] and found[0]["name"].startswith("WHO — Sodium")
+    monkeypatch.setattr(rag.llm, "embed", lambda texts, task: (_ for _ in ()).throw(RuntimeError("down")))
+    assert rag.quotes("salt?", ["blood_pressure"]) == []                       # nothing invented when retrieval fails
+
+
 def test_rag_falls_back_to_the_full_texts_and_says_so(tmp_path, monkeypatch):
     rag = _two_sources(tmp_path, monkeypatch)
 
@@ -296,6 +304,34 @@ def test_vertex_retries_a_429_and_nothing_else(monkeypatch):
     monkeypatch.setattr(Models, "generate_content", lambda self, **k: (_ for _ in ()).throw(Broken("bad request")))
     with pytest.raises(Broken):
         llm._vertex("s", "t", A, "m", 0.1)
+
+
+def test_my_numbers_are_shown_against_my_doctors_target_never_judged_by_the_app():
+    from carpevigor import checkup
+    rows = []
+    rows = checkup.add(rows, "ldl", 172, "2026-06-01", target=130)
+    rows = checkup.add(rows, "ldl", 158, "2026-09-01")                # the doctor's target is carried over
+    rows = checkup.add(rows, "hdl", 52, "2026-09-01", target=40)
+    rows = checkup.add(rows, "systolic", 128, "2026-09-01")           # no target given: nothing compared
+    view = {v["key"]: v for v in checkup.view(rows)}
+    assert view["ldl"]["latest"]["value"] == 158 and view["ldl"]["target"] == 130
+    assert view["ldl"]["status"] == "above your doctor's target" and view["ldl"]["trend"] == "toward the target"
+    assert view["hdl"]["status"] == "at your doctor's target"         # HDL: higher is the right side
+    assert view["systolic"]["status"] == "no target from your doctor yet"
+    assert checkup.topics(rows) == ["cholesterol"]                    # only what is off the doctor's target steers the plan
+    with pytest.raises(ValueError):
+        checkup.add(rows, "psa", 3.1, "2026-09-01")                   # only the measures the app knows
+    with pytest.raises(ValueError):
+        checkup.add(rows, "ldl", -5, "2026-09-01")
+
+
+def test_the_check_up_bonus_pays_the_doctors_verdict_on_the_spend_since_the_last_one():
+    from carpevigor import checkup
+    assert checkup.bonus("met", 400.0) == round(400 * checkup.config.CHECKUP_BONUS["met"], 2) > 0
+    assert 0 < checkup.bonus("improving", 400.0) < checkup.bonus("met", 400.0)
+    assert checkup.bonus("not yet", 400.0) == 0
+    with pytest.raises(ValueError):
+        checkup.bonus("cured", 400.0)
 
 
 def test_sources_pick_topics_and_flag_clinical():
@@ -448,3 +484,30 @@ def test_full_loop_through_the_web_app(client):
     assert by["Reward paid back"]["paypal_id"].startswith("MOCK-REF-")
     assert client.post("/month/settle", follow_redirects=False).headers["location"].startswith("/reward?error")  # not twice
     assert "ag-grid" in client.get("/ledger").text
+
+
+def test_my_numbers_steer_the_plan_and_the_check_up_pays_through_the_month(client):
+    client.post("/doctor", data={"doctor_said": "Eat less salt, walk more", "device": "Oven and stovetop", "budget": "130"})
+    r = client.post("/numbers", data={"key": "ldl", "value": "162", "on": "2026-10-20", "target": "130"}, follow_redirects=False)
+    assert r.headers["location"] == "/numbers"
+    page = client.get("/numbers").text
+    assert "LDL cholesterol" in page and "above your doctor&#39;s target" in page and "What the public sources say" in page
+    assert client.post("/numbers", data={"key": "psa", "value": "3", "on": "2026-10-20"},
+                       follow_redirects=False).headers["location"].startswith("/numbers?error")
+    week_page = client.get("/week?build=1").text
+    assert "From My numbers" in week_page and "LDL cholesterol" in week_page
+    assert any(s["topic"] == "cholesterol" for s in client.get("/api/state").json()["plan"]["sources"])  # topic added
+    # a week of shopping, then the check-up: the doctor says the goals are met
+    client.post("/home", data={"have": []})
+    client.get("/cart")
+    token = client.post("/budget/authorize", data={"amount": "130"}, follow_redirects=False).headers["location"].split("token=")[1].split("&")[0]
+    client.get(f"/budget/approved?token={token}")
+    client.get("/cart")
+    client.post("/cart/order")
+    spent = client.get("/api/state").json()["money"]["spent"]
+    client.post("/numbers/checkup", data={"verdict": "met", "on": "2026-11-10"})
+    reward_page = client.get("/reward").text
+    assert "Check-up bonus" in reward_page and "goals met" in reward_page
+    from carpevigor import config as c
+    rows = client.get("/api/ledger").json()
+    assert any(r["what"] == "Check-up bonus" and r["amount"] == round(spent * c.CHECKUP_BONUS["met"], 2) for r in rows)

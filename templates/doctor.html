@@ -3,7 +3,8 @@
 {% block content %}
 <div class="eyebrow">Step 1</div>
 <h2>My doctor said…</h2>
-<p class="muted">In your own words. Food, movement, sleep and habits are what this app plans for. Medicines, diagnoses and your test values stay with your doctor — if you mention them, we hand them back.</p>
+<p class="muted">In your own words. Food, movement, sleep and habits are what this app plans for. Medicines and diagnoses stay with your doctor — if you mention them, we hand them back.
+Your test results can help, if you want: add them in <a href="/numbers">My numbers</a> next to the targets your doctor gave you, and the week will focus on what is off target.</p>
 
 <form method="post" action="/doctor" class="card accent">
   <label for="doctor_said">What did your doctor tell you?</label>
@@ -26,7 +27,7 @@
   <input type="text" id="constraints" name="constraints" placeholder="no shellfish, hate celery, two people" value="{{ profile.constraints_text if profile else '' }}">
 
   <label class="check"><input type="checkbox" name="report_attached" value="1"> I have a lab report
-    <span class="muted tiny">— it will only tell us which topics to cover. No value is read or judged.</span></label>
+    <span class="muted tiny">— add its values in <a href="/numbers">My numbers</a> (optional): shown next to your doctor's targets, never judged by the app.</span></label>
 
   <p style="margin-top:16px"><button type="submit">Plan my week</button></p>
 </form>
