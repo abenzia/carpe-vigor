@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — Ask the sources{% endblock %}
+{% block content %}
+<div class="eyebrow">Ask the sources</div>
+<h2>Ask about food, movement, sleep and habits</h2>
+<p class="muted">The answer is written only from passages of MedlinePlus, the WHO, the NHS, the American Heart Association and the US
+physical activity guidelines{% if library %} ({{ library }} MedlinePlus topics in the library){% endif %}, each sentence with its source.
+A safety reviewer reads it before you do. {% if profile %}If you added <a href="/numbers">your numbers</a>, the search takes into account what is off your doctor's target.{% endif %}
+Diagnoses, medicines and what your own numbers mean stay with your doctor.</p>
+
+<form method="post" action="/ask" class="card accent">
+  <label for="question" style="margin-top:0">Your question</label>
+  <input type="text" id="question" name="question" maxlength="500" required placeholder="What can I eat to help with high LDL cholesterol?">
+  <p class="row" style="margin-top:10px"><button type="submit">Ask</button>
+    <span class="tiny muted">For example: how much should I walk in a week? · does sleep matter for blood pressure? · how do I read a nutrition label for sodium?</span></p>
+</form>
+
+{% for a in asked %}
+<div class="card">
+  <p><b>{{ a.question }}</b>{% if a.context %} <span class="tiny muted">— searched with: {{ a.context }}</span>{% endif %}</p>
+  {% if a.answer %}
+    <div class="why">{{ a.answer }}</div>
+    <p><span class="pill ok">read by the safety reviewer{% if a.safety and a.safety.checks and 'Simulated' in a.safety.checks[0] %} (simulated){% endif %}</span></p>
+  {% else %}
+    <div class="flag">{{ a.held_back }}</div>
+  {% endif %}
+  {% if a.for_the_doctor %}<div class="flag"><b>For your doctor:</b> {{ a.for_the_doctor }}</div>{% endif %}
+  {% if a.passages %}
+  <details{{ ' open' if not a.answer }}><summary>The passages{{ ' it is written from' if a.answer }} ({{ a.passages|length }})</summary>
+    {% for p in a.passages %}
+    <div class="evidence" style="white-space:pre-line"><b>[{{ loop.index }}]</b> {{ p.text }}</div>
+    <p class="tiny muted">— <a href="{{ p.url }}">{{ p.name }}</a>{% if loop.index in a.cited %} · cited{% endif %}</p>
+    {% endfor %}
+  </details>
+  {% endif %}
+</div>
+{% endfor %}
+{% endblock %}

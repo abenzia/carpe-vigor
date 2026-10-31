@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import os
 import re
+import threading
 import time
 import zlib
 from concurrent.futures import ThreadPoolExecutor
@@ -53,12 +54,18 @@ def ask(system: str, task: str, shape: Type[T], tier: str = "strong", temperatur
 _vertex_client = None
 
 
+_client_lock = threading.Lock()
+
+
 def _client():
+    """One client for the process. The lock matters: parallel calls (the board, the embeddings) used to create one
+    client each; the extra ones were garbage-collected and closed while their requests were still running."""
     global _vertex_client
-    if _vertex_client is None:
-        from google import genai  # imported here so mock mode needs no SDK
-        _vertex_client = genai.Client(vertexai=True, project=config.GOOGLE_CLOUD_PROJECT, location=config.GOOGLE_CLOUD_LOCATION)
-    return _vertex_client
+    with _client_lock:
+        if _vertex_client is None:
+            from google import genai  # imported here so mock mode needs no SDK
+            _vertex_client = genai.Client(vertexai=True, project=config.GOOGLE_CLOUD_PROJECT, location=config.GOOGLE_CLOUD_LOCATION)
+        return _vertex_client
 
 
 def embed(texts: list[str], task: str) -> list[list[float]]:

@@ -62,6 +62,8 @@ TOPICS: dict[str, dict] = {
         "match": ["exercise", "activity", "walk", "steps", "sedentary", "move"],
         "sources": [
             {"id": "who-activity", "name": "WHO — Physical activity (fact sheet)", "url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity"},
+            {"id": "hhs-pag-top10", "name": "US Dept. of Health and Human Services — Physical Activity Guidelines: top 10 things to know",
+             "url": "https://odphp.health.gov/our-work/nutrition-physical-activity/physical-activity-guidelines/current-guidelines/top-10-things-know"},
             AHA_LE8,
         ],
     },
@@ -83,7 +85,8 @@ TOPICS: dict[str, dict] = {
     },
 }
 
-CLINICAL = ["medicat", "medicine", "drug", "dose", "prescri", "stop taking", "insulin", "statin", "diagnos", "mg/dl", "mmol"]
+CLINICAL = ["medicat", "medicine", "drug", "dose", "prescri", "stop taking", "insulin", "statin", "diagnos", "mg/dl", "mmol",
+            "how low", "how high", "will my", "will it go"]  # the last four: asking for a prediction of one's own values
 
 
 def topics_for(text: str) -> list[str]:
@@ -148,6 +151,47 @@ def fetch(source_id: str | None = None, timeout: int = 30) -> list[str]:
     return done
 
 
+# The library: MedlinePlus health topics (US National Library of Medicine, public domain, published as one XML file
+# for reuse), English, only the groups this app works in. Searched by "Ask the sources" (ask.py) and by My numbers.
+LIBRARY_GROUPS = {"Food and Nutrition", "Wellness and Lifestyle", "Fitness and Exercise", "Blood, Heart and Circulation",
+                  "Metabolic Problems", "Diabetes Mellitus", "Mental Health and Behavior", "Substance Use and Disorders",
+                  "Diagnostic Tests"}
+MEDLINEPLUS_XML = "https://medlineplus.gov/xml.html"
+
+
+def library_fetch(timeout: int = 120) -> list[dict]:
+    """Download the latest MedlinePlus topics file and keep the library (see LIBRARY_GROUPS)."""
+    headers = {"User-Agent": "CarpeVigor/0.1 (PayPal AI Hackathon entry)"}
+    page = requests.get(MEDLINEPLUS_XML, timeout=timeout, headers=headers)
+    page.raise_for_status()
+    latest = sorted(set(re.findall(r"mplus_topics_\d{4}-\d{2}-\d{2}\.xml", page.text)))[-1]
+    r = requests.get(f"https://medlineplus.gov/xml/{latest}", timeout=timeout, headers=headers)
+    r.raise_for_status()
+    return library_from_xml(r.content.decode("utf-8"))
+
+
+def library_from_xml(xml: str) -> list[dict]:
+    import xml.etree.ElementTree as ET
+    DIR.mkdir(parents=True, exist_ok=True)
+    kept = []
+    for t in ET.fromstring(xml.encode("utf-8")).findall("health-topic"):
+        groups = {g.text for g in t.findall("group")}
+        if t.get("language") != "English" or not groups & LIBRARY_GROUPS:
+            continue
+        src = {"id": f"mlp-{t.get('id')}", "name": f"MedlinePlus — {t.get('title')}", "url": t.get("url")}
+        summary = plain(t.findtext("full-summary") or "")
+        path_for(src["id"]).write_text(f"{src['name']}\n{src['url']}\n\n{summary}", encoding="utf-8")
+        kept.append(src)
+    (DIR / "library.json").write_text(json.dumps(kept, ensure_ascii=False), encoding="utf-8")
+    return kept
+
+
+def library() -> list[dict]:
+    """The library's topics on disk (empty until `python -m carpevigor.sources library` has run)."""
+    p = DIR / "library.json"
+    return json.loads(p.read_text(encoding="utf-8")) if p.exists() else []
+
+
 def sections(xml: str, keep: list[str]) -> str:
     """From a paper in JATS XML (PubMed Central), the sections whose title starts with one of `keep`, as plain text."""
     out = []
@@ -173,5 +217,7 @@ def status() -> list[dict]:
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "fetch":
         print("\n".join(fetch(sys.argv[2] if len(sys.argv) > 2 else None)))
+    elif len(sys.argv) > 1 and sys.argv[1] == "library":
+        print(f"{len(library_fetch())} MedlinePlus topics kept in {DIR}")
     else:
         print(json.dumps(status(), indent=2))

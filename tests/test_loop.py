@@ -278,6 +278,29 @@ def test_vertex_embedding_sends_one_text_per_call(monkeypatch):
     assert len(calls) == 3 and all(isinstance(c, str) for c in calls) and len({v[0] for v in vectors}) == 3
 
 
+def test_parallel_first_calls_share_one_vertex_client(monkeypatch):
+    import sys
+    import threading
+    import types as pytypes
+    from carpevigor import llm
+    made = []
+
+    class SlowClient:
+        def __init__(self, **kw):
+            threading.Event().wait(0.05)  # widen the race window
+            made.append(self)
+    import google
+    fake = pytypes.ModuleType("google.genai")
+    fake.Client = SlowClient
+    monkeypatch.setitem(sys.modules, "google.genai", fake)
+    monkeypatch.setattr(google, "genai", fake, raising=False)
+    monkeypatch.setattr(llm, "_vertex_client", None)
+    threads = [threading.Thread(target=llm._client) for _ in range(8)]
+    [t.start() for t in threads]
+    [t.join() for t in threads]
+    assert len(made) == 1
+
+
 def test_vertex_retries_a_429_and_nothing_else(monkeypatch):
     from pydantic import BaseModel as Shape
     from carpevigor import llm
@@ -332,6 +355,78 @@ def test_the_check_up_bonus_pays_the_doctors_verdict_on_the_spend_since_the_last
     assert checkup.bonus("not yet", 400.0) == 0
     with pytest.raises(ValueError):
         checkup.bonus("cured", 400.0)
+
+
+MLP_XML = """<?xml version="1.0" encoding="UTF-8"?><health-topics total="3">
+<health-topic title="Sodium" url="https://medlineplus.gov/sodium.html" id="1" language="English">
+<full-summary>&lt;p&gt;Most of the sodium we eat comes from packaged foods.&lt;/p&gt;</full-summary><group url="x" id="9">Food and Nutrition</group></health-topic>
+<health-topic title="Sodio" url="https://medlineplus.gov/spanish/sodium.html" id="2" language="Spanish">
+<full-summary>&lt;p&gt;La mayor parte del sodio...&lt;/p&gt;</full-summary><group url="x" id="9">Alimentos y nutrición</group></health-topic>
+<health-topic title="Measles" url="https://medlineplus.gov/measles.html" id="3" language="English">
+<full-summary>&lt;p&gt;Measles is an infectious disease.&lt;/p&gt;</full-summary><group url="x" id="5">Infections</group></health-topic>
+</health-topics>"""
+
+
+def test_the_medlineplus_library_keeps_english_lifestyle_topics_only(tmp_path, monkeypatch):
+    monkeypatch.setattr(sources, "DIR", tmp_path)
+    kept = sources.library_from_xml(MLP_XML)
+    assert [k["name"] for k in kept] == ["MedlinePlus — Sodium"]                       # not Spanish, not infections
+    assert "packaged foods" in sources.text_of(kept[0]["id"]) and "<p>" not in sources.text_of(kept[0]["id"])
+    assert [s["id"] for s in sources.library()] == [kept[0]["id"]]
+
+
+def _library(tmp_path, monkeypatch):
+    rag = _two_sources(tmp_path, monkeypatch)
+    sources.library_from_xml(MLP_XML)
+    return rag
+
+
+def test_ask_the_sources_answers_from_retrieved_passages_with_citations(tmp_path, monkeypatch):
+    _library(tmp_path, monkeypatch)
+    from carpevigor import ask
+    out = ask.answer("Where does most of the sodium I eat come from?", [])
+    assert out["answer"] and out["safety"]["approved"] and out["passages"]
+    assert any("packaged foods" in p["text"] for p in out["passages"])            # the library is searched too
+    assert all(p["name"] and p["url"] for p in out["passages"])
+
+
+def test_an_answer_the_safety_reviewer_holds_back_is_never_shown(tmp_path, monkeypatch):
+    _library(tmp_path, monkeypatch)
+    from carpevigor import ask
+    monkeypatch.setattr(ask.review_board, "expert", lambda reviewer, text: {
+        "approved": False, "absent": False, "checks": [], "corrections": [{"says": "x", "should_be": "Remove it",
+                                                                            "why": "It predicts the person's values."}]})
+    out = ask.answer("Will my pressure go down if I eat less salt?", [])
+    assert out["answer"] is None and "predicts the person's values" in out["held_back"] and out["passages"]
+    assert out.get("rewritten")                                     # it was given one chance to be fixed first
+
+
+def test_a_held_back_answer_is_rewritten_once_and_shown_if_it_then_passes(tmp_path, monkeypatch):
+    _library(tmp_path, monkeypatch)
+    from carpevigor import ask
+    verdicts = iter([False, True])
+    monkeypatch.setattr(ask.review_board, "expert", lambda reviewer, text: {
+        "approved": (ok := next(verdicts)), "absent": False, "checks": [],
+        "corrections": [] if ok else [{"says": "your LDL", "should_be": "LDL", "why": "Personal claim."}]})
+    out = ask.answer("What should I eat this week?", [])
+    assert out["answer"] and out["rewritten"] and not out["held_back"]
+
+
+def test_ask_the_sources_through_the_web_app(client, tmp_path, monkeypatch):
+    _library(tmp_path, monkeypatch)
+    assert "Ask about food" in client.get("/ask").text
+    client.post("/ask", data={"question": "Where does most of the sodium I eat come from?"})
+    page = client.get("/ask").text
+    assert "packaged foods" in page and "read by the safety reviewer" in page and "MedlinePlus — Sodium" in page
+    assert not any("sodium I eat" in str(e) for e in client.get("/api/state").json()["log"])  # the question is not logged
+
+
+def test_my_numbers_steer_what_the_question_is_searched_with(tmp_path, monkeypatch):
+    _library(tmp_path, monkeypatch)
+    from carpevigor import ask, checkup
+    rows = checkup.add([], "systolic", 142, "2026-10-20", target=130)
+    assert "Blood pressure" in ask.context(rows) and "above your doctor" in ask.context(rows)
+    assert ask.context([]) == ""
 
 
 def test_sources_pick_topics_and_flag_clinical():

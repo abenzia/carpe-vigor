@@ -18,6 +18,7 @@ from . import config, llm, sources
 CHUNK = 900
 K = 3
 INDEX = sources.DIR / "index.json"
+_cache: tuple = (None, {})  # ((path, mtime), index) of the last index read or written
 
 
 def chunks(text: str) -> list[str]:
@@ -55,9 +56,14 @@ def _passages(src: dict) -> list[str]:
 
 def index(srcs: list[dict]) -> dict:
     """The vectors of every passage of these sources, from the saved index where a source has not changed."""
+    global _cache
     path = INDEX
     model = config.EMBED_MODEL if llm.provider() == "vertex" else "mock"
-    saved = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
+    stamp = (str(path), path.stat().st_mtime) if path.exists() else None
+    if stamp and _cache[0] == stamp:
+        saved = _cache[1]  # read once, kept in memory until the file changes
+    else:
+        saved = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {}
     if saved.get("model") != model:
         saved = {"model": model, "sources": {}}
     changed = False
@@ -66,10 +72,12 @@ def index(srcs: list[dict]) -> dict:
         entry = saved["sources"].get(src["id"])
         if not passages or (entry and entry["passages"] == passages):
             continue
-        saved["sources"][src["id"]] = {"passages": passages, "vectors": llm.embed(passages, "RETRIEVAL_DOCUMENT")}
+        vectors = [[round(x, 5) for x in v] for v in llm.embed(passages, "RETRIEVAL_DOCUMENT")]
+        saved["sources"][src["id"]] = {"passages": passages, "vectors": vectors}
         changed = True
     if changed:
         path.write_text(json.dumps(saved), encoding="utf-8")
+    _cache = ((str(path), path.stat().st_mtime) if path.exists() else None, saved)
     return saved
 
 
@@ -79,10 +87,18 @@ def _cosine(a: list[float], b: list[float]) -> float:
     return dot / norm if norm else 0.0
 
 
-def quotes(question: str, topic_keys: list[str], k: int = 2) -> list[dict]:
-    """The k passages of the topics' sources closest to a question, to quote word for word with the source's name
-    ("What do the sources say about LDL cholesterol?"). Empty if retrieval is not possible: the screen says so."""
-    srcs = [s for s in _source_ids(topic_keys) if sources.text_of(s["id"])]
+def everything() -> list[dict]:
+    """Every source of every topic, plus the MedlinePlus library: what a free question is searched against."""
+    topical = _source_ids(list(sources.TOPICS))
+    urls = {s["url"].rstrip("/").lower() for s in topical}
+    extra = [s for s in sources.library() if s["url"].rstrip("/").lower() not in urls]  # a page already a topic source
+    return [s for s in topical + extra if sources.text_of(s["id"])]
+
+
+def quotes(question: str, topic_keys: list[str] | None = None, k: int = 2, srcs: list[dict] | None = None) -> list[dict]:
+    """The k passages closest to a question, among the topics' sources (or `srcs`), to quote word for word with the
+    source's name. Empty if retrieval is not possible: the screen says so, nothing is made up."""
+    srcs = srcs if srcs is not None else [s for s in _source_ids(topic_keys or []) if sources.text_of(s["id"])]
     try:
         idx = index(srcs)
         q = llm.embed([question], "RETRIEVAL_QUERY")[0]
@@ -90,8 +106,17 @@ def quotes(question: str, topic_keys: list[str], k: int = 2) -> list[dict]:
         return []
     scored = sorted(((_cosine(q, vec), src, i) for src in srcs
                      for i, vec in enumerate(idx["sources"].get(src["id"], {}).get("vectors", []))),
-                    key=lambda t: t[0], reverse=True)[:k]
-    return [{"name": src["name"], "url": src["url"], "text": idx["sources"][src["id"]]["passages"][i]} for _, src, i in scored]
+                    key=lambda t: t[0], reverse=True)
+    out, seen = [], set()
+    for _, src, i in scored:
+        text = idx["sources"][src["id"]]["passages"][i]
+        if text in seen:  # the same MedlinePlus page can be both a topic source and a library topic
+            continue
+        seen.add(text)
+        out.append({"name": src["name"], "url": src["url"], "text": text})
+        if len(out) == k:
+            break
+    return out
 
 
 def reference(claims: list[str], topic_keys: list[str], k: int = K) -> tuple[str, dict]:

@@ -20,7 +20,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from carpevigor import __version__, cart_agent, checkup, config, planner, profile, rag, reward, sources, week
+from carpevigor import __version__, ask, cart_agent, checkup, config, planner, profile, rag, reward, sources, week
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -131,6 +131,22 @@ def numbers_checkup(verdict: str = Form(...), on: str = Form(...)):
     if earned > 0:
         week.add_checkup_bonus(store, verdict, spent, earned)
     return RedirectResponse("/numbers", status_code=303)
+
+
+# Ask the sources ---------------------------------------------------------------------------------------------------
+@app.get("/ask", response_class=HTMLResponse)
+def ask_view(request: Request):
+    return render(request, "ask.html", asked=store.get("asked", []), library=len(sources.library()))
+
+
+@app.post("/ask")
+def ask_post(question: str = Form(...)):
+    question = question.strip()[:500]
+    if question:
+        out = ask.answer(question, store.get("numbers", []))
+        store.put("asked", [out] + store.get("asked", [])[:9])  # the last ten, newest first
+        store.log("asked", {"held_back": bool(out["held_back"]), "passages": len(out["passages"])})  # not the question
+    return RedirectResponse("/ask", status_code=303)
 
 
 @app.post("/week/cooked")
