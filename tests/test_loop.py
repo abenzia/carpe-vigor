@@ -195,6 +195,13 @@ def test_the_kitchen_check_holds_recipes_to_the_device_and_their_portions():
     assert 0 not in found("Thermomix / Bimby TM7")   # "Varoma" in a TM7 step is fine: Cookidoo prints it for the TM7 too
     hot_blend = [{"day": "Sun", "meal": "lunch", "servings": 1, "steps": ["Blend the soup 1 min/90°C/speed 8."]}]
     assert "does not heat" in kitchen.check(hot_blend, kitchen.device("Thermomix / Bimby TM7"), 1)[0][0]
+    steps = lambda *s: [{"day": "Sun", "meal": "dinner", "servings": 1, "steps": list(s)}]
+    tm7 = kitchen.device("Thermomix / Bimby TM7")
+    assert kitchen.check(steps("Steam 20 min/Varoma/speed 8."), tm7, 1)[0] == [
+        "Step 1 heats above speed 6: the Thermomix / Bimby TM7 does not heat there",
+        "Step 1 steams above speed 5: the Thermomix / Bimby TM7's Steaming mode goes up to speed 5"]
+    assert "steams above" in kitchen.check(steps("Steaming mode (Varoma) 20 min/speed 8."), tm7, 1)[0][0]
+    assert not kitchen.check(steps("Steaming mode (Varoma) 20 min/speed 1.", "Steam 20 min/Varoma/speed 2."), tm7, 1)
     assert any("160°C" in p for p in found("Thermomix / Bimby TM5")[5])   # no Browning mode on a TM5
     two = found("Thermomix / Bimby TM6", people=2)
     assert any("feeds 2 now" in p for p in two[0]) and any("1 serving for 2" in p for p in two[1])

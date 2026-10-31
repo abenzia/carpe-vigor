@@ -18,6 +18,7 @@ class Device:
     max_c: int | None = None      # highest temperature a step may set by hand; None = not checked
     mode_c: int | None = None     # higher temperature reachable only in a named mode (TM6, TM7)
     heats_to_speed: float | None = None  # above this speed the machine does not heat (TM7: 6)
+    steam_speed: float | None = None     # top speed while steaming (TM7's steaming mode: 5)
 
 
 _BIMBY = ("Settings are written as time/temperature/speed, e.g. '5 min/100°C/speed 1', with 'Reverse' and "
@@ -35,7 +36,7 @@ DEVICES = [
            _BIMBY + "TM7: bowl 2.2 litres. Manual temperatures up to 120°C; up to 160°C only inside its high-temperature "
            "modes, named as 'Browning mode'. It does not heat above speed 6. Steaming is done in 'Steaming mode' "
            "(maximum speed 5) with the Varoma on top: write e.g. 'Steaming mode (Varoma) 20 min/speed 1'.",
-           max_c=120, mode_c=160, heats_to_speed=6),
+           max_c=120, mode_c=160, heats_to_speed=6, steam_speed=5),
     Device("Thermomix / Bimby TM6",
            _BIMBY + "TM6: bowl 2.2 litres. Manual temperatures up to 120°C, or 'Varoma' for steaming; up to 160°C only "
            "in 'Browning mode', named as such.", max_c=120, mode_c=160),
@@ -66,7 +67,10 @@ DAYS = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 # A machine setting ("12 min/120°C/speed 1"), not any temperature: a Bimby week may still bake a frittata at 180°C
 _TEMP = re.compile(r"(?:min|sec)\.?\s*/\s*(\d{2,3})\s*°\s*C", re.I)
 _MODE = re.compile(r"browning|high[- ]temperature", re.I)
-_HEATED_SPEED = re.compile(r"(?:min|sec)\.?\s*/\s*\d{2,3}\s*°\s*C\s*/\s*speed\s*(\d+(?:\.\d+)?)", re.I)
+# A heated setting is a temperature or Varoma, however the step words it: "5 min/100°C/speed 7", "20 min/Varoma/speed 8"
+_HEATED_SPEED = re.compile(r"(?:min|sec)\.?\s*/\s*(?:\d{2,3}\s*°\s*C|varoma)\s*/\s*(?:speed|vel\.?)\s*(\d+(?:\.\d+)?)", re.I)
+# Any speed given in a steaming step: "Steaming mode (Varoma) 20 min/speed 8", "20 min/Varoma/speed 8"
+_STEAM_SPEED = re.compile(r"(?:varoma|steaming\s*mode)[^.;]*?(?:speed|vel\.?)\s*(\d+(?:\.\d+)?)", re.I)
 # "as per Monday's quinoa", "same as Tue lunch", "see Wednesday": a recipe has to be cookable on its own
 _ELSEWHERE = re.compile(r"\b(?:as (?:per|in|for|on)|same as|see|like)\b[^.;]*\b(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\b"
                         r"|\b(?:mon|tues|wednes|thurs|fri|satur|sun)day's\b", re.I)
@@ -96,6 +100,9 @@ def check(recipes: list[dict], dev: Device, people: int) -> dict[int, list[str]]
                            + (f" (up to {dev.mode_c}°C only in Browning mode, named in the step)" if dev.mode_c else ""))
             if dev.heats_to_speed and any(float(s) > dev.heats_to_speed for s in _HEATED_SPEED.findall(step)):
                 out.append(f"Step {n} heats above speed {dev.heats_to_speed:g}: the {dev.name} does not heat there")
+            if dev.steam_speed and any(float(s) > dev.steam_speed for s in _STEAM_SPEED.findall(step)):
+                out.append(f"Step {n} steams above speed {dev.steam_speed:g}: the {dev.name}'s Steaming mode goes up "
+                           f"to speed {dev.steam_speed:g}")
             if _ELSEWHERE.search(step):
                 out.append(f"Step {n} refers to another recipe: write the times and amounts here")
         servings = r.get("servings") or 0
