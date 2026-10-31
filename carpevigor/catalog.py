@@ -14,6 +14,8 @@ from dataclasses import dataclass
 
 from . import config
 
+HEALTHY = ("vegetable", "legume", "fruit", "fish", "whole", "plant")
+UNHEALTHY = ("snack", "sugar", "processed", "high-sodium", "saturated")
 NOT_BOUGHT = {"water", "leftover", "leftovers"}
 
 
@@ -72,6 +74,14 @@ class Catalog:
             if score > best_score:
                 best, best_score = item, score
         return best
+
+    def kind(self, sku: str) -> str:
+        """healthy | unhealthy | neutral, from the tags: what the reward's basket score counts (reward.py).
+        Junk wins over healthy: chips are not a vegetable because they are made of potatoes."""
+        item = self.items[sku]
+        if any(item.has(t) for t in UNHEALTHY):
+            return "unhealthy"
+        return "healthy" if any(item.has(t) for t in HEALTHY) else "neutral"
 
     def swap_for(self, sku: str) -> tuple[Item, str] | None:
         swap = self.swaps.get(sku)

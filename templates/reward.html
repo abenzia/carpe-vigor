@@ -3,27 +3,36 @@
 {% block content %}
 <div class="eyebrow">Step 5</div>
 <h2>Care that pays you back</h2>
-<p class="muted">Up to {{ (max_rate * 100)|int }}% of what you spent on groceries this week comes back — for what you <b>did</b>, never for your weight: meals cooked, days you moved, the "don't rebuy" list kept out of the cart.</p>
+<p class="muted">Up to {{ (max_rate * 100)|int }}% of what you spend on groceries comes back once a month — for what you <b>did</b>, never for your weight.
+Half of it is your basket, which PayPal sees: every dollar on vegetables, legumes, fruit, fish and whole grains raises it, every dollar on sweets, snacks and cured meat lowers it twice as much.</p>
+
+{% if error %}<div class="error">{{ error }}</div>{% endif %}
 
 <div class="grid fit">
   <div class="card accent">
-    <div class="eyebrow">This week</div>
+    <div class="eyebrow">This week{% if week_closed %} · closed{% endif %}</div>
     <div class="big">{{ currency }} {{ '%.2f'|format(result.cashback) }}</div>
     <p class="muted">{{ (result.cashback_rate * 100)|round(1) }}% of {{ currency }} {{ '%.2f'|format(behaviour.spent) }} spent · score {{ (result.score * 100)|int }}/100</p>
-    <ul class="steps">{% for r in result.reasons %}<li>{{ r }}</li>{% endfor %}</ul>
-    {% if paid %}
-      <p><span class="pill ok">paid back</span> {% for p in paid %}{{ currency }} {{ '%.2f'|format(p.amount) }} <span class="tiny muted">{{ p.refund_id }}</span>{{ ' · ' if not loop.last }}{% endfor %}</p>
-    {% elif result.cashback > 0 and behaviour.spent > 0 %}
-      <form method="post" action="/reward/pay"><button type="submit">Pay my reward via PayPal</button></form>
-    {% elif behaviour.spent == 0 %}
-      <p class="muted">No order yet this week: nothing to pay back.</p>
-    {% else %}
-      <p class="muted">Score under 50: no cashback this week. Cook a few more meals or move a bit more and it unlocks.</p>
+    <table class="tiny" style="margin-top:6px">
+      {% for p in result.parts %}
+      <tr><td>{{ p.label }}</td><td class="num">{{ (p.share * 100)|int }}%</td><td class="num">× {{ (p.weight * 100)|int }}</td>
+          <td><span class="pill {{ 'ok' if p.source == 'verified by PayPal' else ('warn' if p.source == 'self-reported' else '') }}">{{ p.source }}</span></td></tr>
+      {% endfor %}
+    </table>
+    {% if behaviour.spent == 0 %}
+      <p class="muted">No order yet this week.</p>
+    {% elif not result.earned %}
+      <p class="muted">Score under 50: nothing this week. A greener basket, a few more walks or meals cooked and it unlocks.</p>
+    {% endif %}
+    {% if money.authorized and behaviour.spent > 0 %}
+      <form method="post" action="/budget/release" style="margin-top:10px"><button type="submit">End the week: release {{ currency }} {{ '%.2f'|format(money.remaining) }} and add {{ currency }} {{ '%.2f'|format(result.cashback) }} to the month</button></form>
+    {% elif week_closed %}
+      <p><span class="pill ok">added to this month</span></p>
     {% endif %}
   </div>
   <div class="card">
     <div class="eyebrow">Steps from your watch</div>
-    <p class="tiny muted">In the demo, type seven days of steps as a watch would send them (Health Connect / Apple Health in the product). Goal: {{ '{:,}'.format(steps_goal) }} a day.</p>
+    <p class="tiny muted">In the demo, type seven days of steps as a watch would send them (Health Connect / Apple Health in the product, where steps typed by hand are left out). Goal: {{ '{:,}'.format(steps_goal) }} a day.</p>
     <form method="post" action="/reward/steps" class="row">
       <input type="text" name="steps" value="{{ steps|join(', ') if steps else '8200, 6100, 9400, 7300, 4800, 11200, 7600' }}" style="flex:1">
       <button class="secondary" type="submit">Sync</button>
@@ -36,7 +45,24 @@
 </div>
 
 <div class="card">
-  <h3 style="margin-top:0">Who pays the reward</h3>
-  <p class="tiny">In this demo, the platform. In the product, whoever gains when you do your part: your employer inside its welfare plan, your insurer, the retailer whose basket becomes weekly and loyal. The same mechanism — a share of grocery spend returned for behaviour, through PayPal — works for all three.</p>
+  <div class="eyebrow">This month</div>
+  {% if month.weeks %}
+  <table><tr><th>Week</th><th class="num">Spent</th><th class="num">Rate</th><th class="num">Earned</th></tr>
+    {% for w in month.weeks %}<tr><td>Week {{ loop.index }}</td><td class="num">{{ '%.2f'|format(w.spent) }}</td><td class="num">{{ (w.rate * 100)|round(1) }}%</td><td class="num">{{ '%.2f'|format(w.earned) }}</td></tr>{% endfor %}
+    <tr><td><b>To be paid at the end of the month</b></td><td class="num">{{ '%.2f'|format(month.spent) }}</td><td></td><td class="num"><b>{{ '%.2f'|format(month.earned) }}</b></td></tr>
+  </table>
+  {% if month.earned > 0 %}
+  <form method="post" action="/month/settle" style="margin-top:10px"><button type="submit">Close the month: pay {{ currency }} {{ '%.2f'|format(month.earned) }} via PayPal</button>
+    <span class="tiny muted">In the product this happens on the last day of the month; in the demo, now.</span></form>
+  {% endif %}
+  {% else %}
+  <p class="muted">No week closed yet this month.{% if month.last_paid %} Last month: {{ currency }} {{ '%.2f'|format(month.last_paid.paid) }} paid back on {{ currency }} {{ '%.2f'|format(month.last_paid.spent) }} spent over {{ month.last_paid.weeks }} week{{ 's' if month.last_paid.weeks != 1 }}.{% endif %}</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h3 style="margin-top:0">What is checked, and who pays</h3>
+  <p class="tiny"><b>Checked:</b> the basket is what you paid for through PayPal; steps come from your phone's health platform. <b>Not checked:</b> meals cooked are your word, so they weigh least. Whoever games them still only gets back a share of money really spent on groceries.</p>
+  <p class="tiny"><b>Who pays:</b> in this demo, the platform. In the product, whoever gains when you do your part: your employer inside its welfare plan, your insurer, the retailer whose basket becomes weekly and loyal.</p>
 </div>
 {% endblock %}

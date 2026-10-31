@@ -37,25 +37,36 @@
   <table>
     <tr><th>Item</th><th>Why</th><th class="num">Price</th></tr>
     {% for l in cart.lines %}
-    <tr><td><b>{{ l.item.name }}</b> <span class="muted tiny">{{ l.item.unit }}</span>
-        {% if l.swapped_from %}<br><span class="pill ok">swap for {{ l.swapped_from }}</span>{% endif %}</td>
-        <td class="tiny">{{ l.reason }}</td><td class="num">{{ '%.2f'|format(l.total) }}</td></tr>
+    <tr><td><b>{{ l.item.name }}</b> <span class="muted tiny">{{ l.item.unit }}{% if l.quantity > 1 %} × {{ l.quantity }}{% endif %}</span>
+        {% if l.swapped_from %}<br><span class="pill ok">swap for {{ l.swapped_from }}</span>{% endif %}
+        {% if kinds[l.item.sku] == 'healthy' %}<br><span class="pill ok">+ reward</span>{% elif kinds[l.item.sku] == 'unhealthy' %}<br><span class="pill bad">− reward ×2</span>{% endif %}</td>
+        <td class="tiny">{{ l.reason }}
+          {% if l.extra %}<form method="post" action="/cart/extra" class="inline"><input type="hidden" name="sku" value="{{ l.item.sku }}"><input type="hidden" name="remove" value="1"><button class="link">take one back</button></form>{% endif %}</td>
+        <td class="num">{{ '%.2f'|format(l.total) }}</td></tr>
     {% endfor %}
     <tr><td colspan="2" class="muted">Delivery</td><td class="num">{{ '%.2f'|format(cart.delivery_fee) }}</td></tr>
     <tr><td colspan="2"><b>Total</b> <span class="tiny muted">budget available {{ '%.2f'|format(budget) }}</span></td><td class="num"><b>{{ '%.2f'|format(cart.total) }}</b></td></tr>
   </table>
+  <p class="tiny" style="margin-top:10px"><b>Basket score {{ (basket * 100)|int }}/100</b> — {{ currency }} {{ '%.2f'|format(healthy) }} on vegetables, legumes, fruit, fish and whole grains,
+  {{ currency }} {{ '%.2f'|format(unhealthy) }} on sweets, snacks and cured meat. It is half of your reward score: the rate goes up to {{ (max_rate * 100)|int }}% of what you spend.</p>
+  <form method="post" action="/cart/extra" class="row" style="margin-top:6px">
+    <label for="extra" style="margin:0">Add something else</label>
+    <select id="extra" name="sku" style="width:auto;flex:1">{% for i in extras_menu %}<option value="{{ i.sku }}">{{ i.name }} — {{ '%.2f'|format(i.price) }}</option>{% endfor %}</select>
+    <button class="secondary" type="submit">Add</button>
+  </form>
   {% if cart.skipped %}
   <h3>Left out, and why</h3>
   <ul class="steps">{% for s in cart.skipped %}<li>{{ s }}</li>{% endfor %}</ul>
   {% endif %}
   <p class="row" style="margin-top:14px">
-    {% if cart.over_budget %}<span class="muted">Over budget: authorize a higher budget to order.</span>
+    {% if cart.over_budget %}<span class="muted">Over budget: authorize a higher budget{{ ', or take back what you added' if cart.lines|selectattr('extra')|list }} to order.</span>
     {% elif money.authorized and cart.lines %}
     <form method="post" action="/cart/order" class="inline"><button type="submit">Approve — order and pay {{ currency }} {{ '%.2f'|format(cart.total) }}</button></form>
     {% elif not cart.lines %}<span class="muted">Nothing to buy: everything is at home.</span>
     {% else %}<span class="muted">Authorize the budget above to let the agent order.</span>{% endif %}
     {% if money.authorized %}
     <form method="post" action="/budget/release" class="inline"><button class="secondary" type="submit">End the week: release {{ currency }} {{ '%.2f'|format(money.remaining) }}</button></form>
+    <span class="tiny muted">Before ending the week, sync your steps and tick your meals on the reward screen.</span>
     {% endif %}
   </p>
 </div>

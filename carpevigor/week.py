@@ -79,11 +79,39 @@ def release_remainder(store: Store) -> dict:
     return auth
 
 
-def pay_reward(store: Store, result: reward.Reward) -> list[dict]:
-    """Refund the cashback across this week's captures, largest first, up to each capture's amount."""
-    left = result.cashback
-    captures = store.get("captures", [])
-    refunds = store.get("refunds", [])
+def month(store: Store) -> dict:
+    """The weeks closed since the last payment, each with its captures and what it earned."""
+    m = store.get("month") or {"weeks": []}
+    m["earned"] = round(sum(w["earned"] for w in m["weeks"]), 2)
+    m["spent"] = round(sum(w["spent"] for w in m["weeks"]), 2)
+    return m
+
+
+def close_week(store: Store, result: reward.Reward) -> dict:
+    """At the end of the week (after the remainder is released) its reward goes into the month: nothing is paid yet."""
+    auth = store.get("authorization") or {}
+    m = store.get("month") or {"weeks": []}
+    if any(w["authorization_id"] == auth.get("authorization_id") for w in m["weeks"]):
+        raise paypal.PayPalError("This week is already closed.")
+    spent = round(sum(c["amount"] for c in store.get("captures", [])), 2)
+    entry = {"authorization_id": auth.get("authorization_id"), "spent": spent, "earned": result.cashback,
+             "rate": result.cashback_rate, "score": result.score, "reasons": result.reasons,
+             "captures": [{"capture_id": c["capture_id"], "amount": c["amount"], "refunded": c.get("refunded", 0.0)}
+                          for c in store.get("captures", [])]}
+    m["weeks"].append(entry)
+    store.put("month", m)
+    store.log("week_closed", {k: entry[k] for k in ("authorization_id", "spent", "earned", "rate", "score")})
+    return entry
+
+
+def settle_month(store: Store) -> list[dict]:
+    """End of the month: what the closed weeks earned is refunded across the month's captures, largest first, up to
+    each capture's amount (PayPal refunds a capture for 180 days, a month is well inside). Then a new month starts."""
+    m = month(store)
+    left = m["earned"]
+    if left <= 0:
+        raise paypal.PayPalError("Nothing earned this month yet: close a week first.")
+    captures = [c for w in m["weeks"] for c in w["captures"]]
     paid_now = []
     for cap in sorted(captures, key=lambda c: -c["amount"]):
         if left <= 0:
@@ -92,15 +120,14 @@ def pay_reward(store: Store, result: reward.Reward) -> list[dict]:
         if room <= 0:
             continue
         amount = min(left, room)
-        ref = paypal.client().refund(cap["capture_id"], amount, "Carpe Vigor reward: you did your part this week")
+        ref = paypal.client().refund(cap["capture_id"], amount, "Carpe Vigor reward: you did your part this month")
         cap["refunded"] = round(cap.get("refunded", 0.0) + amount, 2)
-        refunds.append({"refund_id": ref["refund_id"], "capture_id": cap["capture_id"], "amount": amount, "reasons": result.reasons})
         paid_now.append({"refund_id": ref["refund_id"], "capture_id": cap["capture_id"], "amount": amount})
         left = round(left - amount, 2)
-    store.put("captures", captures)
-    store.put("refunds", refunds)
-    store.log("reward_paid", {"cashback": result.cashback, "rate": result.cashback_rate, "score": result.score, "refunds": paid_now})
-    return refunds
+    store.put("refunds", store.get("refunds", []) + paid_now)
+    store.put("month", {"weeks": [], "last_paid": {"weeks": len(m["weeks"]), "spent": m["spent"], "paid": round(m["earned"] - left, 2)}})
+    store.log("reward_paid", {"cashback": round(m["earned"] - left, 2), "weeks": len(m["weeks"]), "refunds": paid_now})
+    return paid_now
 
 
 def ledger(store: Store) -> list[dict]:
@@ -120,5 +147,10 @@ def ledger(store: Store) -> list[dict]:
         elif e["kind"] == "reward_paid":
             for r in e.get("refunds", []):
                 rows.append({"at": e["at"], "what": "Reward paid back", "paypal_id": r["refund_id"], "amount": r["amount"],
-                             "effect": "paid to you", "note": f"refund of {r['capture_id']} · score {round(e['score'] * 100)}/100"})
+                             "effect": "paid to you", "note": f"refund of {r['capture_id']} · the month's reward"
+                                                              + (f" ({e['weeks']} week{'s' if e['weeks'] != 1 else ''})" if e.get("weeks") else "")})
+        elif e["kind"] == "week_closed":
+            rows.append({"at": e["at"], "what": "Week closed", "paypal_id": e.get("authorization_id") or "", "amount": e["earned"],
+                         "effect": "earned", "note": f"{round(e['rate'] * 100, 1)}% of {e['spent']:.2f} · score "
+                                                     f"{round(e['score'] * 100)}/100 · paid at the end of the month"})
     return rows

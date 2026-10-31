@@ -48,13 +48,64 @@ def test_sandbox_capture_and_refund_survive_paypals_minimal_answer(monkeypatch):
     assert pp._headers()["Prefer"] == "return=representation"
 
 
+def week(cooked=12, days=6, spent=100.0, healthy=70.0, junk=0.0):
+    return reward.WeekBehaviour(planned_meals=14, cooked_meals=cooked, days_with_steps=days, spent=spent,
+                                healthy_spend=healthy, unhealthy_spend=junk)
+
+
 def test_reward_rewards_behaviour_not_weight():
-    good = reward.score(reward.WeekBehaviour(14, 12, 6, True, 60.0))
-    assert good.earned and 0 < good.cashback_rate <= 0.10 and good.cashback == round(60 * good.cashback_rate, 2)
-    lazy = reward.score(reward.WeekBehaviour(14, 2, 1, False, 60.0))
-    assert not lazy.earned
-    broke_list = reward.score(reward.WeekBehaviour(14, 14, 7, False, 60.0))
-    assert broke_list.score < 1.0 and "don't rebuy" in broke_list.reasons[2]
+    good = reward.score(week())
+    assert good.earned and 0 < good.cashback_rate <= reward.config.CASHBACK_MAX == 0.20
+    assert good.cashback == round(100 * good.cashback_rate, 2)
+    assert not reward.score(week(cooked=2, days=1, healthy=20.0)).earned          # a half-hearted week pays nothing
+    assert not any("weight" in p["label"].lower() or "kg" in p["label"].lower() for p in good.parts)
+
+
+def test_the_basket_moves_the_rate_vegetables_up_sweets_and_bacon_down():
+    plain = reward.score(week(healthy=50.0))
+    greener = reward.score(week(healthy=80.0))
+    with_junk = reward.score(week(healthy=50.0, junk=10.0))
+    assert greener.cashback_rate > plain.cashback_rate > with_junk.cashback_rate
+    # each dollar of junk costs twice what a dollar of vegetables earns
+    assert round(plain.score - with_junk.score, 3) == round(2 * (reward.score(week(healthy=60.0)).score - plain.score), 3)
+    perfect = reward.score(week(cooked=14, days=7, healthy=100.0))
+    assert perfect.cashback_rate == 0.20                                         # the ceiling
+    assert reward.basket_quality(30.0, 40.0, 100.0) == 0.0                       # never below zero
+
+
+def test_each_part_of_the_reward_says_how_it_is_known():
+    parts = {p["key"]: p for p in reward.score(week()).parts}
+    assert parts["basket"]["source"] == "verified by PayPal" and parts["basket"]["weight"] == 0.5
+    assert parts["moved"]["weight"] == 0.3 and parts["cooked"]["weight"] == 0.2
+    assert parts["cooked"]["source"] == "self-reported"
+
+
+def test_two_weeks_one_payment_at_the_end_of_the_month(tmp_path):
+    from carpevigor import week as w
+    paypal.use(paypal.MockPayPal())
+    s = Store(tmp_path / "m.sqlite")
+    for spent, earned in ((80.0, 9.0), (60.0, 12.0)):
+        order = w.start_authorization(s, 100.0, "http://x/ok", "http://x/ko")
+        w.complete_authorization(s, order["id"])
+        w.capture_order(s, spent, "groceries")
+        w.release_remainder(s)
+        w.close_week(s, reward.Reward(score=0.7, cashback_rate=earned / spent, cashback=earned, reasons=[]))
+    assert w.month(s)["earned"] == 21.0 and len(w.month(s)["weeks"]) == 2
+    paid = w.settle_month(s)
+    assert round(sum(p["amount"] for p in paid), 2) == 21.0
+    assert len({p["capture_id"] for p in paid}) == 1           # 21 fits in the largest capture (80): one refund
+    assert w.month(s)["weeks"] == [] and w.month(s)["last_paid"]["paid"] == 21.0
+    with pytest.raises(paypal.PayPalError):
+        w.settle_month(s)                                       # nothing left to pay
+
+
+def test_catalog_says_what_is_healthy_and_what_is_junk():
+    catalog = Catalog.load()
+    kind = lambda name: catalog.kind(next(i for i in catalog.items.values() if i.name == name).sku)
+    assert kind("Baby spinach") == kind("Salmon fillets") == kind("Dried lentils") == kind("Rolled oats") == "healthy"
+    assert kind("Bacon") == kind("Potato chips") == kind("Cola, 6 cans") == kind("Butter") == "unhealthy"
+    assert kind("Chicken breast") == kind("Extra-virgin olive oil") == "neutral"
+    assert any(i.has("sugar") and i.has("snack") for i in catalog.items.values())  # there are sweets to tempt you
 
 
 def test_cart_respects_pantry_blacklist_and_budget():
@@ -255,28 +306,40 @@ def test_full_loop_through_the_web_app(client):
     token = approve.split("token=")[1].split("&")[0]
     r = client.get(f"/budget/approved?token={token}", follow_redirects=False)
     r = client.get("/cart")
-    assert "Approve — order and pay" in r.text
+    assert "Approve — order and pay" in r.text and "Basket score" in r.text
+    # the person adds bacon and cookies on top of the agent's cart: in the cart, marked as lowering the reward
+    client.post("/cart/extra", data={"sku": "PRO-BACON-200"}, follow_redirects=False)
+    client.post("/cart/extra", data={"sku": "SNK-COOKIE-300"}, follow_redirects=False)
+    r = client.get("/cart")
+    assert "Bacon" in r.text and "− reward" in r.text
     r = client.post("/cart/order", follow_redirects=False)
     assert r.headers["location"] == "/reward"
     state = client.get("/api/state").json()
     assert state["money"]["spent"] > 0 and state["money"]["spent"] <= 120
+    order = next(e for e in state["log"] if e["kind"] == "order")
+    assert order["unhealthy"] >= 4.49 + 3.49 and order["healthy"] > 0          # bacon and cookies counted as junk
     client.post("/reward/steps", data={"steps": "8200, 6100, 9400, 7300, 4800, 11200, 7600"}, follow_redirects=False)
-    r = client.get("/reward")
-    assert "Care that pays you back" in r.text
-    client.post("/budget/release", follow_redirects=False)
-    state = client.get("/api/state").json()
-    assert state["money"]["released"] == round(120 - state["money"]["spent"], 2)
     for title in [r["title"] for r in state["plan"]["plan"]["recipes"]][:12]:
         client.post("/week/cooked", data={"title": title}, follow_redirects=False)
-    client.post("/reward/pay", follow_redirects=False)
+    r = client.get("/reward")
+    assert "Care that pays you back" in r.text and "verified by PayPal" in r.text and "self-reported" in r.text
+    client.post("/budget/release", follow_redirects=False)                    # ends the week: its reward goes into the month
+    state = client.get("/api/state").json()
+    assert state["money"]["released"] == round(120 - state["money"]["spent"], 2)
+    assert state["money"]["cashback"] == 0                                    # nothing paid until the month closes
+    assert client.post("/budget/release", follow_redirects=False).headers["location"].startswith("/cart?error")  # once only
+    r = client.post("/month/settle", follow_redirects=False)
+    assert r.headers["location"] == "/reward"
     # The ledger: one row per money movement, each with its PayPal id, adding up to the header's numbers.
     rows = client.get("/api/ledger").json()
     money = client.get("/api/state").json()["money"]
     kinds = [r["what"] for r in rows]
-    assert kinds == ["Budget held", "Order captured", "Remainder released", "Reward paid back"]
+    assert kinds == ["Budget held", "Order captured", "Remainder released", "Week closed", "Reward paid back"]
     by = {r["what"]: r for r in rows}
     assert by["Budget held"]["amount"] == 120 and by["Budget held"]["paypal_id"].startswith("MOCK-AUTH-")
     assert by["Order captured"]["amount"] == money["spent"]
     assert by["Remainder released"]["amount"] == money["released"]
-    assert by["Reward paid back"]["amount"] == money["cashback"] > 0 and by["Reward paid back"]["paypal_id"].startswith("MOCK-REF-")
+    assert by["Week closed"]["amount"] == by["Reward paid back"]["amount"] == money["cashback"] > 0
+    assert by["Reward paid back"]["paypal_id"].startswith("MOCK-REF-")
+    assert client.post("/month/settle", follow_redirects=False).headers["location"].startswith("/reward?error")  # not twice
     assert "ag-grid" in client.get("/ledger").text

@@ -124,11 +124,30 @@ def cart_view(request: Request, error: str = ""):
     budget = money["remaining"] if money["authorized"] else float(prof["budget"])
     cart = cart_agent.build(plan["plan"]["recipes"], pantry, catalog, budget,
                             avoid=catalog.off_plan((prof.get("guidance") or {}).get("constraints", [])))
-    store.put("cart", {"lines": [{"sku": l.item.sku, "quantity": l.quantity, "reason": l.reason, "swapped_from": l.swapped_from} for l in cart.lines],
+    cart_agent.add_extras(cart, store.get("extras", []), catalog)
+    store.put("cart", {"lines": [{"sku": l.item.sku, "quantity": l.quantity, "reason": l.reason, "swapped_from": l.swapped_from,
+                                  "extra": l.extra, "amount": l.total} for l in cart.lines],
                        "subtotal": cart.subtotal, "delivery_fee": cart.delivery_fee, "total": cart.total, "skipped": cart.skipped,
                        "needed": cart.needed, "over_budget": cart.over_budget})
+    healthy, unhealthy = cart_agent.basket([(l.item.sku, l.total) for l in cart.lines], catalog, pantry.blacklist())
+    kinds = {l.item.sku: ("unhealthy" if l.item.sku in pantry.blacklist() else catalog.kind(l.item.sku)) for l in cart.lines}
     return render(request, "cart.html", cart=cart, store_name=catalog.store["name"], store_note=catalog.store.get("note", ""),
-                  budget=budget, error=error, orders=store.events("captured"))
+                  budget=budget, error=error, orders=store.events("captured"), kinds=kinds,
+                  basket=reward.basket_quality(healthy, unhealthy, cart.subtotal), healthy=healthy, unhealthy=unhealthy,
+                  extras_menu=sorted(catalog.items.values(), key=lambda i: i.name), max_rate=config.CASHBACK_MAX)
+
+
+@app.post("/cart/extra")
+def cart_extra(sku: str = Form(...), remove: str = Form("")):
+    """The person adds (or takes back) something of their own choice: the agent never would, the reward counts it."""
+    extras = store.get("extras", [])
+    if remove:
+        if sku in extras:
+            extras.remove(sku)
+    elif sku in catalog.items:
+        extras.append(sku)
+    store.put("extras", extras)
+    return RedirectResponse("/cart", status_code=303)
 
 
 @app.post("/budget/authorize")
@@ -158,10 +177,13 @@ def cart_order():
         return RedirectResponse(f"/cart?error={e}", status_code=303)
     pantry = Pantry.from_rows(store.get("pantry", []))
     blacklisted_bought = [l["sku"] for l in cart["lines"] if l["sku"] in pantry.blacklist()]
+    healthy, unhealthy = cart_agent.basket([(l["sku"], l["amount"]) for l in cart["lines"]], catalog, pantry.blacklist())
     for line in cart["lines"]:
         pantry.tick(line["sku"], catalog.items[line["sku"]].name)
     store.put("pantry", pantry.to_rows())
-    store.log("order", {"items": len(cart["lines"]), "total": cart["total"], "blacklisted_bought": blacklisted_bought})
+    store.put("extras", [])
+    store.log("order", {"items": len(cart["lines"]), "total": cart["total"], "blacklisted_bought": blacklisted_bought,
+                        "healthy": healthy, "unhealthy": unhealthy})
     return RedirectResponse("/reward", status_code=303)
 
 
@@ -169,29 +191,42 @@ def cart_order():
 def budget_release():
     try:
         week.release_remainder(store)
+        week.close_week(store, reward.score(behaviour()))  # the week's reward goes into the month, paid at its end
     except PayPalError as e:
         return RedirectResponse(f"/cart?error={e}", status_code=303)
     return RedirectResponse("/reward", status_code=303)
 
 
 # 5 ------------------------------------------------------------------------------------------------------------------
+def this_week(kind: str) -> list[dict]:
+    """Events of one kind since the week's budget was authorized (the log keeps every week)."""
+    out = []
+    for e in store.events():
+        if e["kind"] == "authorized":
+            break
+        if e["kind"] == kind:
+            out.append(e)
+    return out
+
+
 def behaviour() -> reward.WeekBehaviour:
     plan = store.get("plan") or {"plan": {"recipes": []}, "cooked": []}
     steps = store.get("steps", [])  # 7 daily step counts, from a watch or simulated
     money = week.status(store)
-    orders = store.events("order")
+    orders = this_week("order")
     return reward.WeekBehaviour(
         planned_meals=len(plan["plan"]["recipes"]), cooked_meals=len(plan.get("cooked", [])),
-        days_with_steps=sum(1 for s in steps if s >= config.STEPS_GOAL),
-        blacklist_respected=not any(o.get("blacklisted_bought") for o in orders),
-        spent=money["spent"])
+        days_with_steps=sum(1 for s in steps if s >= config.STEPS_GOAL), spent=money["spent"],
+        healthy_spend=round(sum(o.get("healthy", 0.0) for o in orders), 2),
+        unhealthy_spend=round(sum(o.get("unhealthy", 0.0) for o in orders), 2))
 
 
 @app.get("/reward", response_class=HTMLResponse)
-def reward_view(request: Request):
+def reward_view(request: Request, error: str = ""):
     b = behaviour()
     return render(request, "reward.html", behaviour=b, result=reward.score(b), steps=store.get("steps", []),
-                  steps_goal=config.STEPS_GOAL, max_rate=config.CASHBACK_MAX, days=planner.DAYS, paid=store.get("refunds", []))
+                  steps_goal=config.STEPS_GOAL, max_rate=config.CASHBACK_MAX, days=planner.DAYS,
+                  month=week.month(store), week_closed=bool(this_week("week_closed")), error=error)
 
 
 @app.post("/reward/steps")
@@ -202,14 +237,13 @@ def steps_submit(steps: str = Form(...)):
     return RedirectResponse("/reward", status_code=303)
 
 
-@app.post("/reward/pay")
-def reward_pay():
-    result = reward.score(behaviour())
-    if result.cashback > 0 and not store.get("refunds"):
-        try:
-            week.pay_reward(store, result)
-        except PayPalError as e:
-            return RedirectResponse(f"/cart?error={e}", status_code=303)
+@app.post("/month/settle")
+def month_settle():
+    """The last day of the month (a button in the demo): the month's reward is refunded through PayPal."""
+    try:
+        week.settle_month(store)
+    except PayPalError as e:
+        return RedirectResponse(f"/reward?error={e}", status_code=303)
     return RedirectResponse("/reward", status_code=303)
 
 

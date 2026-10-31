@@ -25,6 +25,7 @@ class CartLine:
     quantity: int
     reason: str           # which recipes need it
     swapped_from: str = ""  # name of the blacklisted item this replaces, if any
+    extra: bool = False     # added by the person, not by the agent: never cut by the agent, counted by the reward
 
     @property
     def total(self) -> float:
@@ -112,6 +113,29 @@ def build(recipes: list[dict], pantry: Pantry, catalog: Catalog, budget: float, 
     return cart
 
 
+def add_extras(cart: Cart, skus: list[str], catalog: Catalog):
+    """What the person adds on top of the agent's cart: their choice, junk included. The agent never cuts it to fit
+    the budget (if it does not fit, the cart is over budget and says so); the reward's basket score counts it."""
+    for sku in skus:
+        if sku not in catalog.items:
+            continue
+        line = next((l for l in cart.lines if l.item.sku == sku), None)
+        if line:
+            line.quantity += 1
+        else:
+            cart.lines.append(CartLine(item=catalog.items[sku], quantity=1, reason="your choice", extra=True))
+    set_delivery(cart, catalog)
+    cart.needed = max(cart.needed, cart.total)
+
+
+def basket(lines: list[tuple[str, float]], catalog: Catalog, dont_rebuy: set[str] = frozenset()) -> tuple[float, float]:
+    """(healthy spend, unhealthy spend) of (sku, amount) lines: what the reward's basket score is made of. A "don't
+    rebuy" item counts as unhealthy whatever it is: the person had decided to finish it, not buy it again."""
+    healthy = sum(a for sku, a in lines if sku not in dont_rebuy and catalog.kind(sku) == "healthy")
+    unhealthy = sum(a for sku, a in lines if sku in dont_rebuy or catalog.kind(sku) == "unhealthy")
+    return round(healthy, 2), round(unhealthy, 2)
+
+
 def set_delivery(cart: Cart, catalog: Catalog):
     cart.delivery_fee = 0.0 if cart.subtotal >= catalog.store.get("delivery_free_over", 0) else float(catalog.store.get("delivery_fee", 0))
 
@@ -130,7 +154,7 @@ def protected(item: Item) -> bool:
 
 def trim_to_budget(cart: Cart, catalog: Catalog):
     while not cart.within_budget:
-        removable = [l for l in cart.lines if not protected(l.item)]
+        removable = [l for l in cart.lines if not protected(l.item) and not l.extra]
         if not removable:
             break  # only the plan's proteins and vegetables are left: over_budget, the screen asks for more budget
         worst = max(removable, key=lambda l: (rank(l.item), l.total))

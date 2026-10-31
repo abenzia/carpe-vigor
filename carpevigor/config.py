@@ -38,5 +38,5 @@ MODELS = {
 }
 
 # Reward rules (reward.py): what a week of good behaviour pays back, as a share of what was spent.
-CASHBACK_MAX = float(os.environ.get("CASHBACK_MAX", "0.10"))  # 10% of the week's grocery spend
+CASHBACK_MAX = float(os.environ.get("CASHBACK_MAX", "0.20"))  # up to 20% of the grocery spend, by basket and behaviour
 STEPS_GOAL = int(os.environ.get("STEPS_GOAL", "7000"))  # daily steps that count as "moved today"

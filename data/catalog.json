@@ -47,6 +47,8 @@
     {"sku": "PRO-BACON-200", "name": "Bacon", "unit": "200 g", "price": 4.49, "tags": ["protein", "processed", "high-sodium", "saturated"], "per": {"g": 200}},
     {"sku": "SEA-MAYO-400", "name": "Mayonnaise", "unit": "400 g", "price": 2.99, "tags": ["seasoning", "fat", "saturated"], "per": {"g": 400}},
     {"sku": "SNK-CHIPS-150", "name": "Potato chips", "unit": "150 g", "price": 2.49, "tags": ["snack", "high-sodium", "processed"], "per": {"g": 150}},
+    {"sku": "SNK-COOKIE-300", "name": "Chocolate chip cookies", "unit": "300 g", "price": 3.49, "tags": ["snack", "sugar", "saturated"], "per": {"g": 300}},
+    {"sku": "SNK-CHOC-100", "name": "Milk chocolate bar", "unit": "100 g", "price": 1.99, "tags": ["snack", "sugar"], "per": {"g": 100}},
     {"sku": "DRK-SODA-6", "name": "Cola, 6 cans", "unit": "6 × 330 ml", "price": 4.49, "tags": ["drink", "sugar"], "per": {"piece": 6}},
     {"sku": "DRK-WATER-6", "name": "Sparkling water, 6 bottles", "unit": "6 × 1 l", "price": 3.49, "tags": ["drink"], "per": {"piece": 6}}
   ],
