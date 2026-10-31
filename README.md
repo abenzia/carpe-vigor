@@ -16,6 +16,9 @@ Entry for the **PayPal AI Hackathon** (Devpost, November 2026).
 2. **The week**: 14 meals for the number of people you cook for, written for the kitchen device you have, plus a
    movement line for each day. Each meal has a *why* line (what is in the dish) and an *evidence* line (what a named
    public source says, on average).
+   - **Laid out like a Thermomix recipe card**: prep and total time, difficulty, accessories, ingredients with how
+     they go in, numbered steps whose machine setting (time / temperature or Varoma / reverse / speed) is data, not
+     prose, and tips. The content is the planner's, written for this person's week.
    - **Recipes that work on your machine.** For a Thermomix (TM7, TM6, TM5, TM31) the planner gets that model's
      limits from Vorwerk's published specs: a TM31 stops at 100 °C, a TM7 does not heat above speed 6. Plain code
      then reads every step: a setting the machine cannot do, a step that says "as in Monday's recipe", a dinner

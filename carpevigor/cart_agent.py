@@ -84,7 +84,7 @@ def needs(recipes: list[dict]) -> dict[str, Need]:
             name = b["name"] if isinstance(b, dict) else b
             need = wanted.setdefault(name.strip().lower(), Need())
             need.used_in.append(recipe["title"])
-            if isinstance(b, dict) and b.get("amount"):
+            if isinstance(b, dict) and b.get("unit") and b.get("amount"):  # a buy line; an ingredient's "150 g" is text
                 need.amounts[b["unit"]] = need.amounts.get(b["unit"], 0) + float(b["amount"])
     return wanted
 

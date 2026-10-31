@@ -1,28 +1,72 @@
 {
  "title": "One-Week Low-Sodium Meal Plan",
- "summary": "This week's plan focuses on fresh, whole foods to support weight management and reduce sodium intake. Meals are flavored with herbs, spices, and citrus instead of salt, and a daily movement guide helps increase physical activity.",
+ "summary": "This week's plan focuses on fresh, whole foods to help reduce sodium intake and support weight management goals. Meals are seasoned with herbs, spices, and lemon, and include plenty of vegetables, lean proteins, and whole grains.",
  "recipes": [
   {
    "day": "Mon",
    "meal": "lunch",
-   "title": "Quinoa Salad with Chickpeas and Bell Pepper",
+   "title": "Quinoa Salad with Chickpeas and Lemon Dressing",
    "servings": 1,
    "leftovers_for": "",
    "from_leftovers": "",
+   "prep_minutes": 10,
+   "total_minutes": 30,
+   "difficulty": "easy",
+   "accessories": [
+    "simmering basket",
+    "spatula"
+   ],
    "ingredients": [
-    "75 g quinoa",
-    "150 g water",
-    "100 g chickpeas, no salt added, rinsed",
-    "1/2 red bell pepper, diced",
-    "50 g baby spinach",
-    "1 tbsp extra-virgin olive oil",
-    "1 tbsp lemon juice",
-    "1/4 tsp black pepper"
+    {
+     "amount": "500 g",
+     "name": "water",
+     "note": ""
+    },
+    {
+     "amount": "60 g",
+     "name": "quinoa",
+     "note": "rinsed"
+    },
+    {
+     "amount": "100 g",
+     "name": "chickpeas, no salt added",
+     "note": "rinsed and drained"
+    },
+    {
+     "amount": "75 g",
+     "name": "bell pepper",
+     "note": "diced"
+    },
+    {
+     "amount": "50 g",
+     "name": "cherry tomatoes",
+     "note": "halved"
+    },
+    {
+     "amount": "30 g",
+     "name": "baby spinach",
+     "note": ""
+    },
+    {
+     "amount": "15 g",
+     "name": "extra-virgin olive oil",
+     "note": ""
+    },
+    {
+     "amount": "1",
+     "name": "lemon",
+     "note": "juice of 1/2"
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "note": ""
+    }
    ],
    "buy": [
     {
      "name": "Quinoa",
-     "amount": 75.0,
+     "amount": 60.0,
      "unit": "g"
     },
     {
@@ -36,8 +80,13 @@
      "unit": "g"
     },
     {
-     "name": "Baby spinach",
+     "name": "Cherry tomatoes",
      "amount": 50.0,
+     "unit": "g"
+    },
+    {
+     "name": "Baby spinach",
+     "amount": 30.0,
      "unit": "g"
     },
     {
@@ -47,7 +96,7 @@
     },
     {
      "name": "Lemons",
-     "amount": 0.5,
+     "amount": 1.0,
      "unit": "piece"
     },
     {
@@ -57,32 +106,92 @@
     }
    ],
    "steps": [
-    "Place the simmering basket into the mixing bowl. Weigh 75 g quinoa into it and add 150 g water to the bowl.",
-    "Cook 15 min/100°C/speed 4.",
-    "Remove the simmering basket with the spatula and let the quinoa cool slightly.",
-    "In a bowl, combine the cooked quinoa, 100 g chickpeas, diced bell pepper, and 50 g baby spinach.",
-    "Drizzle with 1 tbsp olive oil, 1 tbsp lemon juice, and season with black pepper. Mix well before serving."
+    {
+     "text": "Place 500 g water in the mixing bowl. Insert the simmering basket, add 60 g rinsed quinoa and cook.",
+     "setting": {
+      "time": "20 min",
+      "temperature": "100°C",
+      "reverse": false,
+      "speed": "4",
+      "mode": ""
+     },
+     "then": "Remove the simmering basket with the spatula and let the quinoa cool slightly."
+    },
+    {
+     "text": "In a medium bowl, combine the cooked quinoa, 100 g chickpeas, 75 g bell pepper, 50 g cherry tomatoes, and 30 g baby spinach.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Drizzle with 15 g olive oil and the juice of 1/2 lemon. Season with a pinch of black pepper and mix well to combine. Serve immediately.",
+     "setting": null,
+     "then": ""
+    }
    ],
-   "why": "This dish is made with whole-grain quinoa and vegetables, and is flavored with lemon and pepper instead of salt.",
-   "evidence": "Reducing sodium intake is one of the most cost-effective measures to improve health and reduce the burden of noncommunicable diseases. [WHO — Sodium reduction (fact sheet)]",
+   "tips": [
+    "For extra flavor, add a teaspoon of salt-free mixed herbs to the dressing.",
+    "This salad can be prepared in advance and stored in the refrigerator for up to 24 hours."
+   ],
+   "why": "This dish provides whole grains, vegetables, and plant-based protein without any added salt, using lemon juice for flavor.",
+   "evidence": "A healthy diet includes at least 400 grams of fruits and vegetables per day [WHO — Healthy diet (fact sheet)].",
    "removed": [],
    "kitchen_flags": []
   },
   {
    "day": "Mon",
    "meal": "dinner",
-   "title": "Steamed Salmon with Broccoli and Lemon",
+   "title": "Lemon Herb Salmon with Steamed Vegetables",
    "servings": 2,
    "leftovers_for": "Tue lunch",
    "from_leftovers": "",
+   "prep_minutes": 10,
+   "total_minutes": 35,
+   "difficulty": "easy",
+   "accessories": [
+    "Varoma",
+    "spatula"
+   ],
    "ingredients": [
-    "500 g water",
-    "300 g salmon fillets (2x 150g)",
-    "300 g broccoli florets",
-    "1 lemon",
-    "1 tbsp extra-virgin olive oil",
-    "2 g mixed dried herbs, salt-free",
-    "1 g black pepper"
+    {
+     "amount": "600 g",
+     "name": "water",
+     "note": ""
+    },
+    {
+     "amount": "2",
+     "name": "salmon fillets",
+     "note": "(approx. 150 g each), skinless"
+    },
+    {
+     "amount": "300 g",
+     "name": "broccoli",
+     "note": "in florets"
+    },
+    {
+     "amount": "200 g",
+     "name": "carrots",
+     "note": "peeled and sliced"
+    },
+    {
+     "amount": "1",
+     "name": "lemon",
+     "note": "sliced"
+    },
+    {
+     "amount": "1 tsp",
+     "name": "mixed dried herbs, salt-free",
+     "note": ""
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "note": ""
+    },
+    {
+     "amount": "20 g",
+     "name": "extra-virgin olive oil",
+     "note": "for serving"
+    }
    ],
    "buy": [
     {
@@ -96,14 +205,14 @@
      "unit": "g"
     },
     {
+     "name": "Carrots",
+     "amount": 200.0,
+     "unit": "g"
+    },
+    {
      "name": "Lemons",
      "amount": 1.0,
      "unit": "piece"
-    },
-    {
-     "name": "Extra-virgin olive oil",
-     "amount": 15.0,
-     "unit": "ml"
     },
     {
      "name": "Mixed dried herbs, salt-free",
@@ -114,67 +223,191 @@
      "name": "Black pepper",
      "amount": 1.0,
      "unit": "g"
+    },
+    {
+     "name": "Extra-virgin olive oil",
+     "amount": 20.0,
+     "unit": "ml"
     }
    ],
    "steps": [
-    "Add 500 g water to the mixing bowl.",
-    "Place 300 g broccoli florets into the Varoma dish. Season 300 g salmon fillets with 1 tbsp olive oil, 2 g herbs, 1 g pepper, and juice from half a lemon. Place fillets on the Varoma tray.",
-    "Assemble the Varoma and secure the lid.",
-    "Cook in Steaming mode 20 min/speed 2.",
-    "Serve one portion immediately with a wedge of the remaining lemon. Let the other portion cool and store for lunch."
+    {
+     "text": "Place 600 g water in the mixing bowl.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Arrange 200 g sliced carrots and 300 g broccoli florets in the Varoma dish.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Place the 2 salmon fillets on the Varoma tray. Season with 1 tsp mixed herbs and a pinch of black pepper, then top with lemon slices.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Assemble the Varoma and steam.",
+     "setting": {
+      "time": "25 min",
+      "temperature": "Varoma",
+      "reverse": false,
+      "speed": "1",
+      "mode": "Steaming"
+     },
+     "then": "Check that the salmon is cooked through and the vegetables are tender."
+    },
+    {
+     "text": "Serve one portion immediately, drizzled with 10 g olive oil. Allow the second portion to cool completely before storing in an airtight container in the refrigerator for tomorrow's lunch.",
+     "setting": null,
+     "then": ""
+    }
    ],
-   "why": "This meal includes fish and vegetables, with no added salt, using lemon and herbs for flavor.",
-   "evidence": "For adults, WHO recommends less than 2000 mg/day of sodium (equivalent to less than 5 g/day salt), or just under a teaspoon. [WHO — Sodium reduction (fact sheet)]",
+   "tips": [
+    "You can cook 100g of brown rice in the simmering basket at the same time. Increase water to 1200g if you do."
+   ],
+   "why": "This meal features fish and a generous portion of vegetables, seasoned with herbs and lemon instead of salt to support sodium reduction goals.",
+   "evidence": "The World Health Organization recommends consuming less than 2000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
    "removed": [],
    "kitchen_flags": []
   },
   {
    "day": "Tue",
    "meal": "lunch",
-   "title": "Steamed Salmon with Broccoli and Lemon",
+   "title": "Leftover Lemon Herb Salmon and Vegetables",
    "servings": 1,
    "leftovers_for": "",
    "from_leftovers": "Mon dinner",
+   "prep_minutes": 2,
+   "total_minutes": 15,
+   "difficulty": "easy",
+   "accessories": [
+    "Varoma",
+    "baking paper"
+   ],
    "ingredients": [
-    "1 serving leftover Steamed Salmon with Broccoli and Lemon"
+    {
+     "amount": "1 serving",
+     "name": "leftover salmon and vegetables",
+     "note": "from Monday dinner"
+    },
+    {
+     "amount": "500 g",
+     "name": "water",
+     "note": ""
+    }
    ],
    "buy": [],
    "steps": [
-    "Enjoy the leftover salmon and broccoli cold, or gently reheat in a microwave.",
-    "Squeeze fresh lemon over the top if desired before serving."
+    {
+     "text": "Place 500 g water in the mixing bowl.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Line the Varoma dish with a piece of wet, crumpled baking paper. Place the leftover salmon and vegetables on top and set the Varoma in position.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Heat the leftovers.",
+     "setting": {
+      "time": "12 min",
+      "temperature": "Varoma",
+      "reverse": false,
+      "speed": "1",
+      "mode": "Steaming"
+     },
+     "then": ""
+    },
+    {
+     "text": "Carefully remove the Varoma and serve the salmon and vegetables warm.",
+     "setting": null,
+     "then": ""
+    }
    ],
-   "why": "This meal includes fish and vegetables, with no added salt, using lemon and herbs for flavor.",
-   "evidence": "Unsaturated fat (found in fish, avocado and nuts, and in sunflower, soybean, canola and olive oils) is preferable to saturated fat. [WHO — Healthy diet (fact sheet)]",
+   "tips": [
+    "This dish is also delicious cold, straight from the fridge, for a quick and easy lunch."
+   ],
+   "why": "Eating leftovers reduces food waste and makes healthy eating convenient on a busy day.",
+   "evidence": "A healthy diet includes a variety of minimally processed and unprocessed foods low in unhealthy fats, added sugars, and sodium [WHO — Healthy diet (fact sheet)].",
    "removed": [],
    "kitchen_flags": []
   },
   {
    "day": "Tue",
    "meal": "dinner",
-   "title": "Herbed Chicken and Vegetable Stir-fry with Brown Rice",
+   "title": "Chicken and Zucchini with Whole-Wheat Pasta",
    "servings": 1,
    "leftovers_for": "",
    "from_leftovers": "",
+   "prep_minutes": 10,
+   "total_minutes": 30,
+   "difficulty": "easy",
+   "accessories": [
+    "spatula"
+   ],
    "ingredients": [
-    "75 g brown rice",
-    "800 g water",
-    "1 garlic clove",
-    "10 g extra-virgin olive oil",
-    "150 g chicken breast, cut into strips",
-    "100 g zucchini, sliced",
-    "100 g bell peppers, sliced",
-    "2 g mixed dried herbs, salt-free",
-    "1 g black pepper"
+    {
+     "amount": "1",
+     "name": "garlic",
+     "note": "clove"
+    },
+    {
+     "amount": "50 g",
+     "name": "yellow onion",
+     "note": "in quarters"
+    },
+    {
+     "amount": "10 g",
+     "name": "extra-virgin olive oil",
+     "note": ""
+    },
+    {
+     "amount": "150 g",
+     "name": "chicken breast",
+     "note": "cut into 2 cm cubes"
+    },
+    {
+     "amount": "150 g",
+     "name": "zucchini",
+     "note": "diced"
+    },
+    {
+     "amount": "200 g",
+     "name": "cherry tomatoes",
+     "note": "halved"
+    },
+    {
+     "amount": "1 tsp",
+     "name": "mixed dried herbs, salt-free",
+     "note": ""
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "note": ""
+    },
+    {
+     "amount": "70 g",
+     "name": "whole-wheat pasta",
+     "note": ""
+    },
+    {
+     "amount": "250 g",
+     "name": "water",
+     "note": ""
+    }
    ],
    "buy": [
     {
-     "name": "Brown rice",
-     "amount": 75.0,
+     "name": "Garlic",
+     "amount": 5.0,
      "unit": "g"
     },
     {
-     "name": "Garlic",
-     "amount": 5.0,
+     "name": "Yellow onions",
+     "amount": 50.0,
      "unit": "g"
     },
     {
@@ -189,12 +422,12 @@
     },
     {
      "name": "Zucchini",
-     "amount": 100.0,
+     "amount": 150.0,
      "unit": "g"
     },
     {
-     "name": "Bell peppers",
-     "amount": 100.0,
+     "name": "Cherry tomatoes",
+     "amount": 200.0,
      "unit": "g"
     },
     {
@@ -206,69 +439,55 @@
      "name": "Black pepper",
      "amount": 1.0,
      "unit": "g"
+    },
+    {
+     "name": "Whole-wheat pasta",
+     "amount": 70.0,
+     "unit": "g"
     }
    ],
    "steps": [
-    "Place simmering basket in mixing bowl, add 75 g brown rice and 800 g water. Cook 25 min/100°C/speed 4. Set rice aside and empty bowl.",
-    "Place 1 garlic clove in bowl, chop 3 sec/speed 5. Scrape down.",
-    "Add 10 g olive oil and 150 g chicken strips. Sauté 5 min/120°C/Reverse/speed spoon.",
-    "Add 100 g zucchini and 100 g bell peppers. Cook 7 min/100°C/Reverse/speed spoon.",
-    "Season with 2 g mixed herbs and 1 g black pepper. Stir 10 sec/Reverse/speed 2.",
-    "Serve the chicken and vegetables over the cooked brown rice."
-   ],
-   "why": "No added salt: this dish uses garlic and herbs for flavor, served with whole-grain rice and lean protein.",
-   "evidence": "On average, carbohydrates in the diet should come primarily from whole grains, vegetables, fruits, and pulses (like beans, lentils, and chickpeas). [WHO — Healthy diet (fact sheet)]",
-   "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Wed",
-   "meal": "lunch",
-   "title": "Turkey and Avocado Sandwich",
-   "servings": 1,
-   "leftovers_for": "",
-   "from_leftovers": "",
-   "ingredients": [
-    "2 slices whole-grain bread",
-    "75 g turkey breast slices, low sodium",
-    "1/4 avocado, sliced",
-    "A handful of baby spinach",
-    "1 tsp lemon juice"
-   ],
-   "buy": [
     {
-     "name": "Whole-grain bread",
-     "amount": 60.0,
-     "unit": "g"
+     "text": "Place 1 garlic clove and 50 g onion in the mixing bowl, chop.",
+     "setting": {
+      "time": "3 sec",
+      "temperature": "",
+      "reverse": false,
+      "speed": "5",
+      "mode": ""
+     },
+     "then": "Scrape down sides of mixing bowl with spatula."
     },
     {
-     "name": "Turkey breast slices, low sodium",
-     "amount": 75.0,
-     "unit": "g"
+     "text": "Add 10 g olive oil and sauté.",
+     "setting": {
+      "time": "3 min",
+      "temperature": "120°C",
+      "reverse": false,
+      "speed": "1",
+      "mode": ""
+     },
+     "then": ""
     },
     {
-     "name": "Avocados",
-     "amount": 0.25,
-     "unit": "piece"
+     "text": "Add 150 g chicken breast, 150 g zucchini, 200 g cherry tomatoes, 1 tsp mixed herbs, a pinch of black pepper, 70 g whole-wheat pasta and 250 g water. Cook.",
+     "setting": {
+      "time": "15 min",
+      "temperature": "100°C",
+      "reverse": true,
+      "speed": "spoon",
+      "mode": ""
+     },
+     "then": "Check if pasta is cooked to your liking. If not, cook for a further 2-3 minutes at the same settings."
     },
     {
-     "name": "Baby spinach",
-     "amount": 20.0,
-     "unit": "g"
-    },
-    {
-     "name": "Lemons",
-     "amount": 0.25,
-     "unit": "piece"
+     "text": "Transfer to a bowl and serve immediately.",
+     "setting": null,
+     "then": ""
     }
    ],
-   "steps": [
-    "Toast 2 slices of whole-grain bread if desired.",
-    "Mash 1/4 avocado with 1 tsp lemon juice and spread on one slice of bread.",
-    "Layer with 75 g low-sodium turkey slices and a handful of baby spinach.",
-    "Top with the second slice of bread and serve."
-   ],
-   "why": "A simple lunch with lean protein, whole grains, and healthy fats from avocado, using low-sodium ingredients.",
+   "tips": [],
+   "why": "This one-pot meal combines lean protein, vegetables, and whole grains, flavored with herbs to keep sodium low.",
    "evidence": "",
    "removed": [
     "evidence"
@@ -277,130 +496,72 @@
   },
   {
    "day": "Wed",
-   "meal": "dinner",
-   "title": "Hearty Lentil and Vegetable Soup",
-   "servings": 2,
-   "leftovers_for": "Thu lunch",
+   "meal": "lunch",
+   "title": "Simple Lentil Soup",
+   "servings": 1,
+   "leftovers_for": "",
    "from_leftovers": "",
+   "prep_minutes": 5,
+   "total_minutes": 35,
+   "difficulty": "easy",
+   "accessories": [
+    "spatula"
+   ],
    "ingredients": [
-    "1 yellow onion, quartered",
-    "1 garlic clove",
-    "1 carrot, in pieces",
-    "1 zucchini, in pieces",
-    "20 g extra-virgin olive oil",
-    "150 g dried lentils, rinsed",
-    "600 g low sodium vegetable stock",
-    "2 g mixed dried herbs, salt-free",
-    "1 g black pepper"
+    {
+     "amount": "1",
+     "name": "garlic",
+     "note": "clove"
+    },
+    {
+     "amount": "50 g",
+     "name": "yellow onion",
+     "note": "in quarters"
+    },
+    {
+     "amount": "100 g",
+     "name": "carrots",
+     "note": "in pieces"
+    },
+    {
+     "amount": "10 g",
+     "name": "extra-virgin olive oil",
+     "note": ""
+    },
+    {
+     "amount": "80 g",
+     "name": "dried lentils",
+     "note": "rinsed"
+    },
+    {
+     "amount": "400 g",
+     "name": "vegetable stock, low sodium",
+     "note": ""
+    },
+    {
+     "amount": "1 tsp",
+     "name": "mixed dried herbs, salt-free",
+     "note": ""
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "note": ""
+    }
    ],
    "buy": [
-    {
-     "name": "Yellow onions",
-     "amount": 150.0,
-     "unit": "g"
-    },
     {
      "name": "Garlic",
      "amount": 5.0,
      "unit": "g"
     },
     {
+     "name": "Yellow onions",
+     "amount": 50.0,
+     "unit": "g"
+    },
+    {
      "name": "Carrots",
-     "amount": 100.0,
-     "unit": "g"
-    },
-    {
-     "name": "Zucchini",
-     "amount": 150.0,
-     "unit": "g"
-    },
-    {
-     "name": "Extra-virgin olive oil",
-     "amount": 20.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Dried lentils",
-     "amount": 150.0,
-     "unit": "g"
-    },
-    {
-     "name": "Vegetable stock, low sodium",
-     "amount": 600.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Mixed dried herbs, salt-free",
-     "amount": 2.0,
-     "unit": "g"
-    },
-    {
-     "name": "Black pepper",
-     "amount": 1.0,
-     "unit": "g"
-    }
-   ],
-   "steps": [
-    "Place onion, garlic, carrot, and zucchini into mixing bowl. Chop 5 sec/speed 5.",
-    "Scrape down sides. Add 20 g olive oil and sauté 3 min/120°C/speed 1.",
-    "Add 150 g rinsed lentils, 600 g low-sodium vegetable stock, 2 g herbs, and 1 g pepper.",
-    "Cook 30 min/100°C/Reverse/speed spoon.",
-    "Serve one portion hot. Allow the other portion to cool before storing for lunch."
-   ],
-   "why": "This soup is packed with vegetables and plant-based protein from lentils, using low-sodium stock and no added salt.",
-   "evidence": "Eating at least 400 g of fruit and vegetables a day is part of a healthy diet. [WHO — Healthy diet (fact sheet)]",
-   "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Thu",
-   "meal": "lunch",
-   "title": "Hearty Lentil and Vegetable Soup",
-   "servings": 1,
-   "leftovers_for": "",
-   "from_leftovers": "Wed dinner",
-   "ingredients": [
-    "1 serving leftover Lentil and Vegetable Soup"
-   ],
-   "buy": [],
-   "steps": [
-    "Reheat the leftover soup in the Thermomix for 5 min/90°C/speed 1, or in a saucepan on the stove or in a microwave.",
-    "Serve hot."
-   ],
-   "why": "This soup is packed with vegetables and plant-based protein from lentils, using low-sodium stock and no added salt.",
-   "evidence": "To lose weight, you need to take in fewer calories than you use up. [MedlinePlus — Weight control]",
-   "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Thu",
-   "meal": "dinner",
-   "title": "Steamed Cod with Cherry Tomatoes and Zucchini",
-   "servings": 1,
-   "leftovers_for": "",
-   "from_leftovers": "",
-   "ingredients": [
-    "500 g water",
-    "150 g cod fillets",
-    "100 g zucchini, sliced",
-    "100 g cherry tomatoes, halved",
-    "10 g extra-virgin olive oil",
-    "1 garlic clove, sliced",
-    "1 g black pepper"
-   ],
-   "buy": [
-    {
-     "name": "Cod fillets",
-     "amount": 150.0,
-     "unit": "g"
-    },
-    {
-     "name": "Zucchini",
-     "amount": 100.0,
-     "unit": "g"
-    },
-    {
-     "name": "Cherry tomatoes",
      "amount": 100.0,
      "unit": "g"
     },
@@ -410,140 +571,8 @@
      "unit": "ml"
     },
     {
-     "name": "Garlic",
-     "amount": 5.0,
-     "unit": "g"
-    },
-    {
-     "name": "Black pepper",
-     "amount": 1.0,
-     "unit": "g"
-    }
-   ],
-   "steps": [
-    "Add 500 g water to the mixing bowl.",
-    "On a piece of baking paper, place 150 g cod fillet. Top with 100 g zucchini, 100 g cherry tomatoes, and sliced garlic. Drizzle with 10 g olive oil and season with 1 g pepper.",
-    "Fold the baking paper into a parcel and place it on the Varoma tray.",
-    "Assemble the Varoma and secure the lid.",
-    "Cook in Steaming mode 20 min/speed 2.",
-    "Carefully open the parcel and serve immediately."
-   ],
-   "why": "A light, low-sodium meal featuring lean fish and vegetables, steamed to retain nutrients.",
-   "evidence": "",
-   "removed": [
-    "evidence"
-   ],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Fri",
-   "meal": "lunch",
-   "title": "Spinach Salad with Hard-Boiled Egg and Walnuts",
-   "servings": 1,
-   "leftovers_for": "",
-   "from_leftovers": "",
-   "ingredients": [
-    "500 g water",
-    "1 egg",
-    "100 g baby spinach",
-    "15 g walnuts, unsalted",
-    "1/2 apple, sliced",
-    "1 tbsp apple cider vinegar",
-    "1 tsp extra-virgin olive oil"
-   ],
-   "buy": [
-    {
-     "name": "Eggs",
-     "amount": 1.0,
-     "unit": "piece"
-    },
-    {
-     "name": "Baby spinach",
-     "amount": 100.0,
-     "unit": "g"
-    },
-    {
-     "name": "Walnuts, unsalted",
-     "amount": 15.0,
-     "unit": "g"
-    },
-    {
-     "name": "Apples",
-     "amount": 0.5,
-     "unit": "piece"
-    },
-    {
-     "name": "Apple cider vinegar",
-     "amount": 15.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Extra-virgin olive oil",
-     "amount": 5.0,
-     "unit": "ml"
-    }
-   ],
-   "steps": [
-    "Place 500 g water and 1 egg into the mixing bowl.",
-    "Cook 14 min/100°C/speed 1 for a hard-boiled egg.",
-    "Remove the egg and place it in cold water to cool before peeling and slicing.",
-    "In a bowl, combine 100 g baby spinach, 15 g walnuts, and sliced apple.",
-    "Top with the sliced hard-boiled egg.",
-    "Whisk together 1 tbsp apple cider vinegar and 1 tsp olive oil for the dressing and pour over the salad."
-   ],
-   "why": "This salad provides protein, healthy fats from walnuts, and plenty of greens, with a simple, salt-free dressing.",
-   "evidence": "Protein can come from a mix of animal and plant sources. [WHO — Healthy diet (fact sheet)]",
-   "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Fri",
-   "meal": "dinner",
-   "title": "Herb-Spiced Tofu Stew with Brown Rice",
-   "servings": 2,
-   "leftovers_for": "Sat lunch",
-   "from_leftovers": "",
-   "ingredients": [
-    "150 g brown rice",
-    "800 g water",
-    "1 yellow onion, quartered",
-    "1 garlic clove",
-    "15 g extra-virgin olive oil",
-    "1 bell pepper, sliced",
-    "300 g firm tofu, cubed",
-    "400 g low sodium vegetable stock",
-    "5 g mixed dried herbs, salt-free",
-    "1 g black pepper"
-   ],
-   "buy": [
-    {
-     "name": "Brown rice",
-     "amount": 150.0,
-     "unit": "g"
-    },
-    {
-     "name": "Yellow onions",
-     "amount": 150.0,
-     "unit": "g"
-    },
-    {
-     "name": "Garlic",
-     "amount": 5.0,
-     "unit": "g"
-    },
-    {
-     "name": "Extra-virgin olive oil",
-     "amount": 15.0,
-     "unit": "ml"
-    },
-    {
-     "name": "Bell peppers",
-     "amount": 150.0,
-     "unit": "g"
-    },
-    {
-     "name": "Firm tofu",
-     "amount": 300.0,
+     "name": "Dried lentils",
+     "amount": 80.0,
      "unit": "g"
     },
     {
@@ -553,7 +582,7 @@
     },
     {
      "name": "Mixed dried herbs, salt-free",
-     "amount": 5.0,
+     "amount": 2.0,
      "unit": "g"
     },
     {
@@ -563,165 +592,137 @@
     }
    ],
    "steps": [
-    "Place simmering basket in mixing bowl, add 150 g brown rice and 800 g water. Cook 25 min/100°C/speed 4. Set rice aside and empty bowl.",
-    "Place onion and garlic in bowl, chop 5 sec/speed 5. Scrape down.",
-    "Add 15 g olive oil and bell pepper, sauté 3 min/120°C/speed 1.",
-    "Add 300 g tofu, 400 g stock, 5 g herbs, and 1 g pepper.",
-    "Cook 15 min/100°C/Reverse/speed spoon.",
-    "Serve half the stew with half the rice. Cool and store the remaining portions for lunch."
+    {
+     "text": "Place 1 garlic clove, 50 g onion and 100 g carrots in the mixing bowl, chop.",
+     "setting": {
+      "time": "5 sec",
+      "temperature": "",
+      "reverse": false,
+      "speed": "5",
+      "mode": ""
+     },
+     "then": "Scrape down sides of mixing bowl with spatula."
+    },
+    {
+     "text": "Add 10 g olive oil and sauté.",
+     "setting": {
+      "time": "3 min",
+      "temperature": "120°C",
+      "reverse": false,
+      "speed": "1",
+      "mode": ""
+     },
+     "then": ""
+    },
+    {
+     "text": "Add 80 g lentils, 400 g low-sodium vegetable stock, 1 tsp mixed herbs and a pinch of black pepper. Cook.",
+     "setting": {
+      "time": "25 min",
+      "temperature": "100°C",
+      "reverse": true,
+      "speed": "spoon",
+      "mode": ""
+     },
+     "then": ""
+    },
+    {
+     "text": "Blend the soup for 30 seconds, gradually increasing the speed from 5 to 9.",
+     "setting": {
+      "time": "30 sec",
+      "temperature": "",
+      "reverse": false,
+      "speed": "5-9",
+      "mode": ""
+     },
+     "then": "Serve hot."
+    }
    ],
-   "why": "A plant-based meal with protein from tofu, whole-grain rice, and vegetables, seasoned with herbs instead of salt.",
-   "evidence": "Americans consume too much sodium, on average over 3,100 milligrams per day. [American Heart Association — How much sodium should I eat per day?]",
-   "removed": [],
+   "tips": [
+    "For a creamier soup, add a tablespoon of Greek yogurt before serving."
+   ],
+   "why": "This soup is rich in vegetables and plant-based protein from lentils, using low-sodium stock and herbs for flavor.",
+   "evidence": "",
+   "removed": [
+    "evidence"
+   ],
    "kitchen_flags": []
   },
   {
-   "day": "Sat",
-   "meal": "lunch",
-   "title": "Herb-Spiced Tofu Stew with Brown Rice",
-   "servings": 1,
-   "leftovers_for": "",
-   "from_leftovers": "Fri dinner",
-   "ingredients": [
-    "1 serving leftover Tofu Stew and Brown Rice"
-   ],
-   "buy": [],
-   "steps": [
-    "Reheat the leftover tofu stew and rice in a microwave or on the stovetop until hot.",
-    "Serve immediately."
-   ],
-   "why": "A plant-based meal with protein from tofu, whole-grain rice, and vegetables, seasoned with herbs instead of salt.",
-   "evidence": "For most people, reducing sodium intake by 1,000 mg a day can improve blood pressure. [American Heart Association — How much sodium should I eat per day?]",
-   "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Sat",
+   "day": "Wed",
    "meal": "dinner",
-   "title": "Steamed Chicken Breast with Quinoa and Carrots",
+   "title": "Steamed Tofu and Vegetables with Brown Rice",
    "servings": 1,
    "leftovers_for": "",
    "from_leftovers": "",
-   "ingredients": [
-    "500 g water",
-    "75 g quinoa",
-    "150 g carrots, sliced",
-    "150 g chicken breast",
-    "1 tsp extra-virgin olive oil",
-    "1 g black pepper",
-    "1 g mixed dried herbs, salt-free"
+   "prep_minutes": 10,
+   "total_minutes": 40,
+   "difficulty": "easy",
+   "accessories": [
+    "simmering basket",
+    "Varoma",
+    "spatula"
    ],
-   "buy": [
+   "ingredients": [
     {
-     "name": "Quinoa",
-     "amount": 75.0,
-     "unit": "g"
+     "amount": "1200 g",
+     "name": "water",
+     "note": ""
     },
     {
-     "name": "Carrots",
-     "amount": 150.0,
-     "unit": "g"
+     "amount": "70 g",
+     "name": "brown rice",
+     "note": "rinsed"
     },
     {
-     "name": "Chicken breast",
-     "amount": 150.0,
-     "unit": "g"
+     "amount": "150 g",
+     "name": "firm tofu",
+     "note": "pressed and cut into cubes"
     },
     {
-     "name": "Extra-virgin olive oil",
-     "amount": 5.0,
-     "unit": "ml"
+     "amount": "150 g",
+     "name": "broccoli",
+     "note": "in florets"
     },
     {
-     "name": "Black pepper",
-     "amount": 1.0,
-     "unit": "g"
+     "amount": "100 g",
+     "name": "bell pepper",
+     "note": "sliced"
     },
     {
-     "name": "Mixed dried herbs, salt-free",
-     "amount": 1.0,
-     "unit": "g"
+     "amount": "1",
+     "name": "garlic",
+     "note": "clove, minced"
+    },
+    {
+     "amount": "10 g",
+     "name": "extra-virgin olive oil",
+     "note": ""
+    },
+    {
+     "amount": "1",
+     "name": "lemon",
+     "note": "juice of 1/2"
     }
    ],
-   "steps": [
-    "Add 500 g water to the mixing bowl. Insert the simmering basket and weigh in 75 g quinoa.",
-    "Place 150 g sliced carrots into the Varoma dish.",
-    "Season 150 g chicken breast with olive oil, pepper, and herbs, then place on the Varoma tray.",
-    "Assemble the Varoma and cook in Steaming mode 25 min/speed 2.",
-    "Check that chicken is cooked through. Serve the chicken, quinoa, and carrots together."
-   ],
-   "why": "A balanced meal with lean protein, whole grains, and vegetables, cooked without added salt.",
-   "evidence": "A healthy lifestyle, including healthy eating patterns and regular physical activity, can help you lose weight. [MedlinePlus — Weight control]",
-   "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Sun",
-   "meal": "lunch",
-   "title": "Ricotta on Whole-Grain Toast with Sliced Apple",
-   "servings": 1,
-   "leftovers_for": "",
-   "from_leftovers": "",
-   "ingredients": [
-    "2 slices whole-grain bread",
-    "100 g ricotta",
-    "1/2 apple, thinly sliced",
-    "1 g black pepper"
-   ],
    "buy": [
     {
-     "name": "Whole-grain bread",
-     "amount": 60.0,
+     "name": "Brown rice",
+     "amount": 70.0,
      "unit": "g"
     },
     {
-     "name": "Ricotta",
+     "name": "Firm tofu",
+     "amount": 150.0,
+     "unit": "g"
+    },
+    {
+     "name": "Broccoli",
+     "amount": 150.0,
+     "unit": "g"
+    },
+    {
+     "name": "Bell peppers",
      "amount": 100.0,
-     "unit": "g"
-    },
-    {
-     "name": "Apples",
-     "amount": 0.5,
-     "unit": "piece"
-    },
-    {
-     "name": "Black pepper",
-     "amount": 1.0,
-     "unit": "g"
-    }
-   ],
-   "steps": [
-    "Toast 2 slices of whole-grain bread.",
-    "Spread 100 g of ricotta cheese evenly over the toast.",
-    "Arrange the sliced apple on top of the ricotta.",
-    "Sprinkle with a little black pepper and serve."
-   ],
-   "why": "This simple lunch combines protein from ricotta with fiber from whole-grain bread and fruit.",
-   "evidence": "Eating more nutrient-rich foods, such as foods with lots of vitamins, minerals, and fiber, can help with weight control. [MedlinePlus — Weight control]",
-   "removed": [],
-   "kitchen_flags": []
-  },
-  {
-   "day": "Sun",
-   "meal": "dinner",
-   "title": "Whole-Wheat Pasta with Cannellini Bean and Tomato Sauce",
-   "servings": 1,
-   "leftovers_for": "",
-   "from_leftovers": "",
-   "ingredients": [
-    "75 g whole-wheat pasta",
-    "1 garlic clove",
-    "1/2 yellow onion",
-    "10 g extra-virgin olive oil",
-    "150 g cherry tomatoes, halved",
-    "100 g cannellini beans, no salt added, rinsed",
-    "50 g water",
-    "2 g mixed dried herbs, salt-free"
-   ],
-   "buy": [
-    {
-     "name": "Whole-wheat pasta",
-     "amount": 75.0,
      "unit": "g"
     },
     {
@@ -730,8 +731,531 @@
      "unit": "g"
     },
     {
-     "name": "Yellow onions",
-     "amount": 75.0,
+     "name": "Extra-virgin olive oil",
+     "amount": 10.0,
+     "unit": "ml"
+    },
+    {
+     "name": "Lemons",
+     "amount": 1.0,
+     "unit": "piece"
+    }
+   ],
+   "steps": [
+    {
+     "text": "Place 1200 g water in the mixing bowl. Insert simmering basket with 70 g rinsed brown rice.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "In a small bowl, toss 150 g tofu cubes with 1 minced garlic clove. Arrange the tofu, 150 g broccoli florets and 100 g sliced bell pepper in the Varoma dish and tray.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Set Varoma in position and steam.",
+     "setting": {
+      "time": "30 min",
+      "temperature": "Varoma",
+      "reverse": false,
+      "speed": "2",
+      "mode": "Steaming"
+     },
+     "then": "Remove Varoma and simmering basket."
+    },
+    {
+     "text": "Serve the brown rice with the steamed tofu and vegetables, drizzled with 10 g olive oil and the juice of 1/2 lemon.",
+     "setting": null,
+     "then": ""
+    }
+   ],
+   "tips": [],
+   "why": "This meal efficiently cooks a complete plate of whole grains, plant-based protein, and vegetables all at once, without added salt.",
+   "evidence": "A healthy diet is based on a variety of minimally processed and unprocessed foods [WHO — Healthy diet (fact sheet)].",
+   "removed": [],
+   "kitchen_flags": []
+  },
+  {
+   "day": "Thu",
+   "meal": "lunch",
+   "title": "Turkey and Avocado on Whole-Grain Bread",
+   "servings": 1,
+   "leftovers_for": "",
+   "from_leftovers": "",
+   "prep_minutes": 5,
+   "total_minutes": 5,
+   "difficulty": "easy",
+   "accessories": [],
+   "ingredients": [
+    {
+     "amount": "2 slices",
+     "name": "whole-grain bread",
+     "note": ""
+    },
+    {
+     "amount": "60 g",
+     "name": "turkey breast slices, low sodium",
+     "note": ""
+    },
+    {
+     "amount": "1/2",
+     "name": "avocado",
+     "note": "sliced"
+    },
+    {
+     "amount": "30 g",
+     "name": "baby spinach",
+     "note": ""
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "note": ""
+    }
+   ],
+   "buy": [
+    {
+     "name": "Whole-grain bread",
+     "amount": 80.0,
+     "unit": "g"
+    },
+    {
+     "name": "Turkey breast slices, low sodium",
+     "amount": 60.0,
+     "unit": "g"
+    },
+    {
+     "name": "Avocados",
+     "amount": 1.0,
+     "unit": "piece"
+    },
+    {
+     "name": "Baby spinach",
+     "amount": 30.0,
+     "unit": "g"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 1.0,
+     "unit": "g"
+    }
+   ],
+   "steps": [
+    {
+     "text": "Lightly toast the 2 slices of whole-grain bread if desired.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Top one slice of bread with 30 g baby spinach, 60 g low-sodium turkey slices, and slices from 1/2 avocado.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Season with a pinch of black pepper and top with the second slice of bread. Serve immediately.",
+     "setting": null,
+     "then": ""
+    }
+   ],
+   "tips": [
+    "Add a few slices of tomato or cucumber for extra crunch and vegetables."
+   ],
+   "why": "This simple sandwich uses low-sodium turkey and whole-grain bread, providing lean protein and fiber for a quick meal.",
+   "evidence": "Choosing foods with lower-sodium content is a practical way to reduce sodium intake [WHO — Sodium reduction (fact sheet)].",
+   "removed": [],
+   "kitchen_flags": []
+  },
+  {
+   "day": "Thu",
+   "meal": "dinner",
+   "title": "Cod with Cannellini Beans and Cherry Tomatoes",
+   "servings": 2,
+   "leftovers_for": "Fri lunch",
+   "from_leftovers": "",
+   "prep_minutes": 10,
+   "total_minutes": 25,
+   "difficulty": "easy",
+   "accessories": [
+    "spatula"
+   ],
+   "ingredients": [
+    {
+     "amount": "1",
+     "name": "garlic",
+     "note": "clove"
+    },
+    {
+     "amount": "20 g",
+     "name": "extra-virgin olive oil",
+     "note": ""
+    },
+    {
+     "amount": "300 g",
+     "name": "cherry tomatoes",
+     "note": "halved"
+    },
+    {
+     "amount": "250 g",
+     "name": "cannellini beans, no salt added",
+     "note": "rinsed and drained"
+    },
+    {
+     "amount": "1 tsp",
+     "name": "mixed dried herbs, salt-free",
+     "note": ""
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "note": ""
+    },
+    {
+     "amount": "2",
+     "name": "cod fillets",
+     "note": "(approx. 150 g each)"
+    },
+    {
+     "amount": "1",
+     "name": "lemon",
+     "note": "juice of 1/2"
+    }
+   ],
+   "buy": [
+    {
+     "name": "Garlic",
+     "amount": 5.0,
+     "unit": "g"
+    },
+    {
+     "name": "Extra-virgin olive oil",
+     "amount": 20.0,
+     "unit": "ml"
+    },
+    {
+     "name": "Cherry tomatoes",
+     "amount": 300.0,
+     "unit": "g"
+    },
+    {
+     "name": "Cannellini beans, no salt added",
+     "amount": 250.0,
+     "unit": "g"
+    },
+    {
+     "name": "Mixed dried herbs, salt-free",
+     "amount": 2.0,
+     "unit": "g"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 1.0,
+     "unit": "g"
+    },
+    {
+     "name": "Cod fillets",
+     "amount": 300.0,
+     "unit": "g"
+    },
+    {
+     "name": "Lemons",
+     "amount": 1.0,
+     "unit": "piece"
+    }
+   ],
+   "steps": [
+    {
+     "text": "Place 1 garlic clove in the mixing bowl and chop.",
+     "setting": {
+      "time": "3 sec",
+      "temperature": "",
+      "reverse": false,
+      "speed": "8",
+      "mode": ""
+     },
+     "then": "Scrape down sides of mixing bowl with spatula."
+    },
+    {
+     "text": "Add 20 g olive oil and sauté.",
+     "setting": {
+      "time": "3 min",
+      "temperature": "120°C",
+      "reverse": false,
+      "speed": "1",
+      "mode": ""
+     },
+     "then": ""
+    },
+    {
+     "text": "Add 300 g cherry tomatoes, 250 g cannellini beans, 1 tsp mixed herbs, and a pinch of black pepper. Cook.",
+     "setting": {
+      "time": "5 min",
+      "temperature": "100°C",
+      "reverse": true,
+      "speed": "spoon",
+      "mode": ""
+     },
+     "then": ""
+    },
+    {
+     "text": "Gently place the 2 cod fillets on top of the bean and tomato mixture. Squeeze the juice of 1/2 lemon over the top and continue cooking.",
+     "setting": {
+      "time": "10 min",
+      "temperature": "100°C",
+      "reverse": true,
+      "speed": "spoon",
+      "mode": ""
+     },
+     "then": "Check that the cod is opaque and flakes easily."
+    },
+    {
+     "text": "Serve one portion immediately. Allow the second portion to cool and store in an airtight container in the refrigerator for tomorrow's lunch.",
+     "setting": null,
+     "then": ""
+    }
+   ],
+   "tips": [],
+   "why": "This one-pot dish combines lean fish with beans and vegetables, using herbs and lemon for flavor instead of salt.",
+   "evidence": "For most people, reducing sodium intake by 1,000 mg a day can improve blood pressure [American Heart Association — How much sodium should I eat per day?].",
+   "removed": [],
+   "kitchen_flags": []
+  },
+  {
+   "day": "Fri",
+   "meal": "lunch",
+   "title": "Leftover Cod with Cannellini Beans",
+   "servings": 1,
+   "leftovers_for": "",
+   "from_leftovers": "Thu dinner",
+   "prep_minutes": 2,
+   "total_minutes": 8,
+   "difficulty": "easy",
+   "accessories": [
+    "spatula"
+   ],
+   "ingredients": [
+    {
+     "amount": "1 serving",
+     "name": "leftover cod with beans and tomatoes",
+     "note": "from Thursday dinner"
+    }
+   ],
+   "buy": [],
+   "steps": [
+    {
+     "text": "Place the leftover cod with cannellini beans in the mixing bowl.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Gently reheat.",
+     "setting": {
+      "time": "6 min",
+      "temperature": "90°C",
+      "reverse": true,
+      "speed": "spoon",
+      "mode": ""
+     },
+     "then": ""
+    },
+    {
+     "text": "Transfer to a bowl using the spatula and serve immediately.",
+     "setting": null,
+     "then": ""
+    }
+   ],
+   "tips": [],
+   "why": "Using leftovers is a time-saving strategy that helps maintain a healthy eating pattern throughout the week.",
+   "evidence": "A healthy diet includes a variety of minimally processed and unprocessed foods low in unhealthy fats, added sugars, and sodium [WHO — Healthy diet (fact sheet)].",
+   "removed": [],
+   "kitchen_flags": []
+  },
+  {
+   "day": "Fri",
+   "meal": "dinner",
+   "title": "Steamed Chicken and Vegetable Quinoa",
+   "servings": 1,
+   "leftovers_for": "",
+   "from_leftovers": "",
+   "prep_minutes": 15,
+   "total_minutes": 35,
+   "difficulty": "easy",
+   "accessories": [
+    "simmering basket",
+    "Varoma",
+    "spatula"
+   ],
+   "ingredients": [
+    {
+     "amount": "1200 g",
+     "name": "water",
+     "note": ""
+    },
+    {
+     "amount": "60 g",
+     "name": "quinoa",
+     "note": "rinsed"
+    },
+    {
+     "amount": "150 g",
+     "name": "chicken breast",
+     "note": "cut into strips"
+    },
+    {
+     "amount": "100 g",
+     "name": "zucchini",
+     "note": "sliced"
+    },
+    {
+     "amount": "100 g",
+     "name": "bell pepper",
+     "note": "sliced"
+    },
+    {
+     "amount": "1 tsp",
+     "name": "mixed dried herbs, salt-free",
+     "note": ""
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "note": ""
+    },
+    {
+     "amount": "1",
+     "name": "lemon",
+     "note": "juice of 1/2"
+    }
+   ],
+   "buy": [
+    {
+     "name": "Quinoa",
+     "amount": 60.0,
+     "unit": "g"
+    },
+    {
+     "name": "Chicken breast",
+     "amount": 150.0,
+     "unit": "g"
+    },
+    {
+     "name": "Zucchini",
+     "amount": 100.0,
+     "unit": "g"
+    },
+    {
+     "name": "Bell peppers",
+     "amount": 100.0,
+     "unit": "g"
+    },
+    {
+     "name": "Mixed dried herbs, salt-free",
+     "amount": 2.0,
+     "unit": "g"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 1.0,
+     "unit": "g"
+    },
+    {
+     "name": "Lemons",
+     "amount": 1.0,
+     "unit": "piece"
+    }
+   ],
+   "steps": [
+    {
+     "text": "Place 1200 g water in the mixing bowl. Insert simmering basket with 60 g rinsed quinoa.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "In a bowl, toss 150 g chicken strips with 1 tsp mixed herbs and a pinch of black pepper. Arrange chicken, 100 g zucchini slices, and 100 g bell pepper slices in the Varoma dish and tray.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Set Varoma in position and steam.",
+     "setting": {
+      "time": "25 min",
+      "temperature": "Varoma",
+      "reverse": false,
+      "speed": "2",
+      "mode": "Steaming"
+     },
+     "then": "Remove Varoma and simmering basket."
+    },
+    {
+     "text": "Serve the quinoa topped with the steamed chicken and vegetables. Drizzle with the juice of 1/2 lemon.",
+     "setting": null,
+     "then": ""
+    }
+   ],
+   "tips": [],
+   "why": "This is an efficient, all-in-one meal providing lean protein, vegetables, and whole grains, seasoned with herbs and lemon to avoid added salt.",
+   "evidence": "",
+   "removed": [
+    "evidence"
+   ],
+   "kitchen_flags": []
+  },
+  {
+   "day": "Sat",
+   "meal": "lunch",
+   "title": "Spinach, Apple, and Walnut Salad",
+   "servings": 1,
+   "leftovers_for": "",
+   "from_leftovers": "",
+   "prep_minutes": 5,
+   "total_minutes": 5,
+   "difficulty": "easy",
+   "accessories": [],
+   "ingredients": [
+    {
+     "amount": "50 g",
+     "name": "baby spinach",
+     "note": ""
+    },
+    {
+     "amount": "1",
+     "name": "apple",
+     "note": "cored and sliced"
+    },
+    {
+     "amount": "20 g",
+     "name": "walnuts, unsalted",
+     "note": ""
+    },
+    {
+     "amount": "10 g",
+     "name": "extra-virgin olive oil",
+     "note": ""
+    },
+    {
+     "amount": "5 g",
+     "name": "apple cider vinegar",
+     "note": ""
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "note": ""
+    }
+   ],
+   "buy": [
+    {
+     "name": "Baby spinach",
+     "amount": 50.0,
+     "unit": "g"
+    },
+    {
+     "name": "Apples",
+     "amount": 1.0,
+     "unit": "piece"
+    },
+    {
+     "name": "Walnuts, unsalted",
+     "amount": 20.0,
      "unit": "g"
     },
     {
@@ -740,13 +1264,109 @@
      "unit": "ml"
     },
     {
-     "name": "Cherry tomatoes",
+     "name": "Apple cider vinegar",
+     "amount": 5.0,
+     "unit": "ml"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 1.0,
+     "unit": "g"
+    }
+   ],
+   "steps": [
+    {
+     "text": "In a bowl, combine 50 g baby spinach, 1 sliced apple, and 20 g walnuts.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "In a small jar or bowl, whisk together 10 g olive oil, 5 g apple cider vinegar, and a pinch of black pepper to make the dressing.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Pour the dressing over the salad, toss gently, and serve immediately.",
+     "setting": null,
+     "then": ""
+    }
+   ],
+   "tips": [
+    "For a more substantial meal, add 50g of crumbled ricotta cheese."
+   ],
+   "why": "This fresh salad is packed with fruits, vegetables, and healthy fats from walnuts and olive oil, with no added salt.",
+   "evidence": "",
+   "removed": [
+    "evidence"
+   ],
+   "kitchen_flags": []
+  },
+  {
+   "day": "Sat",
+   "meal": "dinner",
+   "title": "Turkey and Broccoli with Brown Rice",
+   "servings": 1,
+   "leftovers_for": "",
+   "from_leftovers": "",
+   "prep_minutes": 10,
+   "total_minutes": 40,
+   "difficulty": "easy",
+   "accessories": [
+    "simmering basket",
+    "Varoma",
+    "spatula"
+   ],
+   "ingredients": [
+    {
+     "amount": "1200 g",
+     "name": "water",
+     "note": ""
+    },
+    {
+     "amount": "70 g",
+     "name": "brown rice",
+     "note": "rinsed"
+    },
+    {
+     "amount": "150 g",
+     "name": "turkey breast slices, low sodium",
+     "note": "rolled up"
+    },
+    {
+     "amount": "150 g",
+     "name": "broccoli",
+     "note": "in florets"
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "note": ""
+    },
+    {
+     "amount": "1 tsp",
+     "name": "mixed dried herbs, salt-free",
+     "note": ""
+    }
+   ],
+   "buy": [
+    {
+     "name": "Brown rice",
+     "amount": 70.0,
+     "unit": "g"
+    },
+    {
+     "name": "Turkey breast slices, low sodium",
      "amount": 150.0,
      "unit": "g"
     },
     {
-     "name": "Cannellini beans, no salt added",
-     "amount": 100.0,
+     "name": "Broccoli",
+     "amount": 150.0,
+     "unit": "g"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 1.0,
      "unit": "g"
     },
     {
@@ -756,26 +1376,277 @@
     }
    ],
    "steps": [
-    "Cook 75 g of whole-wheat pasta according to package directions on the stovetop. Drain and set aside.",
-    "Place garlic and onion in the mixing bowl, chop 5 sec/speed 5.",
-    "Add 10 g olive oil and sauté 3 min/120°C/speed 1.",
-    "Add 150 g cherry tomatoes, 100 g cannellini beans, 50 g water, and 2 g herbs.",
-    "Cook 10 min/100°C/Reverse/speed spoon.",
-    "Pour the sauce over the cooked pasta and serve immediately."
+    {
+     "text": "Place 1200 g water in the mixing bowl. Insert simmering basket with 70 g rinsed brown rice.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Season the 150 g turkey slices with a pinch of black pepper and 1 tsp mixed herbs, then roll them up. Place the turkey rolls and 150 g broccoli florets in the Varoma dish.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Set Varoma in position and steam.",
+     "setting": {
+      "time": "30 min",
+      "temperature": "Varoma",
+      "reverse": false,
+      "speed": "2",
+      "mode": "Steaming"
+     },
+     "then": "Remove Varoma and simmering basket."
+    },
+    {
+     "text": "Serve the brown rice with the steamed turkey and broccoli.",
+     "setting": null,
+     "then": ""
+    }
    ],
-   "why": "This dish features whole-wheat pasta with a vegetable and bean sauce, providing fiber and plant-based protein with no added salt.",
-   "evidence": "On average, overweight and obesity tend to run in families, which suggests that genes may play a role in weight gain. [MedlinePlus — Weight control]",
+   "tips": [],
+   "why": "This meal provides lean protein, vegetables, and whole grains, cooked efficiently in one go with no added salt.",
+   "evidence": "",
+   "removed": [
+    "evidence"
+   ],
+   "kitchen_flags": []
+  },
+  {
+   "day": "Sun",
+   "meal": "lunch",
+   "title": "Yogurt Bowl with Blueberries and Walnuts",
+   "servings": 1,
+   "leftovers_for": "",
+   "from_leftovers": "",
+   "prep_minutes": 5,
+   "total_minutes": 5,
+   "difficulty": "easy",
+   "accessories": [],
+   "ingredients": [
+    {
+     "amount": "150 g",
+     "name": "Greek yogurt, plain 0%",
+     "note": ""
+    },
+    {
+     "amount": "80 g",
+     "name": "blueberries",
+     "note": "fresh or frozen"
+    },
+    {
+     "amount": "20 g",
+     "name": "walnuts, unsalted",
+     "note": ""
+    },
+    {
+     "amount": "1 tbsp",
+     "name": "rolled oats",
+     "note": ""
+    }
+   ],
+   "buy": [
+    {
+     "name": "Greek yogurt, plain 0%",
+     "amount": 150.0,
+     "unit": "g"
+    },
+    {
+     "name": "Blueberries",
+     "amount": 80.0,
+     "unit": "g"
+    },
+    {
+     "name": "Walnuts, unsalted",
+     "amount": 20.0,
+     "unit": "g"
+    },
+    {
+     "name": "Rolled oats",
+     "amount": 10.0,
+     "unit": "g"
+    }
+   ],
+   "steps": [
+    {
+     "text": "Place 150 g Greek yogurt in a bowl.",
+     "setting": null,
+     "then": ""
+    },
+    {
+     "text": "Top with 80 g blueberries, 20 g walnuts, and 1 tbsp rolled oats.",
+     "setting": null,
+     "then": "Serve immediately."
+    }
+   ],
+   "tips": [],
+   "why": "This no-cook meal is rich in protein, fiber, and fruit, making for a quick and satisfying lunch.",
+   "evidence": "A healthy diet helps to protect against malnutrition in all its forms, as well as noncommunicable diseases (long-term health conditions) such as diabetes, heart disease, stroke, and cancer [WHO — Healthy diet (fact sheet)].",
+   "removed": [],
+   "kitchen_flags": []
+  },
+  {
+   "day": "Sun",
+   "meal": "dinner",
+   "title": "Hearty Vegetable and Bean Stew",
+   "servings": 1,
+   "leftovers_for": "",
+   "from_leftovers": "",
+   "prep_minutes": 10,
+   "total_minutes": 30,
+   "difficulty": "easy",
+   "accessories": [
+    "spatula"
+   ],
+   "ingredients": [
+    {
+     "amount": "1",
+     "name": "garlic",
+     "note": "clove"
+    },
+    {
+     "amount": "50 g",
+     "name": "yellow onion",
+     "note": "in quarters"
+    },
+    {
+     "amount": "75 g",
+     "name": "carrots",
+     "note": "in pieces"
+    },
+    {
+     "amount": "75 g",
+     "name": "zucchini",
+     "note": "in pieces"
+    },
+    {
+     "amount": "8 g",
+     "name": "extra-virgin olive oil",
+     "note": ""
+    },
+    {
+     "amount": "200 g",
+     "name": "cannellini beans, no salt added",
+     "note": "rinsed and drained"
+    },
+    {
+     "amount": "250 g",
+     "name": "vegetable stock, low sodium",
+     "note": ""
+    },
+    {
+     "amount": "1/2 tsp",
+     "name": "mixed dried herbs, salt-free",
+     "note": ""
+    },
+    {
+     "amount": "a pinch",
+     "name": "black pepper",
+     "note": ""
+    }
+   ],
+   "buy": [
+    {
+     "name": "Garlic",
+     "amount": 2.5,
+     "unit": "g"
+    },
+    {
+     "name": "Yellow onions",
+     "amount": 50.0,
+     "unit": "g"
+    },
+    {
+     "name": "Carrots",
+     "amount": 75.0,
+     "unit": "g"
+    },
+    {
+     "name": "Zucchini",
+     "amount": 75.0,
+     "unit": "g"
+    },
+    {
+     "name": "Extra-virgin olive oil",
+     "amount": 8.0,
+     "unit": "ml"
+    },
+    {
+     "name": "Cannellini beans, no salt added",
+     "amount": 200.0,
+     "unit": "g"
+    },
+    {
+     "name": "Vegetable stock, low sodium",
+     "amount": 250.0,
+     "unit": "ml"
+    },
+    {
+     "name": "Mixed dried herbs, salt-free",
+     "amount": 1.0,
+     "unit": "g"
+    },
+    {
+     "name": "Black pepper",
+     "amount": 0.5,
+     "unit": "g"
+    }
+   ],
+   "steps": [
+    {
+     "text": "Place 1 garlic clove, 50 g onion, 75 g carrots, and 75 g zucchini in the mixing bowl, chop.",
+     "setting": {
+      "time": "5 sec",
+      "temperature": "",
+      "reverse": false,
+      "speed": "5",
+      "mode": ""
+     },
+     "then": "Scrape down sides of mixing bowl with spatula."
+    },
+    {
+     "text": "Add 8 g olive oil and sauté.",
+     "setting": {
+      "time": "5 min",
+      "temperature": "120°C",
+      "reverse": true,
+      "speed": "spoon",
+      "mode": ""
+     },
+     "then": ""
+    },
+    {
+     "text": "Add 200 g cannellini beans, 250 g low-sodium vegetable stock, 1/2 tsp mixed herbs, and a pinch of black pepper. Cook.",
+     "setting": {
+      "time": "15 min",
+      "temperature": "100°C",
+      "reverse": true,
+      "speed": "spoon",
+      "mode": ""
+     },
+     "then": ""
+    },
+    {
+     "text": "Serve immediately.",
+     "setting": null,
+     "then": ""
+    }
+   ],
+   "tips": [
+    "Serve with a slice of whole-grain bread to soak up the broth."
+   ],
+   "why": "This hearty stew is loaded with vegetables and beans, providing fiber and nutrients without relying on salt for flavor.",
+   "evidence": "To reduce sodium intake, it is helpful to limit the consumption of processed foods and use herbs and spices to flavour food, rather than salt [WHO — Sodium reduction (fact sheet)].",
    "removed": [],
    "kitchen_flags": []
   }
  ],
  "movement": [
-  "Mon: 30-minute brisk walk during your lunch break.",
-  "Tue: Take the stairs whenever possible. Do 2 sets of 10 bodyweight squats.",
-  "Wed: 45-minute brisk walk in a park or your neighborhood.",
-  "Thu: 20-minute morning walk. In the evening, do 2 sets of 10 push-ups (on knees if needed) and 2 sets of a 20-second plank.",
-  "Fri: Aim for a 30-minute brisk walk at any point in the day.",
-  "Sat: Enjoy a longer 60-minute walk, perhaps exploring a new route.",
-  "Sun: A relaxing 20-minute walk and some gentle stretching."
+  "Monday: Go for a 30-minute brisk walk during your lunch break.",
+  "Tuesday: Take the stairs instead of the elevator all day. Do 10 bodyweight squats every hour you are sitting.",
+  "Wednesday: Enjoy a 45-minute brisk walk after dinner.",
+  "Thursday: Try a 20-minute walk in the morning and another 20-minute walk in the evening. Add 10 push-ups (on knees if needed).",
+  "Friday: Take a 30-minute walk while listening to a podcast or your favorite music.",
+  "Saturday: Plan a longer 60-minute walk in a local park or on a nature trail.",
+  "Sunday: Do 20 minutes of light strength training at home (e.g., lunges, planks, squats) followed by a gentle 20-minute walk."
  ]
 }

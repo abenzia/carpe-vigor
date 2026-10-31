@@ -68,12 +68,40 @@ DAYS = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 _TEMP = re.compile(r"(?:min|sec)\.?\s*/\s*(\d{2,3})\s*°\s*C", re.I)
 _MODE = re.compile(r"browning|high[- ]temperature", re.I)
 # A heated setting is a temperature or Varoma, however the step words it: "5 min/100°C/speed 7", "20 min/Varoma/speed 8"
-_HEATED_SPEED = re.compile(r"(?:min|sec)\.?\s*/\s*(?:\d{2,3}\s*°\s*C|varoma)\s*/\s*(?:speed|vel\.?)\s*(\d+(?:\.\d+)?)", re.I)
+_HEATED_SPEED = re.compile(r"(?:min|sec)\.?\s*/\s*(?:\d{2,3}\s*°\s*C|varoma)\s*/\s*(?:reverse\s*/\s*)?(?:speed|vel\.?)\s*"
+                           r"(\d+(?:\.\d+)?)", re.I)
 # Any speed given in a steaming step: "Steaming mode (Varoma) 20 min/speed 8", "20 min/Varoma/speed 8"
 _STEAM_SPEED = re.compile(r"(?:varoma|steaming\s*mode)[^.;]*?(?:speed|vel\.?)\s*(\d+(?:\.\d+)?)", re.I)
 # "as per Monday's quinoa", "same as Tue lunch", "see Wednesday": a recipe has to be cookable on its own
 _ELSEWHERE = re.compile(r"\b(?:as (?:per|in|for|on)|same as|see|like)\b[^.;]*\b(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\b"
                         r"|\b(?:mon|tues|wednes|thurs|fri|satur|sun)day's\b", re.I)
+
+
+def setting_text(s: dict | None) -> str:
+    """A machine setting as Cookidoo prints it: '5 min/120°C/Reverse/speed 1', 'Steaming mode 20 min/Varoma/speed 1'."""
+    if not s:
+        return ""
+    speed = s.get("speed") or ""
+    parts = [s.get("time") or "", s.get("temperature") or "", "Reverse" if s.get("reverse") else "",
+             f"speed {speed}" if speed else ""]
+    text = "/".join(p for p in parts if p)
+    return f"{s['mode']} mode {text}" if s.get("mode") else text
+
+
+def step_parts(step: str | dict) -> tuple[str, str, str]:
+    """(what to do, the setting, what follows): 'Place the parsley in the bowl, chop', '3 sec/speed 8', 'Set aside.'.
+    A step from a plan made before steps carried their setting is all text."""
+    if isinstance(step, str):
+        return step, "", ""
+    setting = setting_text(step.get("setting"))
+    text = step.get("text", "")
+    # the model often ends the action with a full stop: "cook." then ": 20 min/..." would print "cook.: 20 min"
+    return (text.rstrip(" .:") if setting else text), setting, step.get("then", "")
+
+
+def step_text(step: str | dict) -> str:
+    text, setting, then = step_parts(step)
+    return " ".join(p for p in (f"{text}: {setting}." if setting else text, then) if p)
 
 
 def _servings(n: int) -> str:
@@ -91,6 +119,7 @@ def check(recipes: list[dict], dev: Device, people: int) -> dict[int, list[str]]
     for i, r in enumerate(recipes):
         out = []
         for n, step in enumerate(r.get("steps", []), 1):
+            step = step_text(step)  # a structured setting is read in the same words the person sees
             for t in map(int, _TEMP.findall(step)):
                 if dev.max_c is None or t <= dev.max_c:
                     continue

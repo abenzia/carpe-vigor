@@ -29,6 +29,30 @@ class Buy(BaseModel):
     unit: Literal["g", "ml", "piece"] = Field(description="g, ml, or piece (eggs, lemons, avocados)")
 
 
+class Ingredient(BaseModel):
+    amount: str = Field(description="For all the servings: '150 g', '1 tsp', '2', 'a pinch'")
+    name: str = Field(description="'zucchini', 'extra-virgin olive oil'")
+    note: str = Field(default="", description="How it goes in, as a recipe card says it: 'peeled, in pieces (3-4 cm)', "
+                                              "'leaves only'; or empty")
+
+
+class Setting(BaseModel):
+    """One machine setting, as Thermomix recipes print it: time / temperature / reverse / speed."""
+    time: str = Field(description="'3 sec', '5 min', '20 min'")
+    temperature: str = Field(default="", description="'100°C', 'Varoma', or empty when the step does not heat")
+    reverse: bool = Field(default=False, description="Blades turning in reverse, to stir without chopping")
+    speed: str = Field(description="'spoon' (the gentlest), '1' to '10', or 'Turbo'")
+    mode: str = Field(default="", description="A named machine mode the step uses, as 'Steaming' or 'Browning'; else empty")
+
+
+class Step(BaseModel):
+    text: str = Field(description="What to do, ending on the machine's action when there is a setting: 'Place the "
+                                  "onion and garlic in the mixing bowl, chop'")
+    setting: Setting | None = Field(default=None, description="The machine setting of this step; null for a step done "
+                                                              "by hand, or on a device without such settings")
+    then: str = Field(default="", description="What follows the setting: 'Scrape down the sides with the spatula.'")
+
+
 class Recipe(BaseModel):
     day: str = Field(description="Mon..Sun")
     meal: str = Field(description="lunch or dinner")
@@ -38,13 +62,19 @@ class Recipe(BaseModel):
     leftovers_for: str = Field(default="", description="The meal this dish also cooks for, as 'Tue lunch', or empty")
     from_leftovers: str = Field(default="", description="The meal whose extra servings this dish is made from, as "
                                                         "'Mon dinner', or empty")
-    ingredients: list[str] = Field(description="Each with its amount for all the servings, e.g. '300 g chicken breast', "
-                                               "'1 tbsp olive oil'")
+    prep_minutes: int = Field(description="Hands-on time")
+    total_minutes: int = Field(description="From start to plate")
+    difficulty: Literal["easy", "medium", "advanced"]
+    accessories: list[str] = Field(default_factory=list, description="Besides the bowl: 'simmering basket', 'Varoma', "
+                                                                     "'butterfly whisk', 'spatula', 'baking paper'")
+    ingredients: list[Ingredient] = Field(description="Every ingredient with its amount for all the servings")
     buy: list[Buy] = Field(default_factory=list,
                            description="What to buy for this dish, with the amount it uses. Leave out water and leftovers. "
                                        "An ingredient the store does not sell is simply not listed here.")
-    steps: list[str] = Field(description="3-6 steps written for the person's kitchen device, with real settings for that "
-                                         "device and the amounts; complete on their own, never 'as in Monday's recipe'")
+    steps: list[Step] = Field(description="3-7 numbered steps written for the person's kitchen device, with its real "
+                                          "settings and the amounts; complete on their own, never 'as in Monday's recipe'")
+    tips: list[str] = Field(default_factory=list, description="0-2 short tips: a variation, what to cook in the basket "
+                                                              "meanwhile, how to keep the leftovers")
     why: str = Field(description="One sentence on what is IN this dish that fits the goals (e.g. 'No added salt: herbs and "
                                  "lemon instead'). Never an effect on health or weight, never 'you' or 'your'.")
     evidence: str = Field(description="One complete sentence saying only what the public source says, 'on average' when it "
@@ -65,7 +95,12 @@ doctor gave them and the constraints they stated. You write for their kitchen de
 temperatures, speeds), within the device rules you are given. Each recipe can be cooked on its own: amounts in grams \
 or pieces for all its servings, every time and setting written out, never 'as in Monday's recipe'. Lunch and dinner \
 are both full meals. A dinner may cook extra for the next day's lunch: then it cooks twice the servings, says so in \
-leftovers_for, and that lunch names it in from_leftovers. You never mention medicines, never diagnose, never predict \
+leftovers_for, and that lunch names it in from_leftovers. Each recipe is laid out as a Thermomix recipe card is: \
+prep and total time, difficulty, accessories, ingredients with amount and how they go in, numbered steps, tips. On a \
+Thermomix each step reads like the official recipes: what goes in the bowl and the action ('Place the parsley in the \
+mixing bowl, chop'), then the setting as data (3 sec / speed 8), then what follows ('Transfer to a small bowl and set \
+aside.'): one setting per step, the classic order of chop, sauté, add liquid, cook, steam in the Varoma above while a \
+grain cooks in the basket. You never mention medicines, never diagnose, never predict \
 this person's values. Every 'why' line says what is in the dish that fits a stated goal (no added salt, vegetables, \
 whole grains, fish) and never claims what the dish will do for the person's health or weight. Every 'evidence' line is \
 one complete sentence stating only what the given public source says, on average, with the source's name in brackets. \

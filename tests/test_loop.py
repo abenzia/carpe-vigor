@@ -211,12 +211,24 @@ def test_the_kitchen_check_holds_recipes_to_the_device_and_their_portions():
 
 def test_a_recipe_still_wrong_after_the_fix_is_flagged_on_screen_not_hidden():
     from carpevigor import kitchen, planner
-    bad = planner.Recipe(day="Mon", meal="dinner", title="Sautéed chicken", servings=1, ingredients=["150 g chicken breast"],
-                         steps=["Sauté 3 min/120°C/speed 1."], why="w", evidence="e")
+    sauté = planner.Step(text="Add the oil and the chicken, sauté",
+                         setting=planner.Setting(time="3 min", temperature="120°C", reverse=True, speed="spoon"),
+                         then="Scrape down the sides with the spatula.")
+    bad = planner.Recipe(day="Mon", meal="dinner", title="Sautéed chicken", servings=1, prep_minutes=5, total_minutes=15,
+                         difficulty="easy", ingredients=[planner.Ingredient(amount="150 g", name="chicken breast",
+                                                                            note="in pieces (2 cm)")],
+                         steps=[sauté], why="w", evidence="e")
+    # the step as the week page prints it, and as the check reads it: one wording for both
+    assert kitchen.step_parts(sauté.model_dump()) == ("Add the oil and the chicken, sauté", "3 min/120°C/Reverse/speed spoon",
+                                                      "Scrape down the sides with the spatula.")
     plan = planner.WeekPlan(title="t", summary="s", recipes=[bad], movement=[])
     report = planner.fix_recipes(plan, kitchen.device("Thermomix / Bimby TM31"), 1)  # the mock fixes nothing
     assert report["found"] == 1 and report["still"] == 1
     assert "100°C" in plan.recipes[0].kitchen_flags[0]
+    steam = {"text": "Place the Varoma in position, steam", "setting": {"time": "20 min", "temperature": "Varoma",
+                                                                        "speed": "8", "mode": "Steaming"}}
+    assert kitchen.step_text(steam) == "Place the Varoma in position, steam: Steaming mode 20 min/Varoma/speed 8."
+    assert len(kitchen.check([{"steps": [steam]}], kitchen.device("Thermomix / Bimby TM7"), 1)[0]) == 2  # heat and steam
 
 
 def test_cart_charges_delivery_again_when_cutting_drops_it_below_the_free_threshold():
@@ -609,7 +621,7 @@ def test_full_loop_through_the_web_app(client):
     r = client.get("/cart")
     assert "Authorize this week's budget" in r.text
     assert "raise it by" in r.text  # 70 does not buy the demo week: the cart says so before cutting anything
-    r = client.post("/budget/authorize", data={"amount": "120"}, follow_redirects=False)
+    r = client.post("/budget/authorize", data={"amount": "140"}, follow_redirects=False)
     approve = r.headers["location"]
     token = approve.split("token=")[1].split("&")[0]
     r = client.get(f"/budget/approved?token={token}", follow_redirects=False)
@@ -623,7 +635,7 @@ def test_full_loop_through_the_web_app(client):
     r = client.post("/cart/order", follow_redirects=False)
     assert r.headers["location"] == "/reward"
     state = client.get("/api/state").json()
-    assert state["money"]["spent"] > 0 and state["money"]["spent"] <= 120
+    assert state["money"]["spent"] > 0 and state["money"]["spent"] <= 140
     order = next(e for e in state["log"] if e["kind"] == "order")
     assert order["unhealthy"] >= 4.49 + 3.49 and order["healthy"] > 0          # bacon and cookies counted as junk
     client.post("/reward/steps", data={"steps": "8200, 6100, 9400, 7300, 4800, 11200, 7600"}, follow_redirects=False)
@@ -633,7 +645,7 @@ def test_full_loop_through_the_web_app(client):
     assert "Care that pays you back" in r.text and "verified by PayPal" in r.text and "self-reported" in r.text
     client.post("/budget/release", follow_redirects=False)                    # ends the week: its reward goes into the month
     state = client.get("/api/state").json()
-    assert state["money"]["released"] == round(120 - state["money"]["spent"], 2)
+    assert state["money"]["released"] == round(140 - state["money"]["spent"], 2)
     assert state["money"]["cashback"] == 0                                    # nothing paid until the month closes
     assert client.post("/budget/release", follow_redirects=False).headers["location"].startswith("/cart?error")  # once only
     r = client.post("/month/settle", follow_redirects=False)
@@ -644,7 +656,7 @@ def test_full_loop_through_the_web_app(client):
     kinds = [r["what"] for r in rows]
     assert kinds == ["Budget held", "Order captured", "Remainder released", "Week closed", "Reward paid back"]
     by = {r["what"]: r for r in rows}
-    assert by["Budget held"]["amount"] == 120 and by["Budget held"]["paypal_id"].startswith("MOCK-AUTH-")
+    assert by["Budget held"]["amount"] == 140 and by["Budget held"]["paypal_id"].startswith("MOCK-AUTH-")
     assert by["Order captured"]["amount"] == money["spent"]
     assert by["Remainder released"]["amount"] == money["released"]
     assert by["Week closed"]["amount"] == by["Reward paid back"]["amount"] == money["cashback"] > 0

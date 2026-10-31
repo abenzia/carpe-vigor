@@ -78,8 +78,10 @@
     {% if r.servings %}<p class="tiny muted">Serves {{ r.servings }}{% if r.leftovers_for %} · cooks enough for {{ r.leftovers_for }} too{% endif %}{% if r.from_leftovers %} · made from {{ r.from_leftovers }}{% endif %}</p>{% endif %}
     {% for f in r.kitchen_flags or [] %}<p class="tiny flag">Check before cooking: {{ f }}.</p>{% endfor %}
     <details><summary>Ingredients and steps</summary>
-      <p class="tiny">{{ r.ingredients|join(', ') }}</p>
-      <ol class="steps">{% for s in r.steps %}<li>{{ s }}</li>{% endfor %}</ol>
+      {% if r.total_minutes %}<p class="tiny muted">Prep {{ r.prep_minutes }} min · total {{ r.total_minutes }} min · {{ r.difficulty }}{% if r.accessories %} · {{ r.accessories|join(', ') }}{% endif %}</p>{% endif %}
+      <ul class="tiny">{% for i in r.ingredients %}<li>{% if i is mapping %}{{ i.amount }} {{ i.name }}{% if i.note %} <span class="muted">— {{ i.note }}</span>{% endif %}{% else %}{{ i }}{% endif %}</li>{% endfor %}</ul>
+      <ol class="steps">{% for s in r.steps %}{% set p = s|step_parts %}<li>{{ p[0] }}{% if p[1] %}: <b>{{ p[1] }}</b>.{% endif %}{% if p[2] %} {{ p[2] }}{% endif %}</li>{% endfor %}</ol>
+      {% for t in r.tips or [] %}<p class="tiny muted">Tip: {{ t }}</p>{% endfor %}
     </details>
     <form method="post" action="/week/cooked" style="margin-top:8px">
       <input type="hidden" name="title" value="{{ r.title }}">

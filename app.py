@@ -20,7 +20,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
-from carpevigor import __version__, ask, cart_agent, checkup, config, guidelines, planner, profile, rag, reward, sources, week
+from carpevigor import __version__, ask, cart_agent, checkup, config, guidelines, kitchen, planner, profile, rag, reward, sources, week
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -29,6 +29,8 @@ from carpevigor.store import Store
 app = FastAPI(title="Carpe Vigor", version=__version__)
 app.mount("/static", StaticFiles(directory=str(config.ROOT / "static")), name="static")
 templates = Jinja2Templates(directory=str(config.ROOT / "templates"))
+# A recipe step as a recipe card prints it: what to do, the machine setting in bold, what follows
+templates.env.filters["step_parts"] = kitchen.step_parts
 store = Store()
 catalog = Catalog.load()
 
