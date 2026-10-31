@@ -45,12 +45,32 @@ NUMBERS = [
      "source": "mlp-1598", "quote": "try to get 7 to 9 hours of sleep per night"},
 ]
 
+# The Italian version's numbers (after 12 Nov 2026), from its own sources (sources.TOPICS_IT). Fiber and sleep have
+# no sentence with a number in the Italian texts fetched so far: left out, not made up.
+NUMBERS_IT = [
+    {"key": "sodium", "topic": "blood_pressure", "says": "Meno di 5 g di sale al giorno, quanto un cucchiaino da tè",
+     "source": "it-min-sale", "quote": "meno di 5 grammi di sale al giorno"},
+    {"key": "sodium", "topic": "blood_pressure", "says": "Sale sotto i 5 g al giorno per gli adulti",
+     "source": "it-crea-2018", "quote": "sale per la popolazione adulta deve essere inferiore a 5g al giorno"},
+    {"key": "saturated_fat", "topic": "cholesterol", "says": "Grassi saturi non oltre il 10% delle calorie (circa 22 g su 2.000)",
+     "source": "it-crea-2018", "quote": "Acidi grassi saturi: non superiore al 10% delle calorie totali"},
+    {"key": "free_sugars", "topic": "sugar", "says": "Zuccheri liberi sotto il 10% delle calorie",
+     "source": "it-crea-2018", "quote": "per quanto riguarda gli zuccheri liberi, l’OMS impone un tetto del 10%"},
+    {"key": "fruit_veg", "topic": None, "says": "Almeno 5 porzioni di frutta e verdura al giorno",
+     "source": "it-crea-2018", "quote": "le 5 porzioni al giorno come un obiettivo di minima"},
+    {"key": "aerobic", "topic": None, "says": "150-300 minuti a settimana di attività aerobica moderata",
+     "source": "it-min-attivita", "quote": "almeno 150-300 minuti di attività fisica aerobica d’intensità moderata"},
+    {"key": "strength", "topic": None, "says": "Esercizi di forza per i principali gruppi muscolari 2 o più volte a settimana",
+     "source": "it-min-attivita", "quote": "esercizi di rafforzamento dei maggiori gruppi muscolari 2 o più volte a settimana"},
+]
+_BY_LANG = {"en": NUMBERS, "it": NUMBERS_IT}
+
 
 def source_of(source_id: str) -> dict:
-    for topic in sources.TOPICS.values():
-        for src in topic["sources"]:
-            if src["id"] == source_id:
-                return src
+    every = [s for t in sources.TOPICS.values() for s in t["sources"]] + [s for srcs in sources.TOPICS_IT.values() for s in srcs]
+    for src in every:
+        if src["id"] == source_id:
+            return src
     if source_id == _SLEEP_PAGE["id"]:
         return _SLEEP_PAGE
     raise KeyError(source_id)
@@ -66,11 +86,11 @@ def found(entry: dict) -> bool | None:
     return None if text is None else _flat(entry["quote"]) in _flat(text)
 
 
-def for_week(topic_keys: list[str]) -> list[dict]:
+def for_week(topic_keys: list[str], lang: str = "en") -> list[dict]:
     """The numbers for this week's topics plus the ones for every week, each with its source and whether its quote
     was found. A number whose source text says otherwise (False) is left out: it is not shown, nor given to the planner."""
     out = []
-    for e in NUMBERS:
+    for e in _BY_LANG[lang]:
         if e["topic"] is None or e["topic"] in topic_keys:
             ok = found(e)
             if ok is not False:
@@ -85,7 +105,7 @@ def as_task(entries: list[dict]) -> str:
 
 def check() -> int:
     bad = 0
-    for e in NUMBERS:
+    for e in NUMBERS + NUMBERS_IT:
         ok = found(e)
         mark = "ok" if ok else ("NOT FETCHED" if ok is None else "QUOTE NOT FOUND")
         bad += ok is False

@@ -92,6 +92,13 @@ an employer inside its welfare plan, an insurer, or a retailer whose basket beco
 - *The MedlinePlus library*: 284 English health topics from the official XML file (public domain), in nine
   groups: nutrition, wellness, fitness, heart, metabolism, diabetes, mental health, substances and lab tests.
 
+**For the Italian version** (after the hackathon), `fetch` also downloads the same topics from Italian public
+sources: Ministero della Salute, Istituto Superiore di Sanità (EpiCentro, ISSalute) and CREA's 2018
+healthy-eating guidelines (PDF), plus seven Italian guideline numbers quoted from them. They are kept out of the
+English app: an English sentence is never checked against Italian text. ISSalute does not send its full
+certificate chain, so the app does not download its pages (verification stays on); those pages can be saved by
+hand like the AHA ones.
+
 **How the app finds the right passages.** The texts are cut into passages of about 900 characters and indexed
 with `gemini-embedding-2` (768 dimensions) in a local JSON file. The fact jurors read the passages closest to
 each claim, not whole pages. If the index fails, they read the full texts and the report says so.

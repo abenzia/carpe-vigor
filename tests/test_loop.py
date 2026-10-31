@@ -707,3 +707,30 @@ def test_the_reward_can_go_through_paypals_mcp_server_with_a_token_not_the_secre
     with pytest.raises(paypal.PayPalError) as e:
         sandbox.refund("27994506801896151", 4.5, "reward")
     assert e.value.sent is False
+
+
+def test_italian_sources_and_numbers_are_ready_and_kept_out_of_the_english_app(monkeypatch):
+    from carpevigor import guidelines, rag, sources
+    italian = {s["id"] for srcs in sources.TOPICS_IT.values() for s in srcs}
+    assert set(sources.TOPICS_IT) <= set(sources.TOPICS)                      # the same topics as the English app
+    for e in guidelines.NUMBERS_IT:
+        assert e["source"] in italian and guidelines.source_of(e["source"])["url"].startswith("https://")
+    monkeypatch.setattr(sources, "text_of", lambda sid: f"{sid}\nhttps://x\n\ntext")  # every source "fetched"
+    english = {s["id"] for s in rag.everything()} | {u["id"] for u in sources.reference_for(list(sources.TOPICS))[1]}
+    assert not english & italian                                               # never checked against Italian text
+    assert {e["source"] for e in guidelines.for_week(["blood_pressure"], lang="it")} <= italian
+
+
+def test_a_bot_check_page_is_not_saved_as_the_source(tmp_path, monkeypatch):
+    from carpevigor import sources
+
+    class Page:
+        status_code, headers, text = 200, {"content-type": "text/html"}, "<html><title>Gcore</title>Checking your browser</html>"
+
+        def raise_for_status(self):
+            pass
+
+    monkeypatch.setattr(sources, "DIR", tmp_path)
+    monkeypatch.setattr(sources.requests, "get", lambda *a, **k: Page())
+    assert sources.fetch("it-min-sale") == []                                  # refused, reported, nothing written
+    assert not (tmp_path / "it-min-sale.txt").exists()

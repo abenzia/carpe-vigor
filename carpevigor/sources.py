@@ -85,6 +85,43 @@ TOPICS: dict[str, dict] = {
     },
 }
 
+# The Italian version's sources (after 12 Nov 2026): the same topics, from the Ministero della Salute, the Istituto
+# Superiore di Sanità (ISSalute, EpiCentro) and CREA's 2018 healthy-eating guidelines. Fetched with the rest, kept out
+# of the English app (reference_for, rag): an English sentence is never checked against Italian text.
+_CREA = {"id": "it-crea-2018", "name": "CREA — Linee guida per una sana alimentazione (2018)",
+         "url": "https://www.crea.gov.it/web/alimenti-e-nutrizione/-/linee-guida-per-una-sana-alimentazione-2018",
+         "fetch": "https://www.crea.gov.it/documents/59764/0/LINEE-GUIDA+DEFINITIVO.pdf"}
+TOPICS_IT: dict[str, list[dict]] = {
+    "blood_pressure": [
+        {"id": "it-min-sale", "name": "Ministero della Salute — Cosa fare per ridurre il consumo di sale",
+         "url": "https://www.salute.gov.it/new/it/tema/stili-di-vita-guadagnare-salute/cosa-fare-ridurre-il-consumo-di-sale/"},
+        {"id": "it-iss-ipertensione", "name": "ISSalute (Istituto Superiore di Sanità) — Ipertensione arteriosa",
+         "url": "https://www.issalute.it/index.php/la-salute-dalla-a-alla-z-menu/i/ipertensione-arteriosa-o-pressione-alta"},
+    ],
+    "cholesterol": [
+        {"id": "it-iss-colesterolo", "name": "ISSalute (Istituto Superiore di Sanità) — Il colesterolo alto dipende dai geni e non dall'alimentazione?",
+         "url": "https://www.issalute.it/index.php/falsi-miti-e-bufale/l-alimentazione/217-il-colesterolo-alto-dipende-dai-geni-e-non-dall-alimentazione"},
+        _CREA,
+    ],
+    "weight": [
+        {"id": "it-iss-obesita", "name": "ISSalute (Istituto Superiore di Sanità) — Obesità",
+         "url": "https://www.issalute.it/index.php/la-salute-dalla-a-alla-z-menu/o/obesita"},
+        _CREA,
+    ],
+    "activity": [
+        {"id": "it-min-attivita", "name": "Ministero della Salute — Attività fisica negli adulti",
+         "url": "https://www.salute.gov.it/new/it/tema/attivita-fisica/attivita-fisica-negli-adulti/"},
+        {"id": "it-epicentro-attivita", "name": "EpiCentro (Istituto Superiore di Sanità) — Attività fisica: livelli consigliati",
+         "url": "https://www.epicentro.iss.it/attivita_fisica/Livelli-Consigliati"},
+    ],
+    "fiber": [_CREA],
+    "sugar": [
+        {"id": "it-iss-diabete2", "name": "ISSalute (Istituto Superiore di Sanità) — Diabete di tipo 2",
+         "url": "https://www.issalute.it/index.php/la-salute-dalla-a-alla-z-menu/d/diabete-di-tipo-2"},
+        _CREA,
+    ],
+}
+
 CLINICAL = ["medicat", "medicine", "drug", "dose", "prescri", "stop taking", "insulin", "statin", "diagnos", "mg/dl", "mmol",
             "how low", "how high", "will my", "will it go"]  # the last four: asking for a prediction of one's own values
 
@@ -131,24 +168,42 @@ def fetch(source_id: str | None = None, timeout: int = 30) -> list[str]:
     seen: set[str] = set()
     DIR.mkdir(parents=True, exist_ok=True)
     done = []
-    for topic in TOPICS.values():
-        for src in topic["sources"]:
-            if (source_id and src["id"] != source_id) or src["id"] in seen:
+    every = [src for topic in TOPICS.values() for src in topic["sources"]] + [src for srcs in TOPICS_IT.values() for src in srcs]
+    for src in every:
+        if (source_id and src["id"] != source_id) or src["id"] in seen:
+            continue
+        seen.add(src["id"])
+        saved = DIR / f"{src['id']}.html"
+        try:
+            r = requests.get(src.get("fetch", src["url"]), timeout=timeout, headers={"User-Agent": "CarpeVigor/0.1 (PayPal AI Hackathon entry)"})
+            r.raise_for_status()
+            if "pdf" in r.headers.get("content-type", ""):
+                body = pdf_text(r.content)
+            else:
+                body = sections(r.text, src["keep"]) if "keep" in src else plain(r.text)
+            if len(body) < MIN_TEXT:  # a bot check answers 200 with a page of its own (salute.gov.it's home does)
+                raise requests.RequestException(f"only {len(body)} characters of text: a bot check, not the page")
+            how = ""
+        except requests.RequestException as e:
+            if not saved.exists():
+                print(f"FAILED {src['id']}: {e} — save the page by hand as {saved} and run fetch again", file=sys.stderr)
                 continue
-            seen.add(src["id"])
-            saved = DIR / f"{src['id']}.html"
-            try:
-                r = requests.get(src.get("fetch", src["url"]), timeout=timeout, headers={"User-Agent": "CarpeVigor/0.1 (PayPal AI Hackathon entry)"})
-                r.raise_for_status()
-                body, how = (sections(r.text, src["keep"]) if "keep" in src else plain(r.text)), ""
-            except requests.RequestException as e:
-                if not saved.exists():
-                    print(f"FAILED {src['id']}: {e} — save the page by hand as {saved} and run fetch again", file=sys.stderr)
-                    continue
-                body, how = plain(saved.read_text(encoding="utf-8", errors="replace")), " (page saved by hand: the site blocks scripts)"
-            path_for(src["id"]).write_text(f"{src['name']}\n{src['url']}{how}\n\n{body}", encoding="utf-8")
-            done.append(src["id"])
+            body, how = plain(saved.read_text(encoding="utf-8", errors="replace")), " (page saved by hand: the site blocks scripts)"
+        path_for(src["id"]).write_text(f"{src['name']}\n{src['url']}{how}\n\n{body}", encoding="utf-8")
+        done.append(src["id"])
     return done
+
+
+MIN_TEXT = 500  # characters: less than this is not one of our pages
+
+
+def pdf_text(data: bytes) -> str:
+    """The text of a PDF (CREA's guidelines), page after page."""
+    import io
+
+    from pypdf import PdfReader
+    pages = (page.extract_text() or "" for page in PdfReader(io.BytesIO(data)).pages)
+    return re.sub(r"[ \t]+", " ", "\n\n".join(p.strip() for p in pages if p.strip()))
 
 
 # The library: MedlinePlus health topics (US National Library of Medicine, public domain, published as one XML file
