@@ -279,8 +279,9 @@ def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(cli
     # connection's own address, not by the Host header a client writes
     from fastapi.testclient import TestClient
     import app as webapp
-    at_this_computer = TestClient(webapp.app, client=("127.0.0.1", 50000))
+    at_this_computer = TestClient(webapp.app, base_url="http://127.0.0.1", client=("127.0.0.1", 50000))
     assert "Bearer s3cret-token" in at_this_computer.get("/diary").text
+    assert "s3cret-token" not in at_this_computer.get("http://evil.example/diary").text   # DNS rebinding: refused
     assert "s3cret-token" not in at_this_computer.get("/diary", headers={"cf-connecting-ip": "203.0.113.9"}).text
     assert "s3cret-token" not in at_this_computer.get("/diary", headers={"x-forwarded-for": "203.0.113.9"}).text
     assert "s3cret-token" not in client.get("http://127.0.0.1/diary").text      # Host says local, connection is not

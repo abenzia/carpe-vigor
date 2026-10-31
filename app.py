@@ -348,7 +348,10 @@ def diary_view(request: Request, error: str = "", on: str = ""):
     # connects from this machine, so its marks (cf-connecting-ip, x-forwarded-for...) rule it out.
     peer = request.client.host if request.client else ""
     proxied = any(h in request.headers for h in ("cf-connecting-ip", "x-forwarded-for", "forwarded", "x-real-ip"))
-    here = peer in ("127.0.0.1", "::1") and not proxied
+    # and the page was asked for by a loopback name: a site that rebinds its own name to 127.0.0.1 (DNS rebinding)
+    # connects from here too, but its Host is not ours
+    loopback_name = request.url.hostname in ("127.0.0.1", "localhost", "::1")
+    here = peer in ("127.0.0.1", "::1") and loopback_name and not proxied
     return render(request, "diary.html", today=diary.day(store.get("diary", []), on or None), error=error,
                   portions=list(diary.PORTIONS), food_db=nutrition.available(), watch=bool(config.API_TOKEN),
                   setup={"url": config.PUBLIC_URL, "token": config.API_TOKEN} if here and config.API_TOKEN else None)
