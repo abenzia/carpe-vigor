@@ -5,3 +5,4 @@ __pycache__/
 *.sqlite
 .pytest_cache/
 data/sources/*.txt
+.playwright-mcp/

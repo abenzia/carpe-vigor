@@ -113,8 +113,13 @@ def fetch(source_id: str | None = None, timeout: int = 30) -> list[str]:
         for src in topic["sources"]:
             if source_id and src["id"] != source_id:
                 continue
-            r = requests.get(src["url"], timeout=timeout, headers={"User-Agent": "CarpeVigor/0.1 (PayPal AI Hackathon entry)"})
-            r.raise_for_status()
+            # One site blocking us (heart.org answers 403 to scripts) must not stop the others: say it and go on.
+            try:
+                r = requests.get(src["url"], timeout=timeout, headers={"User-Agent": "CarpeVigor/0.1 (PayPal AI Hackathon entry)"})
+                r.raise_for_status()
+            except requests.RequestException as e:
+                print(f"FAILED {src['id']}: {e}", file=sys.stderr)
+                continue
             path_for(src["id"]).write_text(f"{src['name']}\n{src['url']}\n\n{plain(r.text)}", encoding="utf-8")
             done.append(src["id"])
     return done
