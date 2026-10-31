@@ -37,6 +37,17 @@ def test_paypal_mock_authorize_capture_void_refund():
         pp.refund(cap["capture_id"], 100.0, "too much")
 
 
+def test_sandbox_capture_and_refund_survive_paypals_minimal_answer(monkeypatch):
+    # 31 Oct, real sandbox: the capture went through (110.00) but PayPal answered without "amount", the code raised
+    # KeyError and the app never recorded money that had moved.
+    pp = paypal.SandboxPayPal("id", "secret")
+    monkeypatch.setattr(pp, "_call", lambda method, path, body=None: {"id": "CAP-1", "status": "COMPLETED"})
+    assert pp.capture("AUTH-1", 110.0, "order")["amount"] == 110.0
+    assert pp.refund("CAP-1", 8.5, "reward")["amount"] == 8.5
+    monkeypatch.setattr(pp, "_token", "t")
+    assert pp._headers()["Prefer"] == "return=representation"
+
+
 def test_reward_rewards_behaviour_not_weight():
     good = reward.score(reward.WeekBehaviour(14, 12, 6, True, 60.0))
     assert good.earned and 0 < good.cashback_rate <= 0.10 and good.cashback == round(60 * good.cashback_rate, 2)

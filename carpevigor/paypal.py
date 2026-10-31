@@ -120,7 +120,9 @@ class SandboxPayPal:
             if r.status_code >= 400:
                 raise PayPalError(f"token: {r.status_code} {r.text[:200]}")
             self._token = r.json()["access_token"]
-        return {"Authorization": f"Bearer {self._token}", "Content-Type": "application/json", "PayPal-Request-Id": str(uuid.uuid4())}
+        # Prefer: without it captures and refunds come back minimal (id, status), with no amount.
+        return {"Authorization": f"Bearer {self._token}", "Content-Type": "application/json", "PayPal-Request-Id": str(uuid.uuid4()),
+                "Prefer": "return=representation"}
 
     def _call(self, method: str, path: str, body: dict | None = None) -> dict:
         r = requests.request(method, f"{self.base}{path}", headers=self._headers(), json=body, timeout=30)
@@ -150,7 +152,8 @@ class SandboxPayPal:
         cap = self._call("POST", f"/v2/payments/authorizations/{authorization_id}/capture", {
             "amount": {"currency_code": config.CURRENCY, "value": f"{amount:.2f}"},
             "final_capture": final, "note_to_payer": note[:255]})
-        return {"capture_id": cap["id"], "status": cap["status"], "amount": float(cap["amount"]["value"])}
+        # The money has moved once PayPal answers: never fail here for a missing field, or the capture goes unrecorded.
+        return {"capture_id": cap["id"], "status": cap["status"], "amount": float((cap.get("amount") or {}).get("value", amount))}
 
     def void(self, authorization_id: str) -> dict:
         self._call("POST", f"/v2/payments/authorizations/{authorization_id}/void")
