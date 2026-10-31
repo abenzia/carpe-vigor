@@ -8,3 +8,4 @@ data/sources/*.txt
 .playwright-mcp/
 data/sources/*.html
 data/sources/index.json
+data/sources/library.json
