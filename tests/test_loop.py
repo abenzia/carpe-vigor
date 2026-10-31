@@ -193,10 +193,13 @@ def test_the_kitchen_check_holds_recipes_to_the_device_and_their_portions():
     assert len(tm6[4]) == 2                # Sat lunch is not cooked from it, and 1 serving cannot feed two meals
     assert any("120°C" in p for p in found("Thermomix / Bimby TM31")[0])  # a TM31 stops at 100°C
     assert any("Steaming mode" in p for p in found("Thermomix / Bimby TM7")[0])
+    hot_blend = [{"day": "Sun", "meal": "lunch", "servings": 1, "steps": ["Blend the soup 1 min/90°C/speed 8."]}]
+    assert "does not heat" in kitchen.check(hot_blend, kitchen.device("Thermomix / Bimby TM7"), 1)[0][0]
     assert any("160°C" in p for p in found("Thermomix / Bimby TM5")[5])   # no Browning mode on a TM5
     two = found("Thermomix / Bimby TM6", people=2)
     assert any("feeds 2 now" in p for p in two[0]) and any("1 serving for 2" in p for p in two[1])
     assert kitchen.device("Thermomix / Bimby").name == "Thermomix / Bimby TM6"   # plans saved before the models
+    assert kitchen.NAMES[0] == "Thermomix / Bimby TM7"                         # the default, and the demo week's
 
 
 def test_a_recipe_still_wrong_after_the_fix_is_flagged_on_screen_not_hidden():

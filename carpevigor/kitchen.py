@@ -18,6 +18,7 @@ class Device:
     max_c: int | None = None      # highest temperature a step may set by hand; None = not checked
     mode_c: int | None = None     # higher temperature reachable only in a named mode (TM6, TM7)
     varoma_setting: bool = True   # whether "Varoma" is a temperature setting on this machine
+    heats_to_speed: float | None = None  # above this speed the machine does not heat (TM7: 6)
 
 
 _BIMBY = ("Settings are written as time/temperature/speed, e.g. '5 min/100°C/speed 1', with 'Reverse' and "
@@ -25,15 +26,18 @@ _BIMBY = ("Settings are written as time/temperature/speed, e.g. '5 min/100°C/sp
           "capacity. ")
 
 # The first is the form's default and the device the demo week (data/demo_plan.json) is written for.
+# TM7 (Vorwerk support, read 31 Oct 2026): "Varoma is not a temperature" but a steaming function, used through the
+# steaming mode at speed 5 at most; 160°C only through specific high-temperature modes; no heating above speed 6.
 DEVICES = [
+    Device("Thermomix / Bimby TM7",
+           _BIMBY + "TM7: bowl 2.2 litres. Manual temperatures up to 120°C; up to 160°C only inside its high-temperature "
+           "modes, named as 'Browning mode'. It does not heat above speed 6. Steaming uses the 'Steaming mode' "
+           "(maximum speed 5) with the Varoma on top, never a temperature called 'Varoma': write e.g. "
+           "'Steaming mode 20 min/speed 1'.",
+           max_c=120, mode_c=160, varoma_setting=False, heats_to_speed=6),
     Device("Thermomix / Bimby TM6",
            _BIMBY + "TM6: bowl 2.2 litres. Manual temperatures up to 120°C, or 'Varoma' for steaming; up to 160°C only "
            "in 'Browning mode', named as such.", max_c=120, mode_c=160),
-    Device("Thermomix / Bimby TM7",
-           _BIMBY + "TM7: bowl 2.2 litres. Manual temperatures up to 120°C; up to 160°C only inside its high-temperature "
-           "modes, named as 'Browning mode'. Steaming uses the 'Steaming mode' (maximum speed 5), never a temperature "
-           "called 'Varoma': write e.g. 'Steaming mode 20 min/speed 1'.",
-           max_c=120, mode_c=160, varoma_setting=False),
     Device("Thermomix / Bimby TM5",
            _BIMBY + "TM5: bowl 2.2 litres. Temperatures up to 120°C, or 'Varoma' for steaming. No browning mode.", max_c=120),
     Device("Thermomix / Bimby TM31",
@@ -62,6 +66,7 @@ DAYS = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 _TEMP = re.compile(r"(?:min|sec)\.?\s*/\s*(\d{2,3})\s*°\s*C", re.I)
 _VAROMA_SETTING = re.compile(r"/\s*varoma\s*/|varoma\s*/\s*speed", re.I)
 _MODE = re.compile(r"browning|high[- ]temperature", re.I)
+_HEATED_SPEED = re.compile(r"(?:min|sec)\.?\s*/\s*\d{2,3}\s*°\s*C\s*/\s*speed\s*(\d+(?:\.\d+)?)", re.I)
 # "as per Monday's quinoa", "same as Tue lunch", "see Wednesday": a recipe has to be cookable on its own
 _ELSEWHERE = re.compile(r"\b(?:as (?:per|in|for|on)|same as|see|like)\b[^.;]*\b(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*\b"
                         r"|\b(?:mon|tues|wednes|thurs|fri|satur|sun)day's\b", re.I)
@@ -89,6 +94,8 @@ def check(recipes: list[dict], dev: Device, people: int) -> dict[int, list[str]]
                     continue
                 out.append(f"Step {n} sets {t}°C: the {dev.name} goes up to {dev.max_c}°C"
                            + (f" (up to {dev.mode_c}°C only in Browning mode, named in the step)" if dev.mode_c else ""))
+            if dev.heats_to_speed and any(float(s) > dev.heats_to_speed for s in _HEATED_SPEED.findall(step)):
+                out.append(f"Step {n} heats above speed {dev.heats_to_speed:g}: the {dev.name} does not heat there")
             if not dev.varoma_setting and _VAROMA_SETTING.search(step):
                 out.append(f"Step {n} sets 'Varoma' as a temperature: the {dev.name} steams in Steaming mode")
             if _ELSEWHERE.search(step):
