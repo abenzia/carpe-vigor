@@ -7,6 +7,19 @@
 
 {% if error %}<div class="error">{{ error }}</div>{% endif %}
 
+{% if cart.raise_by > 0 %}
+<div class="flag">
+  <p>This week's recipes need <b>{{ currency }} {{ '%.2f'|format(cart.needed) }}</b>; the budget is {{ currency }} {{ '%.2f'|format(budget) }}.
+  {% if not money.authorized %}To buy everything, raise it by <b>{{ currency }} {{ '%.2f'|format(cart.raise_by) }}</b>.{% else %}Buying everything would take {{ currency }} {{ '%.2f'|format(cart.raise_by) }} more than what is left of this week's authorization.{% endif %}
+  {% if cart.over_budget %}Even without the extras, the proteins and vegetables cost {{ currency }} {{ '%.2f'|format(cart.total) }}: the agent never drops those, so the order waits for a higher budget.
+  {% else %}Otherwise the agent leaves out only the extras listed below — never the proteins and vegetables the recipes need.{% endif %}</p>
+  {% if not money.authorized %}
+  <form method="post" action="/budget/authorize" style="margin-top:8px"><input type="hidden" name="amount" value="{{ cart.needed|round(0, 'ceil')|int }}">
+    <button type="submit">Authorize {{ currency }} {{ cart.needed|round(0, 'ceil')|int }} with PayPal</button></form>
+  {% endif %}
+</div>
+{% endif %}
+
 {% if not money.authorized %}
 <form method="post" action="/budget/authorize" class="card accent">
   <h3 style="margin-top:0">Authorize this week's budget — once</h3>
@@ -36,7 +49,8 @@
   <ul class="steps">{% for s in cart.skipped %}<li>{{ s }}</li>{% endfor %}</ul>
   {% endif %}
   <p class="row" style="margin-top:14px">
-    {% if money.authorized and cart.lines %}
+    {% if cart.over_budget %}<span class="muted">Over budget: authorize a higher budget to order.</span>
+    {% elif money.authorized and cart.lines %}
     <form method="post" action="/cart/order" class="inline"><button type="submit">Approve — order and pay {{ currency }} {{ '%.2f'|format(cart.total) }}</button></form>
     {% elif not cart.lines %}<span class="muted">Nothing to buy: everything is at home.</span>
     {% else %}<span class="muted">Authorize the budget above to let the agent order.</span>{% endif %}

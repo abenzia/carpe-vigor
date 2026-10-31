@@ -61,7 +61,36 @@ def test_cart_respects_pantry_blacklist_and_budget():
     assert "Extra-virgin olive oil" in names              # the swap
     assert any(l.swapped_from == "Butter" for l in cart.lines)
     tight = cart_agent.build(recipes, pantry, catalog, budget=15.0)
-    assert tight.within_budget and tight.skipped
+    # Proteins and vegetables are never cut: the extra (olive oil) goes, and what is left still costs more than 15,
+    # so the cart says so and asks for a higher budget instead of dropping the salmon.
+    assert "Extra-virgin olive oil" not in [l.item.name for l in tight.lines]
+    assert {"Salmon fillets", "Broccoli"} <= {l.item.name for l in tight.lines}
+    assert tight.over_budget and not tight.within_budget and tight.raise_by > 0
+
+
+def test_cart_says_what_the_week_needs_before_cutting_and_never_cuts_protein_or_vegetables():
+    catalog = Catalog.load()
+    recipes = [{"title": "Bowl", "ingredients": ["salmon fillets", "baby spinach", "chickpeas", "quinoa", "black pepper",
+                                                 "walnuts", "blueberries", "apple cider vinegar"]}]
+    full = cart_agent.build(recipes, Pantry(), catalog, budget=500.0)
+    assert not full.skipped and full.needed == full.total and full.raise_by == 0
+    cart = cart_agent.build(recipes, Pantry(), catalog, budget=30.0)
+    assert cart.needed == full.total and cart.raise_by == round(full.total - 30.0, 2)
+    kept = {l.item.name for l in cart.lines}
+    assert {"Salmon fillets", "Baby spinach", "Chickpeas, no salt added"} <= kept
+    assert cart.within_budget and not cart.over_budget
+
+
+def test_cart_charges_delivery_again_when_cutting_drops_it_below_the_free_threshold():
+    catalog = Catalog.load()
+    free_over = catalog.store["delivery_free_over"]
+    recipes = [{"title": "Big", "ingredients": ["salmon fillets", "cod fillets", "chicken breast", "olive oil", "walnuts",
+                                                "almonds", "blueberries", "apples", "rolled oats", "quinoa", "black pepper"]}]
+    full = cart_agent.build(recipes, Pantry(), catalog, budget=500.0)
+    assert full.subtotal >= free_over and full.delivery_fee == 0
+    cart = cart_agent.build(recipes, Pantry(), catalog, budget=full.subtotal - 10)
+    assert cart.subtotal < free_over and cart.delivery_fee == catalog.store["delivery_fee"]
+    assert cart.within_budget
 
 
 def test_sources_pick_topics_and_flag_clinical():
@@ -87,7 +116,8 @@ def test_full_loop_through_the_web_app(client):
     r = client.post("/home", data={"have": ["DAI-BUTTER-250", "FAT-EVOO-500", "GRA-BROWN-1K"]}, follow_redirects=False)
     r = client.get("/cart")
     assert "Authorize this week's budget" in r.text
-    r = client.post("/budget/authorize", data={"amount": "70"}, follow_redirects=False)
+    assert "raise it by" in r.text  # 70 does not buy the demo week: the cart says so before cutting anything
+    r = client.post("/budget/authorize", data={"amount": "120"}, follow_redirects=False)
     approve = r.headers["location"]
     token = approve.split("token=")[1].split("&")[0]
     r = client.get(f"/budget/approved?token={token}", follow_redirects=False)
@@ -96,10 +126,10 @@ def test_full_loop_through_the_web_app(client):
     r = client.post("/cart/order", follow_redirects=False)
     assert r.headers["location"] == "/reward"
     state = client.get("/api/state").json()
-    assert state["money"]["spent"] > 0 and state["money"]["spent"] <= 70
+    assert state["money"]["spent"] > 0 and state["money"]["spent"] <= 120
     client.post("/reward/steps", data={"steps": "8200, 6100, 9400, 7300, 4800, 11200, 7600"}, follow_redirects=False)
     r = client.get("/reward")
     assert "Care that pays you back" in r.text
     client.post("/budget/release", follow_redirects=False)
     state = client.get("/api/state").json()
-    assert state["money"]["released"] == round(70 - state["money"]["spent"], 2)
+    assert state["money"]["released"] == round(120 - state["money"]["spent"], 2)

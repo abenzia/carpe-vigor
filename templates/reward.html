@@ -5,7 +5,7 @@
 <h2>Care that pays you back</h2>
 <p class="muted">Up to {{ (max_rate * 100)|int }}% of what you spent on groceries this week comes back — for what you <b>did</b>, never for your weight: meals cooked, days you moved, the "don't rebuy" list kept out of the cart.</p>
 
-<div class="grid">
+<div class="grid fit">
   <div class="card accent">
     <div class="eyebrow">This week</div>
     <div class="big">{{ currency }} {{ '%.2f'|format(result.cashback) }}</div>
@@ -29,8 +29,8 @@
       <button class="secondary" type="submit">Sync</button>
     </form>
     {% if steps %}
-    <table style="margin-top:10px"><tr>{% for d in days %}<th>{{ d }}</th>{% endfor %}</tr>
-      <tr>{% for s in steps %}<td class="{{ 'num' }}">{{ s }} {% if s >= steps_goal %}<span class="pill ok">✓</span>{% endif %}</td>{% endfor %}</tr></table>
+    <div class="scroll-x"><table style="margin-top:10px"><tr>{% for d in days %}<th>{{ d }}</th>{% endfor %}</tr>
+      <tr>{% for s in steps %}<td class="{{ 'num' }}">{{ s }} {% if s >= steps_goal %}<span class="pill ok">✓</span>{% endif %}</td>{% endfor %}</tr></table></div>
     {% endif %}
   </div>
 </div>

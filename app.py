@@ -51,7 +51,7 @@ def doctor(request: Request):
 
 @app.post("/doctor")
 def doctor_submit(request: Request, doctor_said: str = Form(...), device: str = Form(...), constraints: str = Form(""),
-                  budget: float = Form(70.0), report_attached: str = Form("")):
+                  budget: float = Form(120.0), report_attached: str = Form("")):
     guidance = profile.read(doctor_said, device, constraints, bool(report_attached))
     store.put("profile", {"doctor_said": doctor_said, "device": device, "constraints_text": constraints,
                           "budget": budget, "guidance": guidance.model_dump()})
@@ -124,7 +124,8 @@ def cart_view(request: Request, error: str = ""):
     budget = money["remaining"] if money["authorized"] else float(prof["budget"])
     cart = cart_agent.build(plan["plan"]["recipes"], pantry, catalog, budget)
     store.put("cart", {"lines": [{"sku": l.item.sku, "quantity": l.quantity, "reason": l.reason, "swapped_from": l.swapped_from} for l in cart.lines],
-                       "subtotal": cart.subtotal, "delivery_fee": cart.delivery_fee, "total": cart.total, "skipped": cart.skipped})
+                       "subtotal": cart.subtotal, "delivery_fee": cart.delivery_fee, "total": cart.total, "skipped": cart.skipped,
+                       "needed": cart.needed, "over_budget": cart.over_budget})
     return render(request, "cart.html", cart=cart, store_name=catalog.store["name"], store_note=catalog.store.get("note", ""),
                   budget=budget, error=error, orders=store.events("captured"))
 

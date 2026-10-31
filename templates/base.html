@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Spline+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/static/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 30'%3E%3Crect width='12' height='30' fill='%23fff' stroke='%23151A18'/%3E%3Crect y='10' width='12' height='10' fill='%23C4402C'/%3E%3C/svg%3E">
 </head>
 <body>
 <header>
@@ -33,7 +34,7 @@
       <span><em>spent</em> {{ currency }} {{ '%.2f'|format(money.spent) }}</span>
       <span><em>released</em> {{ currency }} {{ '%.2f'|format(money.released) }}</span>
       <span><em>paid back</em> {{ currency }} {{ '%.2f'|format(money.cashback) }}</span>
-      <span class="mode">PayPal {{ money.mode }}{% if not money.authorized %} · not authorized yet{% endif %}</span>
+      <span class="mode">PayPal {{ money.mode }}{% if money.authorized %} · budget held{% elif money.authorization %} · week closed{% else %} · not authorized yet{% endif %}</span>
     </div>
   </div>
 </header>
