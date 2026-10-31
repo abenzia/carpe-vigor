@@ -25,7 +25,7 @@ from fastapi.templating import Jinja2Templates
 
 from carpevigor import (__version__, ask, cart_agent, checkup, config, diary, guidelines, kitchen, nutrition, planner, profile,
                         rag, reward, sources, ui, week)
-from carpevigor import coach
+from carpevigor import coach, health
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -82,7 +82,7 @@ def journey(request: Request):
     meals = [{"i": i, "kind": planner.dish_kind(r), **r} for i, r in enumerate(plan["plan"]["recipes"]) if r["day"] == today] if plan else []
     return render(request, "journey.html", today=today, meals=meals, cooked=set((plan or {}).get("cooked", [])),
                   diary_today=diary.day(store.get("diary", [])), steps=store.get("steps", []),
-                  month=week.month(store), checkups=store.get("checkups", []))
+                  month=week.month(store), checkups=store.get("checkups", []), reading=health.read(store.get("health") or {}))
 
 
 # 1 ------------------------------------------------------------------------------------------------------------------
@@ -128,7 +128,9 @@ def _build_week(prof: dict):
         focus = [v for v in checkup.view(store.get("numbers", [])) if v["target"] is not None and not v["status"].startswith("at ")]
         guidance.topics = list(dict.fromkeys(guidance.topics + [v["topic"] for v in focus]))
         guidance.goals = guidance.goals + [f"Food and habits that help with {v['label']}" for v in focus]
-        made, report, used = planner.make(guidance, prof["device"], prof.get("people", 1), progress)
+        made, report, used = planner.make(guidance, prof["device"], prof.get("people", 1), progress,
+                                          energy=health.for_planner(store.get("health") or {}),
+                                          activity=(store.get("health") or {}).get("activity"), steps=store.get("steps", []))
         plan = {"plan": made.model_dump(), "report": report, "sources": used, "cooked": [],
                 "focus": [f"{v['label']}: {v['status']}" for v in focus], "numbers": guidelines.for_week(guidance.topics)}
         store.put("plan", plan)
@@ -191,6 +193,7 @@ def recipe_view(request: Request, i: int):
 def move_view(request: Request):
     plan = _plan_or_start()
     return render(request, "move.html", movement=plan["plan"]["movement"] if plan else [], days=planner.DAYS,
+                  coach=((plan or {}).get("report") or {}).get("coach"),
                   steps=store.get("steps", []), goal=config.STEPS_GOAL)
 
 
@@ -208,7 +211,8 @@ def body_view(request: Request, day: str = ""):
 def team_view(request: Request):
     plan = _plan_or_start()
     return render(request, "team.html", report=(plan or {}).get("report"), used=(plan or {}).get("sources", []),
-                  numbers=(plan or {}).get("numbers", []), kitchen=((plan or {}).get("report") or {}).get("kitchen"))
+                  numbers=(plan or {}).get("numbers", []), kitchen=((plan or {}).get("report") or {}).get("kitchen"),
+                  coach=((plan or {}).get("report") or {}).get("coach"))
 
 
 # My numbers (optional) -------------------------------------------------------------------------------------------
@@ -224,7 +228,46 @@ def numbers_view(request: Request, error: str = ""):
     store.put("quotes", quotes)
     return render(request, "numbers.html", measures=checkup.MEASURES, shown=shown, quotes=quotes, error=error,
                   checkups=store.get("checkups", []), verdicts=checkup.VERDICTS, bonus_rates=config.CHECKUP_BONUS,
-                  spent_since=spent_since_last_checkup(), month=week.month(store))
+                  spent_since=spent_since_last_checkup(), month=week.month(store),
+                  health=store.get("health") or {}, reading=health.read(store.get("health") or {}),
+                  activities=list(health.ACTIVITY), health_sources=health.SOURCES)
+
+
+def _number(value: str, low: float, high: float) -> float | None:
+    """A measure typed in a form, or None when empty or outside what a person can measure."""
+    try:
+        v = float(value.replace(",", "."))
+    except ValueError:
+        return None
+    return v if low <= v <= high else None
+
+
+@app.post("/numbers/measures")
+def measures_save(consent: str = Form(""), height_cm: str = Form(""), weight_kg: str = Form(""), waist_cm: str = Form(""),
+                  age: str = Form(""), sex: str = Form(""), activity: str = Form(""), pregnant: str = Form(""),
+                  goal_kg: str = Form(""), pace: str = Form(""), doctor_kcal: str = Form("")):
+    """The person's measures. Without the consent box ticked nothing is kept (and what was kept is deleted)."""
+    if not consent:
+        store.delete("health")
+        return RedirectResponse("/numbers?error=" + quote("Nothing kept: tick the consent box to save your measures."),
+                                status_code=303)
+    h = {"consent": True, "height_cm": _number(height_cm, 120, 230), "weight_kg": _number(weight_kg, 30, 300),
+         "waist_cm": _number(waist_cm, 40, 200), "age": _number(age, 12, 110), "sex": sex if sex in ("female", "male") else None,
+         "activity": activity if activity in health.ACTIVITY else None, "pregnant": bool(pregnant),
+         "goal_kg": _number(goal_kg, 30, 300), "pace": _number(pace, 0.25, 1.0), "doctor_kcal": _number(doctor_kcal, 800, 5000)}
+    if h["age"]:
+        h["age"] = int(h["age"])
+    if h["height_cm"] and h["weight_kg"]:
+        h["bmi"] = health.bmi(h["height_cm"], h["weight_kg"])
+    store.put("health", {k: v for k, v in h.items() if v not in (None, "")})
+    store.log("measures", {"kept": True})  # the values stay in the store, not in the log
+    return RedirectResponse("/numbers", status_code=303)
+
+
+@app.post("/numbers/measures/delete")
+def measures_delete():
+    store.delete("health")
+    return RedirectResponse("/numbers", status_code=303)
 
 
 @app.post("/numbers")

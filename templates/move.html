@@ -11,7 +11,10 @@
 
   <div class="hero-grid">
     <section class="card pad">
-      <p class="section-kicker">Day by day</p>
+      <p class="section-kicker">Day by day · the coach (AI)</p>
+      {% if coach %}<p><span class="pill {{ 'ok' if coach.within else 'warn' }}">{{ coach.minutes }} moderate minutes</span> <span class="pill {{ 'ok' if coach.strength_days >= 2 else 'warn' }}">{{ coach.strength_days }} strength days</span>{% if coach.fixed %} <span class="pill">rewritten once to fit the guidelines</span>{% endif %}</p>
+      {% for p in coach.problems %}<p class="flag tiny">Still outside the guidelines: {{ p }}.</p>{% endfor %}
+      <p class="tiny muted">Added up by plain code from each day's line, not claimed by the model.</p>{% endif %}
       {% if movement %}
       <div class="goal-list">{% for m in movement %}<a class="goal" href="/body?day={{ days[loop.index0] }}" style="text-decoration:none"><span class="team-avatar">{{ days[loop.index0][:2] }}</span><div><b>{{ m }}</b><small>see it on the body →</small></div></a>{% endfor %}</div>
       {% else %}<p class="muted">No plan yet. <a href="/doctor">Start with what your doctor said</a>.</p>{% endif %}

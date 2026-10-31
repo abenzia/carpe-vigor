@@ -29,9 +29,10 @@
       {% if kitchen %}<p><span class="pill">{{ kitchen.device }}</span> <span class="pill">{{ kitchen.found }} issues found</span> <span class="pill {{ 'ok' if not kitchen.still else 'warn' }}">{{ kitchen.still }} left</span></p>{% endif %}
     </section>
     <section class="card pad">
-      <p class="section-kicker">Coach · AI</p>
+      <p class="section-kicker">Coach · AI (Gemini 3.8 Flash)</p>
       <h3>↗ Plans the movement</h3>
-      <p class="tiny">Within the US physical activity guidelines (150–300 minutes a week, strength 2 days), with your steps. <a href="/move">The week's movement →</a></p>
+      <p class="tiny">Within the US physical activity guidelines (150–300 minutes a week, strength 2 days), with your activity level and steps. <a href="/move">The week's movement →</a></p>
+      {% if coach %}<p><span class="pill {{ 'ok' if coach.within else 'warn' }}">{{ coach.minutes }} min</span> <span class="pill">{{ coach.strength_days }} strength days</span>{% if coach.fixed %} <span class="pill">rewritten once</span>{% endif %}</p>{% endif %}
     </section>
   </div>
 

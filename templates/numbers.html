@@ -10,6 +10,49 @@ never predicts them: your doctor does. Without them, the app works the same on w
 
 {% if error %}<div class="flag">{{ error }}</div>{% endif %}
 
+<div class="hero-grid">
+  <form method="post" action="/numbers/measures" class="card pad">
+    <p class="section-kicker">Your measures · optional</p>
+    <h3>The more you share, the more the plan is yours</h3>
+    <div class="form-grid">
+      <div><label for="height_cm">Height (cm)</label><input type="number" step="0.5" id="height_cm" name="height_cm" value="{{ health.height_cm or '' }}"></div>
+      <div><label for="weight_kg">Weight (kg)</label><input type="number" step="0.1" id="weight_kg" name="weight_kg" value="{{ health.weight_kg or '' }}"></div>
+      <div><label for="waist_cm">Waist (cm)</label><input type="number" step="0.5" id="waist_cm" name="waist_cm" value="{{ health.waist_cm or '' }}"></div>
+      <div><label for="age">Age</label><input type="number" step="1" id="age" name="age" value="{{ health.age or '' }}"></div>
+      <div><label for="sex">Sex (for the energy equation)</label><select id="sex" name="sex"><option value="">—</option><option value="female" {{ 'selected' if health.sex == 'female' }}>female</option><option value="male" {{ 'selected' if health.sex == 'male' }}>male</option></select></div>
+      <div><label for="activity">Activity</label><select id="activity" name="activity"><option value="">—</option>{% for a in activities %}<option {{ 'selected' if health.activity == a }}>{{ a }}</option>{% endfor %}</select></div>
+    </div>
+    <p class="section-kicker" style="margin-top:14px">Your goal · if you want one</p>
+    <div class="form-grid">
+      <div><label for="goal_kg">Goal weight (kg)</label><input type="number" step="0.1" id="goal_kg" name="goal_kg" value="{{ health.goal_kg or '' }}"></div>
+      <div><label for="pace">Pace (kg a week)</label><select id="pace" name="pace">{% for p in [0.25, 0.5, 0.75, 1.0] %}<option value="{{ p }}" {{ 'selected' if (health.pace or 0.5) == p }}>{{ p }}{{ ' · public pace' if p == 0.5 else (' · upper limit' if p == 1.0 else '') }}</option>{% endfor %}</select></div>
+      <div><label for="doctor_kcal">Calories your doctor set (if any)</label><input type="number" step="10" id="doctor_kcal" name="doctor_kcal" value="{{ health.doctor_kcal or '' }}"></div>
+    </div>
+    <label class="check"><input type="checkbox" name="pregnant" value="1" {{ 'checked' if health.pregnant }}> I am pregnant or breastfeeding</label>
+    <label class="check"><input type="checkbox" name="consent" value="1" {{ 'checked' if health.consent }} required> I agree that Carpe Vigor keeps these measures on this device and uses them to personalize my plan. I can delete them at any time.</label>
+    <div class="row" style="margin-top:12px"><button type="submit">Save my measures</button></div>
+  </form>
+  {% if health.consent %}<form method="post" action="/numbers/measures/delete" style="position:absolute;visibility:hidden" id="forget"></form>{% endif %}
+
+  <div class="stack">
+    <section class="card pad dark">
+      <p class="section-kicker light">What the numbers say · arithmetic and public sources</p>
+      {% if reading.bmi %}
+      <h3>BMI {{ reading.bmi }} · {{ reading.bmi_category }}</h3>
+      <p class="tiny">Adult categories of <a href="{{ health_sources.bmi[1] }}" style="color:#f3a372">{{ health_sources.bmi[0] }}</a> (WHO uses the same 25 and 30). A screening number, not a diagnosis: your doctor reads it with the rest.</p>
+      {% else %}<h3>Add height and weight</h3><p class="tiny">BMI and your daily energy needs appear here.</p>{% endif %}
+      {% if reading.energy %}<p>About <b>{{ reading.energy }} kcal</b> a day keep today's weight <span class="tiny">(Mifflin-St Jeor equation, your activity level)</span>.</p>{% endif %}
+      {% if reading.weeks %}
+      <p>Your goal: <b>{{ reading.goal_kg }} kg</b>, {{ reading.lose_kg }} kg to go. At about {{ reading.pace }} kg a week: <b>about {{ reading.weeks }} weeks</b>, around <b>{{ reading.target_kcal }} kcal</b> a day.</p>
+      <p class="tiny">An estimate of the goal you chose, not a forecast: bodies do not follow arithmetic week by week. Pace within <a href="{{ health_sources.pace[1] }}" style="color:#f3a372">CDC</a>'s 0.5–1 kg a week; never under {{ '1,200' if health.sex == 'female' else '1,500' }} kcal a day without a health professional (<a href="{{ health_sources.floor[1] }}" style="color:#f3a372">Harvard Health</a>).</p>
+      {% endif %}
+      {% for n in reading.notes %}<p class="tiny">⚑ {{ n }}</p>{% endfor %}
+      {% if health.consent %}<p style="margin-top:10px"><button form="forget" class="link" style="color:#c5d0c3">Delete my measures</button></p>{% endif %}
+    </section>
+    <p class="notice">Your weight never changes your reward: the reward pays for what you do.</p>
+  </div>
+</div>
+
 <form method="post" action="/numbers" class="card pad">
   <h3>Add a result</h3>
   <div class="stack two">

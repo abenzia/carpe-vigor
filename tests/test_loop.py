@@ -200,6 +200,56 @@ def test_a_dish_is_counted_from_usda_foods_and_the_model_only_picks_among_them(t
     assert nutrition.count(dish, servings=2) == n and len(rounds) == 2  # decided once: no model the second time
 
 
+def test_the_coach_is_held_to_the_activity_guidelines_by_code(monkeypatch):
+    from carpevigor import coach
+    lazy = coach.MovementPlan(days=[coach.Day(day=d, text="rest", moderate_minutes=10, strength=False)
+                                    for d in ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")])
+    good = coach.MovementPlan(days=[coach.Day(day=d, text="25-minute brisk walk" + (", 10 squats" if d in "MonThu" else ""),
+                                              moderate_minutes=25, strength=d in ("Mon", "Thu"))
+                                    for d in ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")])
+    asked = []
+    monkeypatch.setattr(coach.llm, "ask", lambda system, task, shape, **k: asked.append(task) or (lazy if len(asked) == 1 else good))
+    lines, report = coach.plan_week(["Walk more"], "light", [4000, 5000])
+    assert "70 moderate minutes" in asked[1] and "0 strength days" in asked[1]   # sent back once, with the numbers
+    assert report == {"minutes": 175, "strength_days": 2, "problems": [], "within": True, "fixed": True}
+    assert lines[0] == "Mon: 25-minute brisk walk, 10 squats" and "RECENT STEPS A DAY: 4500" in asked[0]
+    assert coach.areas_worked(lines[0]) == ["legs", "glutes"]
+
+
+def test_the_persons_measures_give_bmi_energy_and_a_goal_estimate_inside_public_limits():
+    from carpevigor import health
+    man = {"height_cm": 178, "weight_kg": 92, "age": 50, "sex": "male", "activity": "light"}
+    r = health.read(man)
+    assert r["bmi"] == 29.0 and r["bmi_category"] == "Overweight"                      # NHLBI: 25.0-29.9
+    assert r["energy"] == round((10 * 92 + 6.25 * 178 - 5 * 50 + 5) * 1.375)            # Mifflin-St Jeor x light
+    goal = health.read({**man, "goal_kg": 86})
+    assert goal["weeks"] == 12 and goal["pace"] == 0.5 and goal["target_kcal"] == round(r["energy"] - 550)
+    fast = health.read({**man, "goal_kg": 86, "pace": 3})              # asked for 3 kg a week: held at 1 kg, and
+    assert fast["target_kcal"] == 1500 and fast["pace"] == 0.87 and fast["weeks"] == 7   # then the 1,500 floor holds
+    assert any("1500 kcal" in n for n in fast["notes"])
+    # a small person: the 1,200 kcal floor (Harvard Health) holds, the pace slows down and the page says why
+    small = health.read({"height_cm": 155, "weight_kg": 60, "age": 60, "sex": "female", "activity": "sedentary",
+                         "goal_kg": 55, "pace": 1.0})
+    assert small["target_kcal"] == 1200 and small["pace"] < 0.5 and any("1200 kcal" in n for n in small["notes"])
+    assert "weeks" not in health.read({**man, "goal_kg": 55})                           # BMI 17.4: underweight goal
+    assert "weeks" not in health.read({**man, "goal_kg": 86, "pregnant": True})
+    assert "weeks" not in health.read({**man, "goal_kg": 86, "age": 16})
+    doctor = health.read({**man, "goal_kg": 86, "doctor_kcal": 1900})
+    assert doctor["target_kcal"] == 1900                                               # the doctor's number wins
+    assert "about 1900 kcal a day" in health.for_planner({**man, "doctor_kcal": 1900})
+
+
+def test_measures_are_kept_only_with_consent_and_can_be_deleted(client):
+    measures = {"height_cm": "178", "weight_kg": "92", "age": "50", "sex": "male", "activity": "light", "goal_kg": "86"}
+    r = client.post("/numbers/measures", data=measures, follow_redirects=False)
+    assert "error=" in r.headers["location"] and "BMI 29.0" not in client.get("/numbers").text   # nothing kept
+    client.post("/numbers/measures", data={**measures, "consent": "1"})
+    page = client.get("/numbers").text
+    assert "BMI 29.0 · Overweight" in page and "about 12 weeks" in page and "not a forecast" in page
+    client.post("/numbers/measures/delete")
+    assert "BMI 29.0" not in client.get("/numbers").text
+
+
 def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(client, tmp_path, monkeypatch):
     from carpevigor import config, diary, nutrition
     _tiny_usda(tmp_path)
@@ -650,10 +700,11 @@ def test_a_sent_back_plan_is_rewritten_once_and_what_stays_wrong_never_reaches_t
     monkeypatch.setattr(planner.sources, "reference_for", lambda topics: ("SOURCE: test\n\nsome text", []))
     monkeypatch.setattr(planner, "write_week", lambda task, **k: plan.model_copy(deep=True))  # the week as written
     import re
+    mock = planner.llm.mock_answers
     monkeypatch.setattr(planner.llm, "ask", lambda system, task, shape, tier="strong", temperature=0.1:
-                        plan.model_copy(deep=True) if shape is planner.WeekPlan else
                         planner.Rewrites(rewrites=[planner.Rewrite(id=i, text="No added salt: herbs and lemon instead.")
-                                                   for i in re.findall(r"^(r\d+\.(?:why|evidence)):", task, re.M)]))
+                                                   for i in re.findall(r"^(r\d+\.(?:why|evidence)):", task, re.M)])
+                        if shape is planner.Rewrites else mock[shape.__name__](task))   # the coach: its usual mock
     # the same evidence sentence is used by several dishes: every copy is flagged, not just the first
     expected = sum(1 for r in plan.recipes for t in (r.why, r.evidence) if t in (bad_why, bad_evidence))
     guidance = Guidance.model_validate({"goals": ["Eat less salt"], "topics": ["blood_pressure"], "constraints": [],
@@ -738,8 +789,8 @@ def test_the_waiting_screen_shows_each_step_and_says_when_it_fails(client, monke
     from carpevigor import planner
     steps = []
     real = planner.make
-    monkeypatch.setattr(planner, "make", lambda g, device, people, progress:
-                        real(g, device, people, lambda s, p: (steps.append((s, p)), progress(s, p))))
+    monkeypatch.setattr(planner, "make", lambda g, device, people, progress, **k:
+                        real(g, device, people, lambda s, p: (steps.append((s, p)), progress(s, p)), **k))
     client.post("/doctor", data={"doctor_said": "Eat less salt, walk more", "device": "Thermomix / Bimby TM7", "budget": "140"},
                 follow_redirects=False)  # one build: the one _built_week starts
     _built_week(client)

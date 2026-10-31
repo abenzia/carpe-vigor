@@ -18,7 +18,7 @@ from typing import Callable, Literal
 
 from pydantic import BaseModel, Field
 
-from . import config, guidelines, kitchen, llm, nutrition, rag, review_board, sources
+from . import coach, config, guidelines, kitchen, llm, nutrition, rag, review_board, sources
 from .catalog import Catalog
 from .nutrition import Nutrition
 from .profile import Guidance
@@ -190,7 +190,8 @@ def _quiet(step: str, percent: int) -> None:
 
 
 def make(guidance: Guidance, device: str, people: int = 1,
-         progress: Callable[[str, int], None] = _quiet) -> tuple[WeekPlan, dict, list[dict]]:
+         progress: Callable[[str, int], None] = _quiet, energy: str = "", activity: str | None = None,
+         steps: list[int] | None = None) -> tuple[WeekPlan, dict, list[dict]]:
     """The plan, the board's report on its claims, and the sources used. `progress(step, percent)` is told what is
     being done, for the screen the person waits on: percents follow a week timed on 31 Oct 2026 (outline and days about
     half, the recipe check a quarter, the board the rest)."""
@@ -203,12 +204,16 @@ def make(guidance: Guidance, device: str, people: int = 1,
     store = "\n".join(sorted(i.name for i in catalog.items.values() if catalog.kind(i.sku) != "unhealthy"))
     task = (f"GOALS: {'; '.join(guidance.goals)}\nCONSTRAINTS: {'; '.join(guidance.constraints) or 'none'}\n"
             f"COOKING FOR: {people} {'person' if people == 1 else 'people'}\n"
+            + (f"{energy}\n" if energy else "") +
             f"KITCHEN DEVICE: {dev.name}\nDEVICE RULES: {dev.rules}\n\n"
             f"STORE (cook mostly with what it sells; copy these names into 'buy'):\n{store}\n\n"
             f"PUBLIC NUMBERS FOR PEOPLE IN GENERAL (plan within them; cite these, never numbers of your own):\n"
             f"{guidelines.as_task(guidelines.for_week(guidance.topics))}\n\n"
             f"PUBLIC SOURCES YOU MAY CITE (use only what they say):\n{reference or '(sources not fetched yet)'}")
     plan = write_week(task, progress=progress)
+    # The coach plans the movement, its own role: the person's activity and steps, held to the guidelines by code
+    progress("The coach plans the movement", 60)
+    plan.movement, coach_report = coach.plan_week(guidance.goals, activity, steps or [], energy)
     # Before the board reads a word: the recipes must be cookable on this device and keep their own portions
     progress(f"Checking every step on the {dev.name}", 62)
     kitchen_report = fix_recipes(plan, dev, people, progress)
@@ -228,6 +233,7 @@ def make(guidance: Guidance, device: str, people: int = 1,
         report = {"approved": False, "provider": llm.provider(), "reviewers": [], "corrections": [], "set_aside": [],
                   "statements": review_board.statements_of(claims), "note": "Sources not fetched: run `python -m carpevigor.sources fetch`."}
     report["kitchen"] = kitchen_report
+    report["coach"] = coach_report
     # The numbers of each dish come last, from the final recipes: plain code and USDA FoodData Central, not a model
     if nutrition.available():
         progress("Adding up each dish with USDA FoodData Central", 96)
