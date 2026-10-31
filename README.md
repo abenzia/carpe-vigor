@@ -89,6 +89,11 @@ an employer inside its welfare plan, an insurer, or a retailer whose basket beco
 - **Verified end to end on the sandbox**: authorize USD 120, two captures (110.00 and 5.00), void, partial refund
   of 9.58. A capture after the void is refused with 422. A reward refund through the MCP server (0.50, in about
   7 seconds), found again on the order by its `invoice_id`.
+- **The whole loop through the app, on the sandbox and Gemini** (31 Oct 2026): a TM7 week for one, budget USD 140
+  authorized by a sandbox buyer, the agent's order of 27 items captured (106.39), the 33.61 left released, the
+  week's reward (16.96, 15.9% at score 80/100) paid back with "Close the month" through PayPal's MCP server in about
+  8 seconds. Read back from PayPal: authorization VOIDED, capture PARTIALLY_REFUNDED, refund COMPLETED under our
+  `invoice_id`.
 - **Known limit**: PayPal guarantees a capture for 3 days (the honor period) of the 29-day authorization. So the
   weekly budget is authorized on shopping day; longer plans would use a saved payment method.
 - **Sandbox only**: `paypal.py` refuses live. With no credentials the app runs in mock mode and says so on

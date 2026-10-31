@@ -4,7 +4,7 @@
 <div class="eyebrow">Step 5</div>
 <h2>Care that pays you back</h2>
 <p class="muted">Up to {{ (max_rate * 100)|int }}% of what you spend on groceries comes back once a month — for what you <b>did</b>, never for your weight.
-Half of it is your basket, which PayPal sees: every dollar on vegetables, legumes, fruit, fish and whole grains raises it, every dollar on sweets, snacks and cured meat lowers it twice as much.</p>
+Half of it is your basket, which PayPal sees: every dollar on vegetables, legumes, fruit, fish, whole grains, white meat, eggs, olive oil and nuts raises it, every dollar on sweets, snacks and cured meat lowers it twice as much.</p>
 
 {% if error %}<div class="error">{{ error }}</div>{% endif %}
 
@@ -12,10 +12,10 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
   <div class="card accent">
     <div class="eyebrow">This week{% if week_closed %} · closed{% endif %}</div>
     <div class="big">{{ currency }} {{ '%.2f'|format(result.cashback) }}</div>
-    <p class="muted">{{ (result.cashback_rate * 100)|round(1) }}% of {{ currency }} {{ '%.2f'|format(behaviour.spent) }} spent · score {{ (result.score * 100)|int }}/100</p>
+    <p class="muted">{{ (result.cashback_rate * 100)|round(1) }}% of {{ currency }} {{ '%.2f'|format(behaviour.spent) }} spent · score {{ (result.score * 100)|round|int }}/100</p>
     <table class="tiny" style="margin-top:6px">
       {% for p in result.parts %}
-      <tr><td>{{ p.label }}</td><td class="num">{{ (p.share * 100)|int }}%</td><td class="num">× {{ (p.weight * 100)|int }}</td>
+      <tr><td>{{ p.label }}</td><td class="num">{{ (p.share * 100)|round|int }}%</td><td class="num">× {{ (p.weight * 100)|int }}</td>
           <td><span class="pill {{ 'ok' if p.source == 'verified by PayPal' else ('warn' if p.source == 'self-reported' else '') }}">{{ p.source }}</span></td></tr>
       {% endfor %}
     </table>
@@ -57,7 +57,7 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
     <span class="tiny muted">In the product this happens on the last day of the month; in the demo, now.</span></form>
   {% endif %}
   {% else %}
-  <p class="muted">No week closed yet this month.{% if month.last_paid %} Last month: {{ currency }} {{ '%.2f'|format(month.last_paid.paid) }} paid back on {{ currency }} {{ '%.2f'|format(month.last_paid.spent) }} spent over {{ month.last_paid.weeks }} week{{ 's' if month.last_paid.weeks != 1 }}.{% endif %}</p>
+  <p class="muted">No week closed yet this month.{% if month.last_paid %} Last paid: {{ currency }} {{ '%.2f'|format(month.last_paid.paid) }} paid back on {{ currency }} {{ '%.2f'|format(month.last_paid.spent) }} spent over {{ month.last_paid.weeks }} week{{ 's' if month.last_paid.weeks != 1 }}.{% endif %}</p>
   {% endif %}
 </div>
 

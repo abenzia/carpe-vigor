@@ -696,6 +696,10 @@ def test_full_loop_through_the_web_app(client):
     client.post("/budget/release", follow_redirects=False)                    # ends the week: its reward goes into the month
     state = client.get("/api/state").json()
     assert state["money"]["released"] == round(140 - state["money"]["spent"], 2)
+    # one number on stage: the reward page and the ledger round the week's score the same way
+    import re
+    shown = re.search(r"score (\d+)/100", client.get("/reward").text).group(1)
+    assert f"score {shown}/100" in client.get("/ledger").text
     assert state["money"]["cashback"] == 0                                    # nothing paid until the month closes
     assert client.post("/budget/release", follow_redirects=False).headers["location"].startswith("/cart?error")  # once only
     r = client.post("/month/settle", follow_redirects=False)

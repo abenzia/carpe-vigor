@@ -47,7 +47,7 @@
     <tr><td colspan="2" class="muted">Delivery</td><td class="num">{{ '%.2f'|format(cart.delivery_fee) }}</td></tr>
     <tr><td colspan="2"><b>Total</b> <span class="tiny muted">budget available {{ '%.2f'|format(budget) }}</span></td><td class="num"><b>{{ '%.2f'|format(cart.total) }}</b></td></tr>
   </table>
-  <p class="tiny" style="margin-top:10px"><b>Basket score {{ (basket * 100)|int }}/100</b> — {{ currency }} {{ '%.2f'|format(healthy) }} on vegetables, legumes, fruit, fish and whole grains,
+  <p class="tiny" style="margin-top:10px"><b>Basket score {{ (basket * 100)|round|int }}/100</b> — {{ currency }} {{ '%.2f'|format(healthy) }} on vegetables, legumes, fruit, fish, whole grains, white meat, eggs, olive oil and nuts,
   {{ currency }} {{ '%.2f'|format(unhealthy) }} on sweets, snacks and cured meat. It is half of your reward score: the rate goes up to {{ (max_rate * 100)|int }}% of what you spend.</p>
   <form method="post" action="/cart/extra" class="row" style="margin-top:6px">
     <label for="extra" style="margin:0">Add something else</label>
