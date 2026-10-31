@@ -20,11 +20,17 @@
   <div class="row">
     <h3 style="margin:0">Review board</h3>
     {% if report.provider == 'mock' %}<span class="pill warn">simulated — no model was called</span>
+    {% elif report.approved and report.revision %}<span class="pill ok">approved after one round of corrections</span>
     {% elif report.approved %}<span class="pill ok">approved</span>{% else %}<span class="pill bad">sent back</span>{% endif %}
     <span class="pill">{{ report.statements|length }} statements</span>
-    {% if report.seconds %}<span class="pill">{{ report.seconds }} s</span>{% endif %}
+    {% if report.seconds %}<span class="pill">{{ report.seconds }} s{% if report.revision %} + {{ report.revision.seconds }} s{% endif %}</span>{% endif %}
   </div>
   {% if report.note %}<p class="muted">{{ report.note }}</p>{% endif %}
+  {% if report.revision %}
+  <p class="tiny" style="margin-top:8px">First reading: {{ report.corrections|length }} corrections upheld. {{ report.revision.rewritten }} sentences were
+  rewritten and read again by the same five reviewers; {% if report.revision.removed %}{{ report.revision.removed }} still did not pass and
+  are not shown{% else %}all passed{% endif %}.</p>
+  {% endif %}
   <div class="grid" style="margin-top:10px">
     {% for r in report.reviewers %}
     <div>
@@ -36,10 +42,11 @@
     {% endfor %}
   </div>
   {% if report.corrections %}
-  <h3>Upheld corrections</h3>
-  <table><tr><th>#</th><th>The plan says</th><th>Should be</th><th>Why</th><th>Votes</th></tr>
+  <details{{ '' if report.revision else ' open' }} style="margin-top:10px"><summary>{{ 'What the first reading sent back' if report.revision else 'Upheld corrections' }} ({{ report.corrections|length }})</summary>
+  <table><tr><th>#</th><th>The plan said</th><th>Should be</th><th>Why</th><th>Votes</th></tr>
   {% for c in report.corrections %}<tr><td>{{ c.n }}</td><td>{{ c.says }}</td><td>{{ c.should_be }}</td><td>{{ c.why }}</td><td>{{ c.votes }}</td></tr>{% endfor %}
   </table>
+  </details>
   {% endif %}
   <p class="tiny muted">Sources read: {% for u in used %}<a href="{{ u.url }}">{{ u.name }}</a>{{ '' if u.fetched else ' (not fetched)' }}{{ ', ' if not loop.last }}{% endfor %}</p>
 </div>
@@ -50,8 +57,10 @@
   <div class="card">
     <div class="eyebrow">{{ r.day }} · {{ r.meal }}</div>
     <b>{{ r.title }}</b>
-    <div class="why">{{ r.why }}</div>
-    <div class="evidence">{{ r.evidence }}</div>
+    {% for field in ['why', 'evidence'] %}
+    {% if field in (r.removed or []) %}<div class="{{ field }} muted tiny">Removed by the review board.</div>
+    {% elif r[field] %}<div class="{{ field }}">{{ r[field] }}</div>{% endif %}
+    {% endfor %}
     <details><summary>Ingredients and steps</summary>
       <p class="tiny">{{ r.ingredients|join(', ') }}</p>
       <ol class="steps">{% for s in r.steps %}<li>{{ s }}</li>{% endfor %}</ol>

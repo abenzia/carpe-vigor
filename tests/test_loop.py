@@ -138,6 +138,71 @@ def test_sources_pick_topics_and_flag_clinical():
     assert not sources.mentions_clinical("eat less salt")
 
 
+def _board_that(verdicts):
+    """A fake board: each call pops the next list of corrections (texts to flag); empty list = approved."""
+    calls = []
+
+    def convene(text, reference, strict=True, facts=None):
+        flags = verdicts.pop(0)
+        calls.append(text)
+        return {"approved": not flags, "provider": "test", "reviewers": [], "set_aside": [], "seconds": 1.0,
+                "statements": review_board.statements_of(text),
+                "corrections": [{"n": 1, "says": f, "should_be": "Remove it", "why": "The source does not say this.",
+                                 "votes": "2 of 3 fact jurors"} for f in flags]}
+    return convene, calls
+
+
+def test_a_sent_back_plan_is_rewritten_once_and_what_stays_wrong_never_reaches_the_screen(monkeypatch):
+    from carpevigor import planner
+    from carpevigor.profile import Guidance
+    plan = planner._mock_plan("")
+    bad_why, bad_evidence = plan.recipes[0].why, plan.recipes[1].evidence
+    import re
+    monkeypatch.setattr(planner.llm, "ask", lambda system, task, shape, tier="strong", temperature=0.1:
+                        plan.model_copy(deep=True) if shape is planner.WeekPlan else
+                        planner.Rewrites(rewrites=[planner.Rewrite(id=i, text="No added salt: herbs and lemon instead.")
+                                                   for i in re.findall(r"^(r\d+\.(?:why|evidence)):", task, re.M)]))
+    # the same evidence sentence is used by several dishes: every copy is flagged, not just the first
+    expected = sum(1 for r in plan.recipes for t in (r.why, r.evidence) if t in (bad_why, bad_evidence))
+    guidance = Guidance.model_validate({"goals": ["Eat less salt"], "topics": ["blood_pressure"], "constraints": [],
+                                        "to_the_doctor": []})
+    # 1) sent back, then the rewrite is approved: shown, approved after corrections
+    convene, calls = _board_that([[bad_why, bad_evidence], []])
+    monkeypatch.setattr(planner.review_board, "convene", convene)
+    made, report, _ = planner.make(guidance, "Oven and stovetop")
+    assert expected > 2 and report["approved"] and report["revision"]["rewritten"] == expected and report["revision"]["removed"] == 0
+    assert made.recipes[0].why == "No added salt: herbs and lemon instead." and not made.recipes[0].removed
+    assert "No added salt" in calls[1] and bad_why not in calls[1]          # round 2 reads only the rewritten lines
+    # 2) the rewrite of one line is sent back again: that line is removed, never shown
+    convene, _ = _board_that([[bad_why, bad_evidence], ["No added salt: herbs and lemon instead."]])
+    monkeypatch.setattr(planner.review_board, "convene", convene)
+    made, report, _ = planner.make(guidance, "Oven and stovetop")
+    assert made.recipes[0].why == "" and "why" in made.recipes[0].removed
+    assert made.recipes[1].evidence == "" and "evidence" in made.recipes[1].removed
+    assert report["approved"] and report["revision"]["removed"] == expected  # nothing the board rejected is on screen
+    shown = " ".join(f"{r.why} {r.evidence}" for r in made.recipes)
+    assert bad_why not in shown and bad_evidence not in shown and "No added salt" not in shown
+
+
+def test_statements_keep_their_citation_and_do_not_break_on_abbreviations():
+    # As Gemini wrote them on 31 Oct: the citation after the full stop became a "statement" of its own that every juror
+    # rejected, and "e.g." / "i.e." cut sentences in half.
+    text = ("Salt intake can be reduced by limiting high-sodium condiments (e.g. soy sauce and bouillon) when cooking. "
+            "[WHO — Healthy diet] A diet must also be safe, i.e. free from contaminants [WHO]. Walk more.")
+    assert review_board.statements_of(text) == [
+        "Salt intake can be reduced by limiting high-sodium condiments (e.g. soy sauce and bouillon) when cooking. [WHO — Healthy diet]",
+        "A diet must also be safe, i.e. free from contaminants [WHO].",
+        "Walk more."]
+
+
+def test_fact_jurors_rule_only_on_the_health_claims_the_others_read_everything():
+    text = "No added salt: herbs instead. Salt raises blood pressure on average [WHO]. Lentils and carrots. Walking helps [WHO]."
+    report = review_board.convene(text, "SOURCE: test\n\nsome text", facts="Salt raises blood pressure on average [WHO]. Walking helps [WHO].")
+    jurors = [r for r in report["reviewers"] if r["id"].startswith("facts")]
+    assert all(j["checks"][0] == "Ruled on 2 of 2 statements" for j in jurors)
+    assert len(report["statements"]) == 4  # safety and clarity read all four
+
+
 def test_review_board_mock_is_honest_about_itself():
     report = review_board.convene("Salt raises blood pressure. Walking helps.", "SOURCE: test\n\nsome text")
     assert report["provider"] == "mock" and report["approved"]

@@ -92,8 +92,11 @@ REVIEWERS = JURORS + EXPERTS
 
 
 def statements_of(text: str) -> list[str]:
-    """The sentences of a text that make a claim: longer than a scrap, with at least one letter."""
-    return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text.strip()) if len(s.strip()) > 3 and re.search(r"[^\W\d_]", s)]
+    """The sentences of a text that make a claim: longer than a scrap, with at least one letter. No cut after "e.g.",
+    "i.e.", "etc." or "approx.", nor before a "[Source]" that follows the full stop: a citation alone is not a claim,
+    and a juror rejecting it would take down every sentence that cites that source."""
+    parts = re.split(r"(?<=[.!?])(?<!e\.g\.)(?<!i\.e\.)(?<!etc\.)(?<!approx\.)\s+(?!\[)|(?<=\])\s+(?=[A-Z])", text.strip())
+    return [s.strip() for s in parts if len(s.strip()) > 3 and re.search(r"[^\W\d_]", s)]
 
 
 def rule(juror: dict, statements: list[str], reference: str) -> dict[int, Ruling]:
@@ -158,14 +161,17 @@ def expert(reviewer: dict, text: str) -> dict:
     return {**card, "absent": False, "approved": verdict.approved and not corrections, "checks": verdict.checks[:3], "corrections": corrections}
 
 
-def convene(text: str, reference: str, strict: bool = True) -> dict:
-    """Review `text` against `reference` (the source text, headed by its name and URL). Returns the board's report."""
+def convene(text: str, reference: str, strict: bool = True, facts: str | None = None) -> dict:
+    """Review `text` against `reference` (the source text, headed by its name and URL). Returns the board's report.
+    `facts`: the part of `text` that claims something about health, the only part the fact jurors can check against a
+    source (a line describing a dish is checked by the safety and clarity reviewers, who always read all of `text`)."""
     started = time.time()
     statements = statements_of(text)
     numbered = "\n".join(f"{n}. {s}" for n, s in enumerate(statements, 1))
+    claims = statements_of(facts) if facts is not None else statements
     with ThreadPoolExecutor(max_workers=AT_ONCE) as pool:
         experts = [pool.submit(expert, r, f"TEXT, as numbered statements\n{numbered}") for r in EXPERTS]
-        jurors, upheld, set_aside, present = jury(statements, reference, pool, strict)
+        jurors, upheld, set_aside, present = jury(claims, reference, pool, strict) if claims else ([], [], [], len(JURORS))
         experts = [job.result() for job in experts]
     for card in experts:
         upheld += [{**c, "raised_by": [card["name"]], "votes": card["name"]} for c in card["corrections"]]
