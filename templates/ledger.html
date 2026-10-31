@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Carpe Vigor — Ledger{% endblock %}
+{% block title %}Carpe Vigor — {{ t('ledger') }}{% endblock %}
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-grid.css"
       integrity="sha384-gIsz6JTVbF5eW0CcuAljKL2kOE400G4TjBH3CBtGXjf8BkjmC5x9jp4Y+bYa7HKA" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ag-grid-community@32.3.3/styles/ag-theme-quartz.css"
       integrity="sha384-bH6bJyGdKmdCV+hlDWtv+dVLH5shFT5aKgGRKceh40t3vt171XksCejZ5ebqZVn0" crossorigin="anonymous">
-<div class="eyebrow">The week's money</div>
-<h2>Ledger</h2>
-<p class="muted">Every movement of the week, in order, with its PayPal id: the budget held once, each order captured against it,
-the remainder released, the reward paid back. {% if money.mode == 'sandbox' %}Each id can be looked up in the PayPal sandbox.{% else %}Simulated: ids starting with MOCK- never reached PayPal.{% endif %}</p>
+<section class="section-view">
+<div class="view-head"><div><p class="eyebrow">Every PayPal movement</p>
+  <h1 class="view-title">The week's <i>money.</i></h1>
+  <p class="view-desc" style="max-width:640px">Every movement of the week, in order, with its PayPal id: the budget held once, each order captured against it,
+the remainder released, the reward paid back. {% if money.mode == 'sandbox' %}Each id can be looked up in the PayPal sandbox.{% else %}Simulated: ids starting with MOCK- never reached PayPal.{% endif %}</p></div></div>
 
 {% if rows %}
 <div id="ledger" class="ag-theme-quartz ledger-grid"></div>
@@ -37,6 +38,7 @@ the remainder released, the reward paid back. {% if money.mode == 'sandbox' %}Ea
   });
 </script>
 {% else %}
-<div class="card"><p class="muted">No money has moved yet this week. Authorize a budget on the <a href="/cart">cart</a> screen.</p></div>
+<div class="card pad"><p class="muted">No money has moved yet this week. Authorize a budget on the <a href="/cart">cart</a> screen.</p></div>
 {% endif %}
+</section>
 {% endblock %}

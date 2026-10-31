@@ -1,11 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Carpe Vigor — Cart{% endblock %}
+{% block title %}Carpe Vigor — {{ t('shop') }}{% endblock %}
 {% block content %}
-<div class="eyebrow">Step 4</div>
-<h2>The agent's cart</h2>
-<p class="muted">From the week's recipes minus what's at home, swaps applied, never over your budget. You approve, the agent orders, the amount is captured against the budget you authorized. {{ store_name }}{% if store_note %} — <span class="tiny">{{ store_note }}</span>{% endif %}</p>
+<section class="section-view">
+<div class="view-head">
+  <div><p class="eyebrow">From your plan + pantry · step 04</p>
+    <h1 class="view-title">The agent's cart, <i>within your budget.</i></h1>
+    <p class="view-desc">The week's recipes minus what's at home, swaps applied, never over your budget. You approve, the agent orders, PayPal captures the amount against the budget you authorized once. {{ store_name }}{% if store_note %} — {{ store_note }}{% endif %}</p></div>
+  <span class="pill orange">PayPal {{ money.mode }}</span>
+</div>
 
-{% if error %}<div class="error">{{ error }}</div>{% endif %}
+{% if error %}<div class="flag">{{ error }}</div>{% endif %}
 
 {% if cart.raise_by > 0 %}
 <div class="flag">
@@ -21,8 +25,9 @@
 {% endif %}
 
 {% if not money.authorized %}
-<form method="post" action="/budget/authorize" class="card accent">
-  <h3 style="margin-top:0">Authorize this week's budget — once</h3>
+<form method="post" action="/budget/authorize" class="card pad dark">
+  <p class="section-kicker light">PayPal · authorize once</p>
+  <h3>Authorize this week's budget — once</h3>
   <p>PayPal holds the amount; nothing is charged until an order ships. What the agent doesn't spend comes back to you at the end of the week.</p>
   <div class="row">
     <label for="amount" style="margin:0">Budget ({{ currency }})</label>
@@ -33,8 +38,8 @@
 </form>
 {% endif %}
 
-<div class="card">
-  <table>
+<div class="card pad">
+  <div class="table-wrap"><table>
     <tr><th>Item</th><th>Why</th><th class="num">Price</th></tr>
     {% for l in cart.lines %}
     <tr><td><b>{{ l.item.name }}</b> <span class="muted tiny">{{ l.item.unit }}{% if l.quantity > 1 %} × {{ l.quantity }}{% endif %}</span>
@@ -46,8 +51,8 @@
     {% endfor %}
     <tr><td colspan="2" class="muted">Delivery</td><td class="num">{{ '%.2f'|format(cart.delivery_fee) }}</td></tr>
     <tr><td colspan="2"><b>Total</b> <span class="tiny muted">budget available {{ '%.2f'|format(budget) }}</span></td><td class="num"><b>{{ '%.2f'|format(cart.total) }}</b></td></tr>
-  </table>
-  <p class="tiny" style="margin-top:10px"><b>Basket score {{ (basket * 100)|round|int }}/100</b> — {{ currency }} {{ '%.2f'|format(healthy) }} on vegetables, legumes, fruit, fish, whole grains, white meat, eggs, olive oil and nuts,
+  </table></div>
+  <p class="notice" style="margin-top:10px"><b>Basket score {{ (basket * 100)|round|int }}/100</b> — {{ currency }} {{ '%.2f'|format(healthy) }} on vegetables, legumes, fruit, fish, whole grains, white meat, eggs, olive oil and nuts,
   {{ currency }} {{ '%.2f'|format(unhealthy) }} on sweets, snacks and cured meat. It is half of your reward score: the rate goes up to {{ (max_rate * 100)|int }}% of what you spend.</p>
   <form method="post" action="/cart/extra" class="row" style="margin-top:6px">
     <label for="extra" style="margin:0">Add something else</label>
@@ -72,12 +77,13 @@
 </div>
 
 {% if orders %}
-<div class="card">
-  <h3 style="margin-top:0">Orders this week</h3>
+<div class="card pad">
+  <h3>Orders this week</h3>
   <table><tr><th>When</th><th>Note</th><th class="num">Captured</th></tr>
   {% for o in orders %}<tr><td class="tiny">{{ o.at }}</td><td>{{ o.note }} <span class="tiny muted">{{ o.capture_id }}</span></td><td class="num">{{ '%.2f'|format(o.amount) }}</td></tr>{% endfor %}
   </table>
 </div>
 {% endif %}
-<p><a class="btn secondary" href="/reward">Next: the reward →</a></p>
+<p style="margin-top:14px"><a class="button" href="/reward">Next: my reward →</a></p>
+</section>
 {% endblock %}

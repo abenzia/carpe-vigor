@@ -1,15 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Carpe Vigor — What I ate{% endblock %}
+{% block title %}Carpe Vigor — {{ t('diary') }}{% endblock %}
 {% block content %}
-<div class="eyebrow">Your day</div>
-<h2>What I ate</h2>
-<p class="muted">Say it in a few words — typed, dictated, or from a shortcut on your watch. The meals of your plan you mark as cooked are added on their own.
-The numbers come from USDA FoodData Central. They are for you to see, not a target: if you need one, that is your doctor's to set. The diary does not count toward your reward.</p>
+<section class="section-view">
+<div class="view-head"><div><p class="eyebrow">Your day</p>
+  <h1 class="view-title">What <i>I ate.</i></h1>
+  <p class="view-desc" style="max-width:640px">Say it in a few words — typed, dictated, or from a shortcut on your watch. The meals of your plan you mark as cooked are added on their own.
+The numbers come from USDA FoodData Central. They are for you to see, not a target: if you need one, that is your doctor's to set. The diary does not count toward your reward.</p></div></div>
 
 {% if error %}<div class="flag">{{ error }}</div>{% endif %}
 {% if not food_db %}<div class="flag">The food database is not on this machine yet: run <code>python -m carpevigor.nutrition fetch</code>.</div>{% endif %}
 
-<form method="post" action="/diary" class="card accent">
+<form method="post" action="/diary" class="card pad">
   <label for="text">What are you eating or drinking?</label>
   <input type="text" id="text" name="text" required placeholder="a plate of cacio e pepe and a glass of red wine" autocomplete="off">
   <div class="row" style="margin-top:10px">
@@ -19,7 +20,7 @@ The numbers come from USDA FoodData Central. They are for you to see, not a targ
   </div>
 </form>
 
-<div class="card">
+<div class="card pad">
   <h3>Today{% if today.estimated %} <span class="pill warn">some values estimated</span>{% endif %}</h3>
   {% if today.entries %}
   <table>
@@ -47,7 +48,7 @@ The numbers come from USDA FoodData Central. They are for you to see, not a targ
   {% endif %}
 </div>
 
-<details class="card">
+<details class="card pad">
   <summary>Add a meal from your watch or phone</summary>
   {% if watch %}
   <p class="tiny">In the Shortcuts app on your iPhone (it runs on the Apple Watch too): <b>Dictate Text</b> → <b>Get Contents of URL</b>, method POST, to <code>{{ request.base_url }}api/meal</code>, header <code>Authorization: Bearer</code> + your token, JSON body <code>{"text": Dictated Text}</code> → <b>Get Dictionary Value</b> "spoken" → <b>Speak Text</b>. Then "Hey Siri, Carpe Vigor" and say what you are eating.</p>
@@ -55,4 +56,5 @@ The numbers come from USDA FoodData Central. They are for you to see, not a targ
   <p class="tiny muted">Set <code>CARPE_API_TOKEN</code> in <code>.env</code> to open this door, and put the app where your phone can reach it.</p>
   {% endif %}
 </details>
+</section>
 {% endblock %}

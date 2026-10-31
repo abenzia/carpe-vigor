@@ -19,6 +19,15 @@ Five screens, one loop: `/doctor` → `/week` → `/home` → `/cart` → `/rewa
   target THEIR DOCTOR set, quotes what the public sources say about each measure (retrieved, with the source's
   name), and lets "above the doctor's target" steer what the week's plan focuses on. Judging the numbers stays
   with the doctor. Entering results is optional: without them the app works on the doctor's words and the cart.
+- **The person's health is the center, and theirs to share** (Ale, 1 Nov 2026). With explicit consent the person
+  may enter any data that helps (height, weight, waist, age, sex, activity level, tests): the more they give, the
+  more the plan is theirs. The app computes BMI (shown with WHO's adult categories, quoted, never as a diagnosis)
+  and energy needs with a named public equation, and sizes portions with them. A weight goal is THE PERSON'S
+  choice: the app estimates how long it takes at the public pace (about 0.5 kg a week) and shows it as an
+  estimate of a chosen goal, never as a forecast of what will happen. Going faster stays inside public limits
+  (at most about 1 kg a week; not under about 1,200 kcal a day for women, 1,500 for men, without a doctor; no
+  goal under BMI 18.5; no weight-loss goal for minors or in pregnancy or breastfeeding): past them the plan gets
+  longer, and the app says why. A calorie number the doctor wrote wins over the estimate. Weight never pays.
 - **Reward what people do; outcomes only as the doctor judges them.** `reward.py` scores the basket (verified by
   PayPal), days moved and meals cooked. The only outcome that pays is the check-up bonus: the doctor's verdict on
   the goals they set (met / improving / not yet), never a single number read by the app, never weight alone.

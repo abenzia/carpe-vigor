@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — {{ t('team') }}{% endblock %}
+{% block content %}
+<section class="section-view">
+  <div class="view-head">
+    <div><p class="eyebrow">The team · who did what on your week</p>
+      <h1 class="view-title">One team, <i>one plan.</i></h1>
+      <p class="view-desc">Your doctor leads. The other members are AI: language models, each with one job and its own public data. They are not health professionals; their work is shown here so you can check it.</p></div>
+    <span class="pill orange">1 doctor · 6 AI roles</span>
+  </div>
+
+  <div class="stack two">
+    <section class="card pad dark">
+      <p class="section-kicker light">Leads the team</p>
+      <h3>⚕ Your doctor</h3>
+      <p>Sets the goals and the targets, judges your test results and your check-ups. Anything about medicines or diagnoses goes back to them.</p>
+      {% if profile %}<p class="tiny">“{{ profile.doctor_said }}”</p>{% endif %}
+    </section>
+    <section class="card pad">
+      <p class="section-kicker">Dietitian · AI ({{ 'Gemini 3.8 Flash' if report and report.provider == 'vertex' else 'model' }})</p>
+      <h3>✳ Writes the meals</h3>
+      <p class="tiny">Inside the public numbers (WHO, US HHS, MedlinePlus), with the store's products; each dish counted with USDA FoodData Central by plain code, not by the model.</p>
+      {% if numbers %}<ul class="tiny">{% for n in numbers[:4] %}<li>{{ n.says }} — {{ n.src.name }}</li>{% endfor %}</ul>{% endif %}
+    </section>
+    <section class="card pad">
+      <p class="section-kicker">Kitchen check · plain code, then the dietitian</p>
+      <h3>⌑ Every step on your machine</h3>
+      <p class="tiny">Temperatures, steaming mode, speeds, portions and leftovers read against Vorwerk's specs for your model.</p>
+      {% if kitchen %}<p><span class="pill">{{ kitchen.device }}</span> <span class="pill">{{ kitchen.found }} issues found</span> <span class="pill {{ 'ok' if not kitchen.still else 'warn' }}">{{ kitchen.still }} left</span></p>{% endif %}
+    </section>
+    <section class="card pad">
+      <p class="section-kicker">Coach · AI</p>
+      <h3>↗ Plans the movement</h3>
+      <p class="tiny">Within the US physical activity guidelines (150–300 minutes a week, strength 2 days), with your steps. <a href="/move">The week's movement →</a></p>
+    </section>
+  </div>
+
+  <section class="card pad" style="margin-top:15px">
+    <div class="card-title"><h3>Review board · what they said about this week</h3>
+      {% if report %}<span class="pill {{ 'ok' if report.approved else 'warn' }}">{{ 'approved' if report.approved else 'sent back' }}{% if report.revision %} after one round{% endif %}</span>{% endif %}</div>
+    {% if report %}
+      {% if report.provider == 'mock' %}<p class="flag">Simulated — no model was called. Set a Google Cloud project in .env for real verdicts.</p>{% endif %}
+      <p class="tiny muted">{{ report.statements|length }} statements read. The three source checkers run on three different models, so one model's blind spot is not everyone's.</p>
+      <div class="recipe-grid" style="margin-top:10px">
+      {% for rv in report.reviewers %}
+        <article class="card pad">
+          <p class="section-kicker">{{ rv.name }} · AI{% if rv.maker %} · {{ rv.maker }}{% endif %}</p>
+          <p><b>{{ rv.question }}</b></p>
+          <p><span class="pill {{ 'muted' if rv.absent else ('ok' if rv.approved else 'warn') }}">{{ 'did not answer' if rv.absent else ('approves' if rv.approved else 'asks for changes') }}</span></p>
+          <ul class="tiny">{% for c in rv.checks %}<li>{{ c }}</li>{% endfor %}</ul>
+        </article>
+      {% endfor %}
+      </div>
+      {% if report.corrections %}<details style="margin-top:10px"><summary>What was sent back ({{ report.corrections|length }})</summary>
+        <div class="table-wrap"><table><tr><th>The plan said</th><th>Should be</th><th>Why</th></tr>{% for c in report.corrections %}<tr><td>{{ c.says }}</td><td>{{ c.should_be }}</td><td>{{ c.why }}</td></tr>{% endfor %}</table></div></details>{% endif %}
+      {% if report.revision %}<p class="tiny">After the corrections: {{ report.revision.rewritten }} sentences rewritten, {{ report.revision.removed }} removed{% if report.revision.removed %} (never shown){% endif %}.</p>{% endif %}
+    {% else %}<p class="muted">No week yet: the board reads it when it is planned.</p>{% endif %}
+  </section>
+
+  {% if used %}<section class="card pad"><p class="section-kicker">The sources they read</p>
+    <p class="tiny">{% for u in used %}<a href="{{ u.url }}">{{ u.name }}</a>{{ '' if u.fetched else ' (not fetched)' }}{{ ' · ' if not loop.last }}{% endfor %}</p>
+    <p class="tiny"><a href="/ask">Ask the sources a question yourself →</a></p></section>{% endif %}
+</section>
+{% endblock %}

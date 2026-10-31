@@ -24,7 +24,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from carpevigor import (__version__, ask, cart_agent, checkup, config, diary, guidelines, kitchen, nutrition, planner, profile,
-                        rag, reward, sources, week)
+                        rag, reward, sources, ui, week)
+from carpevigor import coach
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -51,14 +52,37 @@ async def same_origin_posts(request: Request, call_next):
 
 
 def render(request: Request, name: str, **ctx) -> HTMLResponse:
+    lang = ui.lang_of(request.cookies.get("lang"))
     base = {"request": request, "money": week.status(store), "currency": config.CURRENCY,
-            "profile": store.get("profile"), "plan": store.get("plan"), "version": __version__}
+            "profile": store.get("profile"), "plan": store.get("plan"), "version": __version__,
+            "lang": lang, "t": lambda key: ui.t(key, lang), "nav": ui.NAV, "more": ui.MORE}
     return templates.TemplateResponse(request, name, {**base, **ctx})
 
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
-    return RedirectResponse("/doctor" if not store.get("profile") else "/week")
+    """The landing (Forest Premium): its own styles and its own Italian/English switch (static/landing.js)."""
+    return templates.TemplateResponse(request, "landing.html", {"version": __version__})
+
+
+@app.get("/lang")
+def set_lang(to: str = "en", back: str = "/journey"):
+    """The interface's language, kept in a cookie. `back` must be a page of this app, never another site."""
+    target = back if back.startswith("/") and not back.startswith("//") else "/journey"
+    response = RedirectResponse(target, status_code=303)
+    response.set_cookie("lang", ui.lang_of(to), max_age=60 * 60 * 24 * 365, samesite="lax")
+    return response
+
+
+@app.get("/journey", response_class=HTMLResponse)
+def journey(request: Request):
+    """My journey: where the person is, in one page — the doctor's goals, today's meals, what was eaten, steps, money."""
+    prof, plan = store.get("profile"), store.get("plan")
+    today = planner.DAYS[datetime.now().weekday()]
+    meals = [{"i": i, "kind": planner.dish_kind(r), **r} for i, r in enumerate(plan["plan"]["recipes"]) if r["day"] == today] if plan else []
+    return render(request, "journey.html", today=today, meals=meals, cooked=set((plan or {}).get("cooked", [])),
+                  diary_today=diary.day(store.get("diary", [])), steps=store.get("steps", []),
+                  month=week.month(store), checkups=store.get("checkups", []))
 
 
 # 1 ------------------------------------------------------------------------------------------------------------------
@@ -123,7 +147,7 @@ def building_status():
 
 
 @app.get("/week", response_class=HTMLResponse)
-def week_view(request: Request, build: int = 0):
+def week_view(request: Request, build: int = 0, day: str = ""):
     prof = store.get("profile")
     if not prof:
         return RedirectResponse("/doctor")
@@ -131,9 +155,60 @@ def week_view(request: Request, build: int = 0):
     if build or not plan:
         start_building(prof)
         return render(request, "building.html")
-    return render(request, "week.html", week_plan=plan["plan"], report=plan["report"], used=plan["sources"],
+    day = day if day in planner.DAYS else planner.DAYS[datetime.now().weekday()]
+    recipes = [{"i": i, "kind": planner.dish_kind(r), **r} for i, r in enumerate(plan["plan"]["recipes"])]
+    return render(request, "week.html", week_plan=plan["plan"], recipes=recipes, report=plan["report"], used=plan["sources"],
                   numbers=plan.get("numbers") or guidelines.for_week(prof["guidance"]["topics"]),
-                  cooked=set(plan.get("cooked", [])), days=planner.DAYS)
+                  cooked=set(plan.get("cooked", [])), days=planner.DAYS, day=day)
+
+
+def _plan_or_start():
+    """The week's plan, or None when there is none yet (the page then says how to start)."""
+    plan = store.get("plan")
+    return plan if plan and plan.get("plan") else None
+
+
+@app.get("/recipes", response_class=HTMLResponse)
+def recipes_view(request: Request, kind: str = "all"):
+    plan = _plan_or_start()
+    cards = [{"i": i, **r, "kind": planner.dish_kind(r)} for i, r in enumerate(plan["plan"]["recipes"])] if plan else []
+    shown = [c for c in cards if kind == "all" or c["kind"] == kind or (kind == "quick" and c.get("total_minutes", 99) <= 30)]
+    return render(request, "recipes.html", cards=shown, kind=kind, kinds=planner.DISH_KINDS, total=len(cards),
+                  cooked=set((plan or {}).get("cooked", [])))
+
+
+@app.get("/recipes/{i}", response_class=HTMLResponse)
+def recipe_view(request: Request, i: int):
+    plan = _plan_or_start()
+    if not plan or not 0 <= i < len(plan["plan"]["recipes"]):
+        return RedirectResponse("/recipes")
+    r = plan["plan"]["recipes"][i]
+    return render(request, "recipe.html", r={**r, "kind": planner.dish_kind(r)}, i=i, cooked=set(plan.get("cooked", [])),
+                  device=(store.get("profile") or {}).get("device", ""))
+
+
+@app.get("/move", response_class=HTMLResponse)
+def move_view(request: Request):
+    plan = _plan_or_start()
+    return render(request, "move.html", movement=plan["plan"]["movement"] if plan else [], days=planner.DAYS,
+                  steps=store.get("steps", []), goal=config.STEPS_GOAL)
+
+
+@app.get("/body", response_class=HTMLResponse)
+def body_view(request: Request, day: str = ""):
+    plan = _plan_or_start()
+    movement = plan["plan"]["movement"] if plan else []
+    day = day if day in planner.DAYS else planner.DAYS[datetime.now().weekday()]
+    line = movement[planner.DAYS.index(day)] if len(movement) == 7 else ""
+    return render(request, "body.html", day=day, days=planner.DAYS, line=line, areas=coach.areas_worked(line),
+                  measures=store.get("health", {}))
+
+
+@app.get("/team", response_class=HTMLResponse)
+def team_view(request: Request):
+    plan = _plan_or_start()
+    return render(request, "team.html", report=(plan or {}).get("report"), used=(plan or {}).get("sources", []),
+                  numbers=(plan or {}).get("numbers", []), kitchen=((plan or {}).get("report") or {}).get("kitchen"))
 
 
 # My numbers (optional) -------------------------------------------------------------------------------------------
@@ -203,7 +278,7 @@ def ask_post(question: str = Form(...)):
 
 
 @app.post("/week/cooked")
-def cooked(title: str = Form(...)):
+def cooked(title: str = Form(...), back: str = Form("/week")):
     plan = store.get("plan")
     if plan:
         done = set(plan.get("cooked", []))
@@ -217,7 +292,8 @@ def cooked(title: str = Form(...)):
         if title in done and recipe and (entry := diary.from_plan(recipe)):
             entries.append(entry)
         store.put("diary", entries)
-    return RedirectResponse("/week", status_code=303)
+    # back to the page the button was on (journey, week, a recipe), never to another site
+    return RedirectResponse(back if back.startswith("/") and not back.startswith("//") else "/week", status_code=303)
 
 
 # What I ate -------------------------------------------------------------------------------------------------------
@@ -414,11 +490,11 @@ def reward_view(request: Request, error: str = ""):
 
 
 @app.post("/reward/steps")
-def steps_submit(steps: str = Form(...)):
+def steps_submit(steps: str = Form(...), back: str = Form("/reward")):
     """Seven numbers, comma separated: what a watch would send. Simulated in the demo."""
     values = [int(x) for x in steps.replace(";", ",").split(",") if x.strip().isdigit()][:7]
     store.put("steps", values)
-    return RedirectResponse("/reward", status_code=303)
+    return RedirectResponse(back if back in ("/reward", "/move") else "/reward", status_code=303)
 
 
 @app.post("/month/settle")

@@ -30,6 +30,18 @@ DAYS_AT_ONCE = 4
 # On 31 Oct argon took 38-65 s per day of recipes and 63 s for the outline; the week went from 183 s to 514 s.
 WRITER = "mid"
 
+# What a dish is built on, for the recipe filters and its tile: read from its ingredients, first match wins
+DISH_KINDS = [("all", "All"), ("fish", "Fish"), ("poultry", "Chicken & turkey"), ("plant", "Plant-based"),
+              ("egg", "Eggs & dairy"), ("quick", "Ready in 30 min")]
+_KIND_WORDS = [("fish", r"salmon|cod|tuna|fish|sardine|trout|shrimp|prawn|mackerel|sea ?bass"),
+               ("poultry", r"chicken|turkey"), ("egg", r"\begg|ricotta|yogurt|cheese|milk")]
+
+
+def dish_kind(recipe: dict) -> str:
+    names = " ".join((i["name"] if isinstance(i, dict) else str(i)) for i in recipe.get("ingredients", []))
+    names += " " + recipe.get("title", "")
+    return next((kind for kind, words in _KIND_WORDS if re.search(words, names, re.I)), "plant")
+
 
 class Buy(BaseModel):
     name: str = Field(description="A name copied EXACTLY from the STORE list")

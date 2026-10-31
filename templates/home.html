@@ -1,35 +1,37 @@
 {% extends "base.html" %}
-{% block title %}Carpe Vigor — Home{% endblock %}
+{% block title %}Carpe Vigor — {{ t('pantry') }}{% endblock %}
 {% block content %}
-<div class="eyebrow">Step 3</div>
-<h2>What's at home</h2>
-<p class="muted">Tick what you already have. The agent buys only what the week's recipes need and you don't have. Anything that doesn't fit the plan is not thrown away: finish it, and it won't be bought again — a swap is suggested instead. <span class="tiny">(A fridge photo can pre-fill this list; it is optional and you always get to correct it.)</span></p>
-
-{% if flagged %}
-<div class="card">
-  <h3 style="margin-top:0">Finish, don't rebuy</h3>
-  {% for f in flagged %}
-  <div class="flag"><b>{{ f.name }}</b> — finish what you have; the agent won't buy it again.
-    {% if f.swap_sku %}<br><span class="tiny">Swap: <b>{{ catalog.items[f.swap_sku].name }}</b> — {{ f.swap_why }}.</span>{% endif %}</div>
-  {% endfor %}
-</div>
-{% endif %}
-
-<form method="post" action="/home" class="card">
-  {% set groups = {} %}
-  {% for it in items %}{% set _ = groups.setdefault(it.tags[0] if it.tags else 'other', []).append(it) %}{% endfor %}
-  <div class="grid">
-  {% for group, its in groups.items() %}
-    <div>
-      <div class="eyebrow">{{ group }}</div>
-      {% for it in its %}
-      <label class="check"><input type="checkbox" name="have" value="{{ it.sku }}" {{ 'checked' if it.sku in pantry.at_home() }}>
-        {{ it.name }} <span class="muted tiny">{{ it.unit }}</span>
-        {% if it.sku in pantry.blacklist() %}<span class="pill warn">don't rebuy</span>{% endif %}</label>
-      {% endfor %}
-    </div>
-  {% endfor %}
+<section class="section-view">
+  <div class="view-head">
+    <div><p class="eyebrow">Your kitchen · step 03</p>
+      <h1 class="view-title">What's already <i>at home.</i></h1>
+      <p class="view-desc">Tick what you have. The agent buys only what the week's recipes need and you don't have. What doesn't fit the plan is not thrown away: finish it, it won't be bought again, and a swap is suggested.</p></div>
+    <a class="button line" href="/cart">⌗ Groceries →</a>
   </div>
-  <p style="margin-top:16px"><button type="submit">Save and build my cart →</button></p>
-</form>
+
+  {% if flagged %}
+  <section class="card pad">
+    <div class="card-title"><h3>Finish, don't rebuy</h3><span class="pill orange">{{ flagged|length }}</span></div>
+    {% for f in flagged %}<div class="flag"><b>{{ f.name }}</b> — finish what you have; the agent won't buy it again.
+      {% if f.swap_sku %}<br><span class="tiny">Swap: <b>{{ catalog.items[f.swap_sku].name }}</b> — {{ f.swap_why }}.</span>{% endif %}</div>{% endfor %}
+  </section>
+  {% endif %}
+
+  <form method="post" action="/home" class="card pad">
+    {% set groups = {} %}
+    {% for it in items %}{% set _ = groups.setdefault(it.tags[0] if it.tags else 'other', []).append(it) %}{% endfor %}
+    <div class="recipe-grid">
+    {% for group, its in groups.items() %}
+      <div class="inventory">
+        <p class="section-kicker">{{ group }}</p>
+        {% for it in its %}
+        <label class="inventory-row check" style="margin:0"><span><input type="checkbox" name="have" value="{{ it.sku }}" {{ 'checked' if it.sku in pantry.at_home() }}> {{ it.name }}</span>
+          <small>{{ it.unit }}</small>{% if it.sku in pantry.blacklist() %}<span class="pill warn">don't rebuy</span>{% else %}<span></span>{% endif %}</label>
+        {% endfor %}
+      </div>
+    {% endfor %}
+    </div>
+    <div class="row" style="margin-top:16px;justify-content:space-between"><span class="tiny muted">A fridge photo could pre-fill this list in the product; you would always correct it.</span><button type="submit">Save and build my cart →</button></div>
+  </form>
+</section>
 {% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% from "_cards.html" import tile, nutri %}
+{% block title %}Carpe Vigor — {{ r.title }}{% endblock %}
+{% block content %}
+<section class="section-view">
+  <p class="tiny"><a href="/recipes">← All recipes</a> · <a href="/week?day={{ r.day }}">{{ r.day }} in the week</a></p>
+  <div class="view-head">
+    <div><p class="eyebrow">{{ r.day }} · {{ r.meal }} · {{ device }}</p>
+      <h1 class="view-title">{{ r.title }}</h1>
+      <p class="view-desc">Serves {{ r.servings }}{% if r.leftovers_for %} · cooks enough for {{ r.leftovers_for }} too{% endif %}{% if r.from_leftovers %} · made from {{ r.from_leftovers }}{% endif %}{% if r.total_minutes %} · prep {{ r.prep_minutes }} min · total {{ r.total_minutes }} min · {{ r.difficulty }}{% endif %}</p></div>
+    <form method="post" action="/week/cooked"><input type="hidden" name="title" value="{{ r.title }}"><input type="hidden" name="back" value="/recipes/{{ i }}">
+      <button class="{{ '' if r.title in cooked else 'orange' }}">{{ '✓ cooked' if r.title in cooked else 'Mark as cooked' }}</button></form>
+  </div>
+
+  <div class="hero-grid">
+    <div class="card pad">
+      {% for f in r.kitchen_flags or [] %}<p class="flag">Check before cooking: {{ f }}.</p>{% endfor %}
+      {% if r.accessories %}<p class="section-kicker">Accessories</p><p>{{ r.accessories|join(' · ') }}</p>{% endif %}
+      <p class="section-kicker" style="margin-top:12px">Ingredients</p>
+      <ul>{% for g in r.ingredients %}<li>{% if g is mapping %}<b>{{ g.amount }}</b> {{ g.name }}{% if g.note %} <span class="muted">— {{ g.note }}</span>{% endif %}{% else %}{{ g }}{% endif %}</li>{% endfor %}</ul>
+      <p class="section-kicker" style="margin-top:12px">Preparation</p>
+      <ol class="steps">{% for s in r.steps %}{% set p = s|step_parts %}<li>{{ p[0] }}{% if p[1] %}: <span class="setting">{{ p[1] }}</span>.{% endif %}{% if p[2] %} {{ p[2] }}{% endif %}</li>{% endfor %}</ol>
+      {% if r.tips %}<p class="section-kicker" style="margin-top:12px">Tips</p>{% for tip in r.tips %}<p class="tiny">{{ tip }}</p>{% endfor %}{% endif %}
+    </div>
+    <div class="stack">
+      <div class="card" style="overflow:hidden">{{ tile(r.kind) }}</div>
+      <section class="card pad">
+        <p class="section-kicker">Why it fits</p>
+        {% for field in ['why', 'evidence'] %}{% if field in (r.removed or []) %}<p class="{{ field }} muted tiny">Removed by the review board.</p>{% elif r[field] %}<p class="{{ field }}">{{ r[field] }}</p>{% endif %}{% endfor %}
+      </section>
+      {% set n = r.nutrition %}{% if n %}
+      <section class="card pad">
+        <p class="section-kicker">Per serving · {{ n.source }}</p>
+        {{ nutri(n, full=true) }}
+        <details class="tiny"><summary>How it was counted</summary><p class="muted">Raw ingredients, values per 100 g:</p><ul>{% for c in n.counted %}<li>{{ c }}</li>{% endfor %}</ul>
+          {% if n.left_out %}<p class="muted">Not counted (no matching food in the database): {{ n.left_out|join(', ') }}.</p>{% endif %}
+          {% if n.sodium_at_most %}<p class="muted">A low-sodium ingredient was counted as its regular version: the real sodium is lower.</p>{% endif %}</details>
+      </section>{% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

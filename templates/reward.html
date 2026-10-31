@@ -1,17 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Carpe Vigor — Reward{% endblock %}
+{% block title %}Carpe Vigor — {{ t('reward') }}{% endblock %}
 {% block content %}
-<div class="eyebrow">Step 5</div>
-<h2>Care that pays you back</h2>
-<p class="muted">Up to {{ (max_rate * 100)|int }}% of what you spend on groceries comes back once a month — for what you <b>did</b>, never for your weight.
-Half of it is your basket, which PayPal sees: every dollar on vegetables, legumes, fruit, fish, whole grains, white meat, eggs, olive oil and nuts raises it, every dollar on sweets, snacks and cured meat lowers it twice as much.</p>
+<section class="section-view">
+<div class="view-head"><div><p class="eyebrow">Behavior · step 05</p>
+  <h1 class="view-title">Care that <i>pays you back.</i></h1>
+  <p class="view-desc" style="max-width:640px">Up to {{ (max_rate * 100)|int }}% of what you spend on groceries comes back once a month — for what you <b>did</b>, never for your weight.
+Half of it is your basket, which PayPal sees: every dollar on vegetables, legumes, fruit, fish, whole grains, white meat, eggs, olive oil and nuts raises it, every dollar on sweets, snacks and cured meat lowers it twice as much.</p></div></div>
 
-{% if error %}<div class="error">{{ error }}</div>{% endif %}
+{% if error %}<div class="flag">{{ error }}</div>{% endif %}
 
-<div class="grid fit">
-  <div class="card accent">
+<div class="stack two">
+  <div class="card pad">
     <div class="eyebrow">This week{% if week_closed %} · closed{% endif %}</div>
-    <div class="big">{{ currency }} {{ '%.2f'|format(result.cashback) }}</div>
+    <div class="view-title" style="font-size:44px">{{ currency }} {{ '%.2f'|format(result.cashback) }}</div>
     <p class="muted">{{ (result.cashback_rate * 100)|round(1) }}% of {{ currency }} {{ '%.2f'|format(behaviour.spent) }} spent · score {{ (result.score * 100)|round|int }}/100</p>
     <table class="tiny" style="margin-top:6px">
       {% for p in result.parts %}
@@ -30,7 +31,7 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
       <p><span class="pill ok">added to this month</span></p>
     {% endif %}
   </div>
-  <div class="card">
+  <div class="card pad">
     <div class="eyebrow">Steps from your watch</div>
     <p class="tiny muted">In the demo, type seven days of steps as a watch would send them (Health Connect / Apple Health in the product, where steps typed by hand are left out). Goal: {{ '{:,}'.format(steps_goal) }} a day.</p>
     <form method="post" action="/reward/steps" class="row">
@@ -44,7 +45,7 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
   </div>
 </div>
 
-<div class="card">
+<div class="card pad">
   <div class="eyebrow">This month</div>
   {% if month.weeks or month.bonuses %}
   <table><tr><th>Week</th><th class="num">Spent</th><th class="num">Rate</th><th class="num">Earned</th></tr>
@@ -61,9 +62,10 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
   {% endif %}
 </div>
 
-<div class="card">
-  <h3 style="margin-top:0">What is checked, and who pays</h3>
+<div class="card pad">
+  <h3>What is checked, and who pays</h3>
   <p class="tiny"><b>Checked:</b> the basket is what you paid for through PayPal; steps come from your phone's health platform. <b>Not checked:</b> meals cooked are your word, so they weigh least. Whoever games them still only gets back a share of money really spent on groceries.</p>
   <p class="tiny"><b>Who pays:</b> in this demo, the platform. In the product, whoever gains when you do your part: your employer inside its welfare plan, your insurer, the retailer whose basket becomes weekly and loyal.</p>
 </div>
+</section>
 {% endblock %}

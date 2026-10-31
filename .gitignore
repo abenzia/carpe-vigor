@@ -7,3 +7,11 @@ __pycache__/
 .playwright-mcp/
 data/sources/
 data/fdc/
+.backup/
+# Reference material not ours to publish: Cookidoo images and recipes (Vorwerk), the mockups built on them
+static/images/cookidoo-reference/
+static/mockups/
+mockups/
+# Unused here, different license (CC BY-SA)
+static/models/anatomy/
+.serena/

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% from "_cards.html" import meal_card, nutri %}
+{% block title %}Carpe Vigor — {{ t('journey') }}{% endblock %}
+{% block content %}
+<section class="section-view">
+  <div class="view-head">
+    <div><p class="eyebrow">{{ t('journey') }} · overview</p>
+      <h1 class="view-title">Health is built, <i>one week at a time.</i></h1>
+      <p class="view-desc">Your plan starts from what your doctor said, the information you choose to share and the habits you want to build.</p></div>
+    {% if profile %}<a class="button orange" href="/week">Open my week →</a>{% else %}<a class="button orange" href="/doctor">Start: what my doctor said →</a>{% endif %}
+  </div>
+
+  <div class="hero-grid">
+    <div class="card hero-copy">
+      <p class="section-kicker">Your goals · set with your doctor</p>
+      {% if profile %}
+      <h2>Your wellbeing, <i>a plan that fits you.</i></h2>
+      <div class="goal-list" style="margin-top:14px">
+        {% for g in profile.guidance.goals %}<div class="goal"><span class="team-avatar">✓</span><div><b>{{ g }}</b><small>from your doctor's words</small></div></div>{% endfor %}
+      </div>
+      <p class="tiny muted" style="margin-top:10px">“{{ profile.doctor_said }}” · cooks with {{ profile.device }} · {{ profile.people or 1 }} {{ 'person' if (profile.people or 1) == 1 else 'people' }} · budget {{ currency }} {{ '%.0f'|format(profile.budget) }} a week</p>
+      {% if profile.guidance.to_the_doctor %}<div class="flag">For your doctor, not for this app: {{ profile.guidance.to_the_doctor|join(' · ') }}</div>{% endif %}
+      {% else %}
+      <h2>Tell us what <i>your doctor said.</i></h2>
+      <p class="view-desc">A few words are enough: “high blood pressure, less salt, walk more”. The week is planned around them.</p>
+      <p style="margin-top:14px"><a class="button" href="/doctor">Start →</a></p>
+      {% endif %}
+    </div>
+    <div class="hero-photo"><img src="/static/carpe-vigor-hero.png" alt="A table with a bowl of vegetables in the Tuscan countryside"><span class="photo-chip" style="position:absolute;left:12px;bottom:12px" >Your plan · one week at a time</span></div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="stack">
+      <section class="card pad">
+        <div class="card-title"><h3>Today · {{ today }}</h3><a class="text-link" href="/week">The week →</a></div>
+        {% if meals %}<div class="meal-grid">{% for r in meals %}{{ meal_card(r, cooked, '/journey') }}{% endfor %}</div>
+        {% else %}<p class="muted">No plan yet. <a href="/doctor">Start with what your doctor said</a>; the week takes about three minutes.</p>{% endif %}
+      </section>
+      <section class="card pad">
+        <div class="card-title"><h3>What I ate today</h3><a class="text-link" href="/diary">Add a meal →</a></div>
+        {% set tt = diary_today.total %}
+        <div class="stat-grid">
+          <div class="stat"><small>Calories</small><b>{{ tt.kcal|round|int }}</b><span>kcal{% if diary_today.estimated %} · partly estimated{% endif %}</span></div>
+          <div class="stat"><small>Protein</small><b>{{ tt.protein_g|round|int }} g</b><span>&nbsp;</span></div>
+          <div class="stat"><small>Fiber</small><b>{{ tt.fiber_g|round|int }} g</b><span>&nbsp;</span></div>
+          <div class="stat"><small>Sodium</small><b>{{ '≤ ' if diary_today.sodium_at_most }}{{ tt.sodium_mg|round|int }}</b><span>mg · WHO: under 2,000 a day</span></div>
+        </div>
+        <p class="notice">Say it to your watch: “Hey Siri, Carpe Vigor — a plate of cacio e pepe”. Counted with USDA FoodData Central; no calorie target unless your doctor set one.</p>
+      </section>
+    </div>
+    <div class="stack">
+      <section class="card pad dark">
+        <p class="section-kicker light">This week's money · PayPal {{ money.mode }}</p>
+        <h3>{{ currency }} {{ '%.2f'|format(money.spent) }} <small>of {{ '%.2f'|format(money.budget) }} spent</small></h3>
+        <p>Released to you {{ currency }} {{ '%.2f'|format(money.released) }} · paid back {{ currency }} {{ '%.2f'|format(money.cashback) }}{% if month.weeks %} · this month's reward so far {{ currency }} {{ '%.2f'|format(month.earned) }}{% endif %}</p>
+        <p style="margin-top:10px"><a class="button pale small" href="/cart">Groceries →</a> <a class="button pale small" href="/reward">My reward →</a></p>
+      </section>
+      <section class="card pad">
+        <div class="card-title"><h3>Moving</h3><a class="text-link" href="/move">Movement →</a></div>
+        {% if steps %}{% set good = steps|select('ge', 7000)|list %}<p><b>{{ good|length }} of {{ steps|length }}</b> days over 7,000 steps this week.</p>{% else %}<p class="muted">No steps yet: sync them from your watch on the Movement page.</p>{% endif %}
+      </section>
+      <section class="card pad">
+        <div class="card-title"><h3>The team</h3><a class="text-link" href="/team">See their work →</a></div>
+        <div class="team-list">
+          <div class="team-person"><span class="team-avatar">⚕</span><div><b>Your doctor</b><small>sets the goals, judges your results</small></div></div>
+          <div class="team-person"><span class="team-avatar">✳</span><div><b>Dietitian · AI</b><small>writes the meals within public numbers</small></div></div>
+          <div class="team-person"><span class="team-avatar">↗</span><div><b>Coach · AI</b><small>plans the movement</small></div></div>
+          <div class="team-person"><span class="team-avatar">◎</span><div><b>3 source checkers · AI</b><small>check each claim against WHO, US HHS, MedlinePlus</small></div></div>
+          <div class="team-person"><span class="team-avatar">⛨</span><div><b>Safety &amp; clarity · AI</b><small>no diagnosis, no medicines, plain words</small></div></div>
+        </div>
+        <p class="tiny muted" style="margin-top:8px">The AI members are language models, not health professionals.</p>
+      </section>
+    </div>
+  </div>
+</section>
+{% endblock %}

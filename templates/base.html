@@ -1,52 +1,49 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="{{ 'it' if lang == 'it' else 'en-US' }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}Carpe Vigor{% endblock %}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Spline+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/style.css">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 30'%3E%3Crect width='12' height='30' fill='%23fff' stroke='%23151A18'/%3E%3Crect y='10' width='12' height='10' fill='%23C4402C'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/app/app.css?v={{ version }}">
+{% block head %}{% endblock %}
 </head>
 <body>
-<header>
-  <div class="wrap head-in">
-    <a class="marca" href="/">
-      <span class="blaze"><i></i><i></i><i></i></span>
-      <span><h1>Carpe Vigor</h1><div class="sub">Care that pays you back</div></span>
-    </a>
-    <nav>
-      {% set nav_steps = [("/doctor","1","Doctor said"),("/week","2","The week"),("/home","3","Home"),("/cart","4","Cart"),("/reward","5","Reward")] %}
-      {% for href, n, label in nav_steps %}
-      <a href="{{ href }}" class="{{ 'on' if request.url.path.startswith(href) else '' }}"><b>{{ n }}</b> {{ label }}</a>
-      {% endfor %}
+{% set here = request.url.path %}
+<div class="app{% block app_class %}{% endblock %}">
+  <aside class="rail">
+    <a class="brand" href="/?lang={{ lang }}" aria-label="Carpe Vigor"><span class="brand-leaf">❧</span><span><span class="brand-word"><i>carpe</i> <b>vigor</b></span><span class="brand-caption">{{ t('tagline') }}</span></span></a>
+    <a class="landing-return" href="/?lang={{ lang }}"><span aria-hidden="true">←</span><span>{{ t('landing') }}</span></a>
+    <div class="nav-label">{{ t('your_journey') }}</div>
+    <nav class="nav">
+      {% for path, icon, key in nav %}<a href="{{ path }}" class="{{ 'active' if here == path or (path == '/recipes' and here.startswith('/recipes')) }}"><span class="nav-icon">{{ icon }}</span><span>{{ t(key) }}</span></a>{% endfor %}
+      <div class="rail .nav-group nav-label" style="margin-top:14px">{{ t('more') }}</div>
+      {% for path, icon, key in more %}<a href="{{ path }}" class="{{ 'active' if here == path }}"><span class="nav-icon">{{ icon }}</span><span>{{ t(key) }}</span></a>{% endfor %}
     </nav>
-  </div>
-  <div class="wrap money" title="Your weekly grocery budget, authorized once with PayPal. Spent = what the agent's orders captured. Released = what came back to you.">
-    <div class="bar">
-      {% set b = money.budget if money.budget else 1 %}
-      <span class="seg spent" style="width: {{ (100 * money.spent / b)|round(1) }}%"></span>
-      <span class="seg released" style="width: {{ (100 * money.released / b)|round(1) }}%"></span>
+    <div class="rail-foot"><strong>{{ t('rail_title') }}</strong><span>{{ t('rail_text') }}</span></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div class="money-strip" aria-label="This week's money">
+        <span>{{ t('budget') }} <b>{{ currency }} {{ '%.2f'|format(money.budget) }}</b></span>
+        <span>{{ t('spent') }} <b>{{ currency }} {{ '%.2f'|format(money.spent) }}</b></span>
+        <span>{{ t('released') }} <b>{{ currency }} {{ '%.2f'|format(money.released) }}</b></span>
+        <span>{{ t('paid_back') }} <b>{{ currency }} {{ '%.2f'|format(money.cashback) }}</b></span>
+        <span class="mode">PayPal {{ money.mode }}{% if money.mode == 'mock' %} · simulated{% endif %}</span>
+      </div>
+      <div class="top-actions"><div class="lang" aria-label="Language"><a href="/lang?to=en&amp;back={{ here }}" class="{{ 'active' if lang != 'it' }}">EN</a><a href="/lang?to=it&amp;back={{ here }}" class="{{ 'active' if lang == 'it' }}">IT</a></div></div>
+    </header>
+    <div class="content">
+      {% if lang == 'it' %}<p class="note tiny">{{ t('interface_only') }}</p>{% endif %}
+      {% block content %}{% endblock %}
+      <footer class="app-foot">{{ t('disclaimer') }}
+        <p>v{{ version }} · AGPL-3.0 · <form method="post" action="/reset"><button class="link">{{ t('start_over') }}</button></form></p>
+      </footer>
     </div>
-    <div class="nums">
-      <span><em>budget</em> {{ currency }} {{ '%.2f'|format(money.budget) }}</span>
-      <span><em>spent</em> {{ currency }} {{ '%.2f'|format(money.spent) }}</span>
-      <span><em>released</em> {{ currency }} {{ '%.2f'|format(money.released) }}</span>
-      <span><em>paid back</em> {{ currency }} {{ '%.2f'|format(money.cashback) }}</span>
-      <span><a href="/ledger">ledger →</a> · <a href="/numbers">my numbers →</a> · <a href="/ask">ask the sources →</a> · <a href="/diary">what I ate →</a></span>
-      <span class="mode">PayPal {{ money.mode }}{% if money.authorized %} · budget held{% elif money.authorization %} · week closed{% else %} · not authorized yet{% endif %}</span>
-    </div>
-  </div>
-</header>
-<main class="wrap">
-{% block content %}{% endblock %}
-</main>
-<footer class="wrap">
-  <p>Carpe Vigor talks about food, movement and habits in general terms and quotes public sources. Its reviewers are language
-  models reading those sources: they are not health professionals and this app does not replace your doctor. Anything about
-  medicines, diagnoses or your own test results belongs to your doctor.</p>
-  <p class="tiny">v{{ version }} · AGPL-3.0 · <form method="post" action="/reset" class="inline"><button class="link">start over</button></form></p>
-</footer>
+  </main>
+</div>
+{% block scripts %}{% endblock %}
 </body>
 </html>

@@ -1,25 +1,9 @@
 {% extends "base.html" %}
 {% block title %}Carpe Vigor — Planning your week{% endblock %}
 {% block content %}
-<style>
-  .building-veil{position:fixed;inset:0;background:rgba(21,26,24,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
-  .building{background:var(--carta);border-top:4px solid var(--segnavia);border-radius:var(--radius);max-width:520px;width:100%;padding:24px 24px 20px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
-  .building h2{margin:4px 0 6px}
-  .building .bar{height:12px;background:var(--nebbia);border:1px solid var(--linea);border-radius:999px;overflow:hidden;margin:14px 0 6px}
-  .building .fill{height:100%;width:0;background:var(--bosco);transition:width .6s ease}
-  .building .pct{font-variant-numeric:tabular-nums;font-weight:600}
-  .building ol{list-style:none;margin:14px 0 0;padding:0}
-  .building li{padding:5px 0 5px 26px;position:relative;color:var(--ghiaia)}
-  .building li::before{content:"○";position:absolute;left:4px}
-  .building li.now{color:var(--pietra);font-weight:600}
-  .building li.now::before{content:"◐";color:var(--segnavia)}
-  .building li.done{color:var(--pietra)}
-  .building li.done::before{content:"✓";color:var(--ok)}
-  .building .error{display:none;margin-top:14px}
-</style>
 <div class="building-veil" role="dialog" aria-modal="true" aria-labelledby="building-title">
   <div class="building">
-    <div class="eyebrow">Your week</div>
+    <p class="eyebrow">Your week · the team at work</p>
     <h2 id="building-title">Planning your week</h2>
     <p class="muted tiny">The AI writes 14 recipes for your kitchen; plain code and a review board check them before you see them. About three minutes.</p>
     <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="building-title"><div class="fill" id="fill"></div></div>

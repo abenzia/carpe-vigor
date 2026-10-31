@@ -189,6 +189,19 @@ Carpe Vigor helps people stay healthy or get back to health between visits; it d
 - **The reward is for what people do**, plus the doctor's verdict at the check-up, never weight alone.
 - **No personal data is in this repository.** The demo store is a local SQLite file, ignored by git.
 
+## Design and assets
+
+- **The app** follows the approved mockup ("Editorial warm"): a rail with the whole journey (my journey, what my
+  doctor said, my week, diet and recipes, fridge and pantry, groceries, movement, my body in 3D, what I ate, measures
+  and progress, the team, my reward), in American English with an Italian switch for the interface. The **landing**
+  is "Forest Premium" (`templates/landing.html`).
+- **Photos** (`static/carpe-vigor-*.png`): generated with ChatGPT (OpenAI); the files carry their C2PA content
+  credentials. No recipe photo or text from any recipe site is used: dishes are shown as illustrated tiles.
+- **3D mannequins** (`static/models/mannequin`): built from MakeHuman graphical assets, CC0 1.0
+  (`scripts/build_mannequins.py`, standard library only). **three.js** (`static/vendor/three`): MIT.
+- **My body · 3D** shows a smooth figure with the areas the day's movement works, from the coach's plan: a figure,
+  not a forecast of the person's body.
+
 ## License
 
 AGPL-3.0, full text in `LICENSE`. © 2026 Alessandro Benzia.

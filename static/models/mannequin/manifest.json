@@ -1,0 +1,74 @@
+{
+  "source": "https://github.com/makehumancommunity/makehuman",
+  "commit": "a8bc2d54ff0ac92e78ff71431b1023eda42bf482",
+  "license": "CC0-1.0",
+  "adaptations": "Skin and eye surfaces only; equal blend of three adult shape families for each sex; relaxed arms; Catmull\u2013Clark subdivision; normalized reference height; matte monochrome presentation. Illustrative, not a body scan or medical reconstruction.",
+  "assets": [
+    {
+      "path": "male.glb",
+      "vertices": 54078,
+      "triangles": 108144,
+      "bytes": 1947588,
+      "sha256": "c5c599a8e9f72f85aee803546e469bd22fa874063250ac90878694370ddca26d"
+    },
+    {
+      "path": "female.glb",
+      "vertices": 54078,
+      "triangles": 108144,
+      "bytes": 1947576,
+      "sha256": "24940edcb43aa3237ce64fbae982ccec2afdb1c26b96bf5750835e4cfb87a88d"
+    },
+    {
+      "path": "male-fit.glb",
+      "vertices": 54078,
+      "triangles": 108144,
+      "bytes": 1947592,
+      "sha256": "a270f379930b40c62258451ff72106687865b02f5204900c7e58705d5fa3cedb"
+    },
+    {
+      "path": "female-fit.glb",
+      "vertices": 54078,
+      "triangles": 108144,
+      "bytes": 1947580,
+      "sha256": "e60688f5b238e4d331172c519640ef943fd361ab49ff4acb8de117f003cba95c"
+    }
+  ],
+  "sources": [
+    {
+      "path": "source/african-female-young.target",
+      "sha256": "92d61eeb3c164b421fd5a7c3537ee45e7e1a51de4d49bf312e19c3df2be1d8fc"
+    },
+    {
+      "path": "source/african-male-young.target",
+      "sha256": "894abc1fbb3d28543a51fef16f89d5d4bdf9aa2e1534413339811a3d47818b7d"
+    },
+    {
+      "path": "source/asian-female-young.target",
+      "sha256": "095fe79694fa19e1fe98d93009ec116199bd524e081c640351a10eccf2cca1eb"
+    },
+    {
+      "path": "source/asian-male-young.target",
+      "sha256": "ed2e8c191cb6b87b4a2d97c80486acb2604fa549316c7aa2a738a5d5a14334dc"
+    },
+    {
+      "path": "source/base.obj",
+      "sha256": "8e761e6624b8f54536409135d1636da63b32486a90d4897f84e121d144f6fb4c"
+    },
+    {
+      "path": "source/caucasian-female-young.target",
+      "sha256": "118379f6e8ba9266247fdb8788a20e1df40a239f97ced0b9905bcbcc74f6e820"
+    },
+    {
+      "path": "source/caucasian-male-young.target",
+      "sha256": "70e228ba7164737dae664454394536fc5935fa48d333c1a97d77e2dc6eacc5f5"
+    },
+    {
+      "path": "source/universal-female-young-maxmuscle-averageweight.target",
+      "sha256": "2e56b09b44a8497b927585447fdaac5ea7293521d1f3a3df1059495873c53f4e"
+    },
+    {
+      "path": "source/universal-male-young-maxmuscle-averageweight.target",
+      "sha256": "c171ff9cc95e96273beb3e3b1969a01988c2d4982ebc6fe04bf81cf72ee3b295"
+    }
+  ]
+}

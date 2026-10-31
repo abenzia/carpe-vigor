@@ -1,111 +1,59 @@
 {% extends "base.html" %}
-{% block title %}Carpe Vigor — The week{% endblock %}
+{% from "_cards.html" import meal_card %}
+{% block title %}Carpe Vigor — {{ t('week') }}{% endblock %}
 {% block content %}
-<div class="eyebrow">Step 2</div>
-<h2>{{ week_plan.title }}</h2>
-<p>{{ week_plan.summary }}</p>
-
-<div class="card">
-  <div class="row">
-    <span class="pill">goals: {{ profile.guidance.goals|join(' · ') }}</span>
-    {% for t in profile.guidance.topics %}<span class="pill">{{ t }}</span>{% endfor %}
-    <span class="pill">cooks with {{ profile.device }}</span>
+<section class="section-view">
+  <div class="view-head">
+    <div><p class="eyebrow">Meal plan · {{ week_plan.title }}</p>
+      <h1 class="view-title">Your week, <i>around your life.</i></h1>
+      <p class="view-desc">{{ week_plan.summary }}</p></div>
+    <a class="button line" href="/recipes">✳ All {{ recipes|length }} recipes</a>
   </div>
-  {% if plan and plan.focus %}
-  <div class="flag"><b>From My numbers:</b> this week also focuses on {{ plan.focus|join(' · ') }}.</div>
-  {% endif %}
-  {% if profile.guidance.to_the_doctor %}
-  <div class="flag"><b>For your doctor, not for this app:</b> {{ profile.guidance.to_the_doctor|join(' · ') }}</div>
-  {% endif %}
-</div>
 
-{% if numbers %}
-<div class="card">
-  <h3 style="margin:0">The public numbers this week is planned around</h3>
-  <p class="muted">For people in general, word for word from the source. Your own targets are your doctor's.</p>
-  <ul class="steps">{% for n in numbers %}
-    <li>{{ n.says }} — <a href="{{ n.src.url }}" target="_blank" rel="noopener" title="&ldquo;{{ n.quote }}&rdquo;">{{ n.src.name }}</a>{% if not n.checked %} <span class="muted">(source text not fetched here)</span>{% endif %}</li>
-  {% endfor %}</ul>
-</div>
-{% endif %}
-
-<div class="card {{ 'accent' if report.approved }}">
-  <div class="row">
-    <h3 style="margin:0">Review board</h3>
-    {% if report.provider == 'mock' %}<span class="pill warn">simulated — no model was called</span>
-    {% elif report.approved and report.revision %}<span class="pill ok">approved after one round of corrections</span>
-    {% elif report.approved %}<span class="pill ok">approved</span>{% else %}<span class="pill bad">sent back</span>{% endif %}
-    <span class="pill">{{ report.statements|length }} statements</span>
-    {% if report.seconds %}<span class="pill">{{ report.seconds }} s{% if report.revision %} + {{ report.revision.seconds }} s{% endif %}</span>{% endif %}
-  </div>
-  {% if report.note %}<p class="muted">{{ report.note }}</p>{% endif %}
-  {% if report.revision %}
-  <p class="tiny" style="margin-top:8px">First reading: {{ report.corrections|length }} corrections upheld. {{ report.revision.rewritten }} sentences were
-  rewritten and read again by the same five reviewers; {% if report.revision.removed %}{{ report.revision.removed }} still did not pass and
-  are not shown{% else %}all passed{% endif %}.</p>
-  {% endif %}
-  <div class="grid" style="margin-top:10px">
-    {% for r in report.reviewers %}
-    <div>
-      <b>{{ r.name }}</b> <span class="muted tiny">{{ r.maker }}</span><br>
-      <span class="tiny muted">{{ r.question }}</span>
-      {% if r.absent %}<div class="pill bad">absent</div>{% elif r.approved %}<div class="pill ok">approves</div>{% else %}<div class="pill warn">asks for changes</div>{% endif %}
-      <ul class="steps">{% for c in r.checks %}<li>{{ c }}</li>{% endfor %}</ul>
+  {% if plan and plan.focus %}<div class="flag"><b>From My numbers:</b> this week also focuses on {{ plan.focus|join(' · ') }}. <a href="/numbers">Measures &amp; progress →</a></div>{% endif %}
+  <div class="card pad">
+    <div class="day-picker" role="tablist" aria-label="Days of the week">
+      {% for d in days %}<a role="tab" aria-selected="{{ 'true' if d == day else 'false' }}" class="day-btn{{ ' active' if d == day }}" href="/week?day={{ d }}" style="text-decoration:none">{{ d }}</a>{% endfor %}
     </div>
-    {% endfor %}
+    <div class="card-title" style="margin-top:14px"><h3>Meals for {{ day }}</h3><span class="pill">cooks with {{ profile.device }} · {{ profile.people or 1 }} {{ 'person' if (profile.people or 1) == 1 else 'people' }}</span></div>
+    <div class="meal-grid">{% for r in recipes if r.day == day %}{{ meal_card(r, cooked, '/week?day=' ~ day) }}{% endfor %}</div>
+    {% set dn = namespace(kcal=0, p=0, na=0, most=false, n=0) %}{% for r in recipes if r.day == day and r.nutrition %}{% set dn.kcal = dn.kcal + r.nutrition.kcal %}{% set dn.p = dn.p + r.nutrition.protein_g %}{% set dn.na = dn.na + r.nutrition.sodium_mg %}{% set dn.most = dn.most or r.nutrition.sodium_at_most %}{% set dn.n = dn.n + 1 %}{% endfor %}
+    {% if dn.n %}<div class="stat-grid">
+      <div class="stat"><small>Lunch + dinner</small><b>{{ dn.kcal|round|int }}</b><span>kcal · USDA FoodData Central</span></div>
+      <div class="stat"><small>Protein</small><b>{{ dn.p|round|int }} g</b><span>&nbsp;</span></div>
+      <div class="stat"><small>Sodium</small><b>{{ '≤ ' if dn.most }}{{ dn.na|round|int }}</b><span>mg · WHO: under 2,000 a day</span></div>
+      <div class="stat"><small>Movement</small><b>{{ '✓' if week_plan.movement }}</b><span><a href="/move">{{ week_plan.movement[days.index(day)][:60] if week_plan.movement|length == 7 else 'see the plan' }}…</a></span></div>
+    </div>{% endif %}
+    <p class="notice">Values are for raw ingredients, one serving. Breakfast and snacks are not in the plan: add them in <a href="/diary">What I ate</a>.</p>
   </div>
-  {% if report.corrections %}
-  <details{{ '' if report.revision else ' open' }} style="margin-top:10px"><summary>{{ 'What the first reading sent back' if report.revision else 'Upheld corrections' }} ({{ report.corrections|length }})</summary>
-  <table><tr><th>#</th><th>The plan said</th><th>Should be</th><th>Why</th><th>Votes</th></tr>
-  {% for c in report.corrections %}<tr><td>{{ c.n }}</td><td>{{ c.says }}</td><td>{{ c.should_be }}</td><td>{{ c.why }}</td><td>{{ c.votes }}</td></tr>{% endfor %}
-  </table>
+
+  {% if recipes and recipes[0].nutrition %}
+  <details class="card pad"><summary><b>The week day by day</b> <span class="muted tiny">— lunch and dinner, USDA FoodData Central</span></summary>
+    <div class="table-wrap"><table><tr><th>Day</th><th class="num">kcal</th><th class="num">Protein</th><th class="num">Fiber</th><th class="num">Sat. fat</th><th class="num">Sodium</th></tr>
+    {% for d in days %}{% set tt = namespace(kcal=0, p=0, f=0, s=0, na=0, most=false) %}{% for r in recipes if r.day == d and r.nutrition %}{% set tt.kcal = tt.kcal + r.nutrition.kcal %}{% set tt.p = tt.p + r.nutrition.protein_g %}{% set tt.f = tt.f + r.nutrition.fiber_g %}{% set tt.s = tt.s + r.nutrition.sat_fat_g %}{% set tt.na = tt.na + r.nutrition.sodium_mg %}{% set tt.most = tt.most or r.nutrition.sodium_at_most %}{% endfor %}
+    <tr><td><a href="/week?day={{ d }}">{{ d }}</a></td><td class="num">{{ tt.kcal|round|int }}</td><td class="num">{{ tt.p|round|int }} g</td><td class="num">{{ tt.f|round|int }} g</td><td class="num">{{ tt.s|round|int }} g</td><td class="num">{{ '≤ ' if tt.most }}{{ tt.na|round|int }} mg</td></tr>{% endfor %}
+    </table></div>
+    <p class="tiny muted">A number shown as “≤” counts a low-sodium product as its regular version: the real sodium is lower.</p>
   </details>
   {% endif %}
-  {% if report.retrieval %}<p class="tiny muted">{% if report.retrieval.mode == 'retrieved' %}The fact jurors read the {{ report.retrieval.passages }} passages of the sources closest to the claims ({{ report.retrieval.per_claim }} per claim, {{ report.retrieval.model }}).{% else %}{{ report.retrieval.note }}{% endif %}</p>{% endif %}
-  <p class="tiny muted">Sources read:{% for u in used %}<a href="{{ u.url }}">{{ u.name }}</a>{{ '' if u.fetched else ' (not fetched)' }}{{ ', ' if not loop.last }}{% endfor %}</p>
-</div>
 
-<h3>Meals — tick what you cooked; it counts toward your reward</h3>
-{% if week_plan.recipes and week_plan.recipes[0].nutrition %}
-<details class="card"><summary><b>What the week's lunches and dinners bring, day by day</b> <span class="muted tiny">— USDA FoodData Central</span></summary>
-  <table><tr><th>Day</th><th class="num">kcal</th><th class="num">Protein</th><th class="num">Fiber</th><th class="num">Sat. fat</th><th class="num">Sodium</th></tr>
-  {% for d in days %}{% set t = namespace(kcal=0, p=0, f=0, s=0, na=0, most=false) %}{% for r in week_plan.recipes if r.day == d and r.nutrition %}{% set t.kcal = t.kcal + r.nutrition.kcal %}{% set t.p = t.p + r.nutrition.protein_g %}{% set t.f = t.f + r.nutrition.fiber_g %}{% set t.s = t.s + r.nutrition.sat_fat_g %}{% set t.na = t.na + r.nutrition.sodium_mg %}{% set t.most = t.most or r.nutrition.sodium_at_most %}{% endfor %}
-  <tr><td>{{ d }}</td><td class="num">{{ t.kcal|round|int }}</td><td class="num">{{ t.p|round|int }} g</td><td class="num">{{ t.f|round|int }} g</td><td class="num">{{ t.s|round|int }} g</td><td class="num">{{ '≤ ' if t.most }}{{ t.na|round|int }} mg</td></tr>{% endfor %}
-  </table>
-  <p class="tiny muted">One serving of each, lunch and dinner only: breakfast and snacks are not in the plan. For comparison, WHO's number for adults is under 2,000 mg of sodium a day for everything eaten. Values are for the raw ingredients; a number shown as "≤" counts a low-sodium product as its regular version.</p>
-</details>
-{% endif %}
-<div class="grid">
-{% for r in week_plan.recipes %}
-  <div class="card">
-    <div class="eyebrow">{{ r.day }} · {{ r.meal }}</div>
-    <b>{{ r.title }}</b>
-    {% for field in ['why', 'evidence'] %}
-    {% if field in (r.removed or []) %}<div class="{{ field }} muted tiny">Removed by the review board.</div>
-    {% elif r[field] %}<div class="{{ field }}">{{ r[field] }}</div>{% endif %}
-    {% endfor %}
-    {% if r.servings %}<p class="tiny muted">Serves {{ r.servings }}{% if r.leftovers_for %} · cooks enough for {{ r.leftovers_for }} too{% endif %}{% if r.from_leftovers %} · made from {{ r.from_leftovers }}{% endif %}</p>{% endif %}
-    {% set n = r.nutrition %}{% if n %}<details class="tiny"><summary><b>{{ n.kcal|round|int }} kcal</b> · protein {{ n.protein_g|round|int }} g · fiber {{ n.fiber_g|round|int }} g · saturated fat {{ n.sat_fat_g|round|int }} g · sodium {{ '≤ ' if n.sodium_at_most }}{{ n.sodium_mg|round|int }} mg <span class="muted">per serving</span></summary>
-      <p class="muted">Raw ingredients counted with {{ n.source }}, values per 100 g:</p><ul>{% for c in n.counted %}<li>{{ c }}</li>{% endfor %}</ul>
-      {% if n.left_out %}<p class="muted">Not counted (no matching food in the database): {{ n.left_out|join(', ') }}.</p>{% endif %}
-      {% if n.sodium_at_most %}<p class="muted">A low-sodium ingredient was counted as its regular version: the real sodium is lower.</p>{% endif %}</details>{% endif %}
-    {% for f in r.kitchen_flags or [] %}<p class="tiny flag">Check before cooking: {{ f }}.</p>{% endfor %}
-    <details><summary>Ingredients and steps</summary>
-      {% if r.total_minutes %}<p class="tiny muted">Prep {{ r.prep_minutes }} min · total {{ r.total_minutes }} min · {{ r.difficulty }}{% if r.accessories %} · {{ r.accessories|join(', ') }}{% endif %}</p>{% endif %}
-      <ul class="tiny">{% for i in r.ingredients %}<li>{% if i is mapping %}{{ i.amount }} {{ i.name }}{% if i.note %} <span class="muted">— {{ i.note }}</span>{% endif %}{% else %}{{ i }}{% endif %}</li>{% endfor %}</ul>
-      <ol class="steps">{% for s in r.steps %}{% set p = s|step_parts %}<li>{{ p[0] }}{% if p[1] %}: <b>{{ p[1] }}</b>.{% endif %}{% if p[2] %} {{ p[2] }}{% endif %}</li>{% endfor %}</ol>
-      {% for t in r.tips or [] %}<p class="tiny muted">Tip: {{ t }}</p>{% endfor %}
-    </details>
-    <form method="post" action="/week/cooked" style="margin-top:8px">
-      <input type="hidden" name="title" value="{{ r.title }}">
-      <button class="{{ '' if r.title in cooked else 'secondary' }}">{{ '✓ cooked' if r.title in cooked else 'Mark as cooked' }}</button>
-    </form>
+  <div class="stack two" style="margin-top:15px">
+    <section class="card pad">
+      <p class="section-kicker">For people in general, word for word from the source</p>
+      <h3>The public numbers this week is planned around</h3>
+      <ul class="tiny">{% for n in numbers %}<li>{{ n.says }} — <a href="{{ n.src.url }}" title="“{{ n.quote }}”">{{ n.src.name }}</a>{% if not n.checked %} <span class="muted">(source text not fetched here)</span>{% endif %}</li>{% endfor %}</ul>
+      <p class="tiny muted">Your own targets are your doctor's.</p>
+    </section>
+    <section class="card pad">
+      <p class="section-kicker">Checked before you saw it</p>
+      <h3>Review board · the team read this week</h3>
+      {% if report %}<p><span class="pill {{ 'ok' if report.approved else 'warn' }}">{{ 'approved' if report.approved else 'sent back' }}{% if report.revision %} after one round of corrections{% endif %}</span>
+      {% if report.provider == 'mock' %}<span class="pill warn">simulated — no model was called</span>{% endif %}</p>
+      <p class="tiny">{{ report.reviewers|length }} reviewers · {{ report.statements|length }} statements{% if report.kitchen %} · {{ report.kitchen.found }} kitchen issues found, {{ report.kitchen.found - report.kitchen.still if report.kitchen.found else 0 }} fixed{% endif %}.</p>{% endif %}
+      <p><a class="button line small" href="/team">See each member's work →</a></p>
+    </section>
   </div>
-{% endfor %}
-</div>
 
-<h3>Movement</h3>
-<div class="card"><ul class="steps">{% for m in week_plan.movement %}<li>{{ m }}</li>{% endfor %}</ul></div>
-
-<p class="row"><a class="btn" href="/home">Next: what's at home →</a> <a class="btn secondary" href="/week?build=1">Plan again</a></p>
+  <p class="row" style="margin-top:16px"><a class="button" href="/home">Next: what's in my kitchen →</a> <a class="button line" href="/week?build=1">Plan the week again</a></p>
+</section>
 {% endblock %}

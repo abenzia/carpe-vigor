@@ -1,14 +1,15 @@
 {% extends "base.html" %}
-{% block title %}Carpe Vigor — Ask the sources{% endblock %}
+{% block title %}Carpe Vigor — {{ t('ask') }}{% endblock %}
 {% block content %}
-<div class="eyebrow">Ask the sources</div>
-<h2>Ask about food, movement, sleep and habits</h2>
-<p class="muted">The answer is written only from passages of MedlinePlus, the WHO, the NHS, the American Heart Association and the US
+<section class="section-view">
+<div class="view-head"><div><p class="eyebrow">The team's library</p>
+  <h1 class="view-title">Ask <i>the sources.</i></h1>
+  <p class="view-desc" style="max-width:640px">The answer is written only from passages of MedlinePlus, the WHO, the NHS, the American Heart Association and the US
 physical activity guidelines{% if library %} ({{ library }} MedlinePlus topics in the library){% endif %}, each sentence with its source.
 A safety reviewer reads it before you do. {% if profile %}If you added <a href="/numbers">your numbers</a>, the search takes into account what is off your doctor's target.{% endif %}
-Diagnoses, medicines and what your own numbers mean stay with your doctor.</p>
+Diagnoses, medicines and what your own numbers mean stay with your doctor.</p></div></div>
 
-<form method="post" action="/ask" class="card accent">
+<form method="post" action="/ask" class="card pad">
   <label for="question" style="margin-top:0">Your question</label>
   <input type="text" id="question" name="question" maxlength="500" required placeholder="What can I eat to help with high LDL cholesterol?">
   <p class="row" style="margin-top:10px"><button type="submit">Ask</button>
@@ -16,7 +17,7 @@ Diagnoses, medicines and what your own numbers mean stay with your doctor.</p>
 </form>
 
 {% for a in asked %}
-<div class="card">
+<div class="card pad">
   <p><b>{{ a.question }}</b>{% if a.context %} <span class="tiny muted">— searched with: {{ a.context }}</span>{% endif %}</p>
   {% if a.answer %}
     <div class="why">{{ a.answer }}</div>
@@ -35,4 +36,5 @@ Diagnoses, medicines and what your own numbers mean stay with your doctor.</p>
   {% endif %}
 </div>
 {% endfor %}
+</section>
 {% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — {{ t('body') }}{% endblock %}
+{% block app_class %} anatomy-active{% endblock %}
+{% block head %}<link rel="stylesheet" href="/static/app/body-view.css?v={{ version }}">{% endblock %}
+{% block content %}
+<section class="section-view">
+  <div class="view-head">
+    <div><p class="eyebrow">My body · movement</p>
+      <h1 class="view-title" style="color:#fff4e3">What today's movement <i>works.</i></h1>
+      <p class="view-desc" style="color:#c5d0c3">The coach's plan for {{ day }}, on a smooth figure: the areas it works light up. A figure, not your body's future.</p></div>
+    <div class="lang" role="group" aria-label="Figure"><a href="#" data-figure="male" class="active">Man</a><a href="#" data-figure="female">Woman</a></div>
+  </div>
+  <div class="day-picker" style="margin-bottom:12px">{% for d in days %}<a class="day-btn{{ ' active' if d == day }}" href="/body?day={{ d }}" style="text-decoration:none">{{ d }}</a>{% endfor %}</div>
+  <div class="hero-grid">
+    <div class="card dark" style="min-height:480px;position:relative">
+      <div id="body-host" style="position:absolute;inset:0"></div>
+      <p id="body-status" class="tiny" style="position:absolute;left:16px;bottom:10px;color:#c5d0c3">Preparing the figure…</p>
+    </div>
+    <div class="stack">
+      <section class="card pad dark">
+        <p class="section-kicker light">{{ day }} · the coach</p>
+        {% if line %}<h3>{{ line }}</h3>{% else %}<h3>No movement planned yet.</h3><p><a href="/doctor" style="color:#f3a372">Start with what your doctor said →</a></p>{% endif %}
+        {% if areas %}<p>Works: {% for a in areas %}<span class="pill orange">{{ a }}</span> {% endfor %}</p>{% elif line %}<p class="tiny">A gentle day: no area in particular.</p>{% endif %}
+      </section>
+      <section class="card pad dark">
+        <p class="section-kicker light">Your measurements</p>
+        {% if measures.height_cm %}<p>{{ measures.height_cm }} cm · {{ measures.weight_kg }} kg{% if measures.bmi %} · BMI {{ measures.bmi }}{% endif %}</p>
+        {% else %}<p class="tiny">Add height and weight in <a href="/numbers" style="color:#f3a372">Measures &amp; progress</a> if you want: the plan becomes more yours. Optional, kept on this device.</p>{% endif %}
+      </section>
+      <p class="tiny" style="color:#9fb0a0">Smooth mannequins from MakeHuman assets (CC0). Drag to rotate, scroll to zoom.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script type="importmap">{"imports":{"three":"/static/vendor/three/three.module.js"}}</script>
+<script type="module">
+import { mountBodyMove } from '/static/app/body-move.js?v={{ version }}-2';
+const status = document.getElementById('body-status');
+mountBodyMove(document.getElementById('body-host'), { areas: {{ areas|tojson }}, label: {{ ('Figure: ' ~ (areas|join(', ') or 'no area') ~ ' highlighted')|tojson }} })
+  .then(view => {
+    status.textContent = '';
+    document.querySelectorAll('[data-figure]').forEach(a => a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('[data-figure]').forEach(b => b.classList.toggle('active', b === a));
+      view.show(a.dataset.figure);
+    }));
+  })
+  .catch(() => { status.textContent = 'The 3D figure could not load. Reload the page.'; });
+</script>
+{% endblock %}

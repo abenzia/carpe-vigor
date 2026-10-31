@@ -604,7 +604,7 @@ def test_a_held_back_answer_is_rewritten_once_and_shown_if_it_then_passes(tmp_pa
 
 def test_ask_the_sources_through_the_web_app(client, tmp_path, monkeypatch):
     _library(tmp_path, monkeypatch)
-    assert "Ask about food" in client.get("/ask").text
+    assert "Ask <i>the sources.</i>" in client.get("/ask").text
     client.post("/ask", data={"question": "Where does most of the sodium I eat come from?"})
     page = client.get("/ask").text
     assert "packaged foods" in page and "read by the safety reviewer" in page and "MedlinePlus — Sodium" in page
@@ -789,7 +789,7 @@ def test_full_loop_through_the_web_app(client):
     for title in [r["title"] for r in state["plan"]["plan"]["recipes"]][:12]:
         client.post("/week/cooked", data={"title": title}, follow_redirects=False)
     r = client.get("/reward")
-    assert "Care that pays you back" in r.text and "verified by PayPal" in r.text and "self-reported" in r.text
+    assert "pays you back" in r.text and "verified by PayPal" in r.text and "self-reported" in r.text
     client.post("/budget/release", follow_redirects=False)                    # ends the week: its reward goes into the month
     state = client.get("/api/state").json()
     assert state["money"]["released"] == round(140 - state["money"]["spent"], 2)

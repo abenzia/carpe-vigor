@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — {{ t('move') }}{% endblock %}
+{% block content %}
+<section class="section-view">
+  <div class="view-head">
+    <div><p class="eyebrow">The coach · this week</p>
+      <h1 class="view-title">Movement that <i>meets you where you are.</i></h1>
+      <p class="view-desc">Planned within the US physical activity guidelines for adults: 150 to 300 minutes of moderate activity a week and muscle-strengthening at least 2 days. Your steps come from your watch or phone.</p></div>
+    <a class="button line" href="/body">◌ Which muscles work →</a>
+  </div>
+
+  <div class="hero-grid">
+    <section class="card pad">
+      <p class="section-kicker">Day by day</p>
+      {% if movement %}
+      <div class="goal-list">{% for m in movement %}<a class="goal" href="/body?day={{ days[loop.index0] }}" style="text-decoration:none"><span class="team-avatar">{{ days[loop.index0][:2] }}</span><div><b>{{ m }}</b><small>see it on the body →</small></div></a>{% endfor %}</div>
+      {% else %}<p class="muted">No plan yet. <a href="/doctor">Start with what your doctor said</a>.</p>{% endif %}
+      <p class="tiny muted" style="margin-top:10px">General movement for people in general, not an exercise prescription: anything your doctor told you comes first.</p>
+    </section>
+    <div class="stack">
+      <div class="hero-photo"><img src="/static/carpe-vigor-walk.png" alt="A person walking on a country road"></div>
+      <section class="card pad">
+        <p class="section-kicker">Steps from your watch</p>
+        {% if steps %}<div class="day-picker" style="flex-wrap:wrap">{% for s in steps %}<span class="day-btn{{ ' active' if s >= goal }}">{{ days[loop.index0] }} <b>{{ '{:,}'.format(s) }}</b></span>{% endfor %}</div>
+        <p class="tiny">{{ steps|select('ge', goal)|list|length }} of {{ steps|length }} days over {{ '{:,}'.format(goal) }} steps: that is 30% of your weekly reward.</p>{% endif %}
+        <form method="post" action="/reward/steps" class="row" style="margin-top:8px"><input type="hidden" name="back" value="/move">
+          <input type="text" name="steps" value="{{ steps|join(', ') if steps else '8200, 6100, 9400, 7300, 4800, 11200, 7600' }}" style="flex:1" aria-label="Seven days of steps">
+          <button class="secondary" type="submit">Sync</button></form>
+        <p class="tiny muted">In the demo you type them as a watch would send them (Health Connect or Apple Health in the product).</p>
+      </section>
+    </div>
+  </div>
+</section>
+{% endblock %}

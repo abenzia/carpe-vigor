@@ -1,51 +1,52 @@
 {% extends "base.html" %}
-{% block title %}Carpe Vigor — My doctor said{% endblock %}
+{% block title %}Carpe Vigor — {{ t('doctor') }}{% endblock %}
 {% block content %}
-<div class="eyebrow">Step 1</div>
-<h2>My doctor said…</h2>
-<p class="muted">In your own words. Food, movement, sleep and habits are what this app plans for. Medicines and diagnoses stay with your doctor — if you mention them, we hand them back.
-Your test results can help, if you want: add them in <a href="/numbers">My numbers</a> next to the targets your doctor gave you, and the week will focus on what is off target.</p>
-
-<form method="post" action="/doctor" class="card accent">
-  <label for="doctor_said">What did your doctor tell you?</label>
-  <textarea id="doctor_said" name="doctor_said" required placeholder="I have high blood pressure. Eat less salt, lose a few pounds and walk more.">{{ profile.doctor_said if profile else '' }}</textarea>
-
-  <div class="grid">
-    <div>
-      <label for="device">What do you cook with?</label>
-      <select id="device" name="device">
-        {% for d in devices %}<option {{ 'selected' if profile and profile.device == d }}>{{ d }}</option>{% endfor %}
-      </select>
-    </div>
-    <div>
-      <label for="people">How many people?</label>
-      <select id="people" name="people">
-        {% for n in range(1, 7) %}<option {{ 'selected' if (profile.people if profile and profile.people else 1) == n }}>{{ n }}</option>{% endfor %}
-      </select>
-    </div>
-    <div>
-      <label for="budget">Weekly grocery budget ({{ currency }})</label>
-      <input type="number" id="budget" name="budget" step="1" min="20" max="500" value="{{ profile.budget if profile else 140 }}">
+<section class="section-view">
+  <div class="view-head">
+    <div><p class="eyebrow">Your plan · step 01</p>
+      <h1 class="view-title">Start with what <i>your doctor said.</i></h1>
+      <p class="view-desc">In your own words. Food, movement, sleep and habits are what this app plans for. Medicines and diagnoses stay with your doctor — if you mention them, we hand them back.</p></div>
+  </div>
+  <div class="hero-grid">
+    <form method="post" action="/doctor" class="card pad">
+      <p class="section-kicker">A few details to make it yours</p>
+      <label for="doctor_said">What did your doctor tell you?</label>
+      <textarea id="doctor_said" name="doctor_said" required placeholder="I have high blood pressure. Eat less salt, lose a few pounds and walk more.">{{ profile.doctor_said if profile else '' }}</textarea>
+      <div class="form-grid">
+        <div><label for="device">What do you cook with?</label>
+          <select id="device" name="device">{% for d in devices %}<option {{ 'selected' if profile and profile.device == d }}>{{ d }}</option>{% endfor %}</select></div>
+        <div><label for="people">How many people?</label>
+          <select id="people" name="people">{% for n in range(1, 7) %}<option {{ 'selected' if (profile.people if profile and profile.people else 1) == n }}>{{ n }}</option>{% endfor %}</select></div>
+        <div><label for="budget">Weekly grocery budget ({{ currency }})</label>
+          <input type="number" id="budget" name="budget" step="1" min="20" max="500" value="{{ profile.budget|int if profile else 140 }}"></div>
+      </div>
+      <label for="constraints">Allergies, dislikes, anything else</label>
+      <input type="text" id="constraints" name="constraints" placeholder="no shellfish, dislikes celery" value="{{ profile.constraints_text if profile else '' }}">
+      <label class="check"><input type="checkbox" name="report_attached" value="1"> I have a lab report
+        <span class="muted tiny">— add its values in <a href="/numbers">Measures &amp; progress</a> (optional): shown next to your doctor's targets, never judged by the app.</span></label>
+      <div class="row" style="margin-top:16px;justify-content:space-between"><span class="tiny muted">About three minutes: the team writes and checks 14 recipes.</span><button type="submit">Plan my week →</button></div>
+    </form>
+    <div class="stack">
+      <section class="card pad dark">
+        <p class="section-kicker light">Your doctor stays in charge</p>
+        <h3>Goals and targets are theirs.</h3>
+        <p>Carpe Vigor organizes everyday food and movement around your doctor's advice. It does not set medical targets or interpret diagnoses.</p>
+      </section>
+      <section class="card pad">
+        <p class="section-kicker">Want the plan more yours?</p>
+        <h3>Your measures and results</h3>
+        <p class="tiny">Height, weight, test results: optional, with your consent, kept on this device. The more you share, the more the plan fits you.</p>
+        <p><a class="button line small" href="/numbers">Measures &amp; progress →</a></p>
+      </section>
     </div>
   </div>
-
-  <label for="constraints">Allergies, dislikes, anything else</label>
-  <input type="text" id="constraints" name="constraints" placeholder="no shellfish, hate celery, two people" value="{{ profile.constraints_text if profile else '' }}">
-
-  <label class="check"><input type="checkbox" name="report_attached" value="1"> I have a lab report
-    <span class="muted tiny">— add its values in <a href="/numbers">My numbers</a> (optional): shown next to your doctor's targets, never judged by the app.</span></label>
-
-  <p style="margin-top:16px"><button type="submit">Plan my week</button></p>
-</form>
-
-<details class="card">
-  <summary>The public sources the reviewers read</summary>
-  <table>
-    <tr><th>Topic</th><th>Source</th><th>On disk</th></tr>
-    {% for s in sources %}
-    <tr><td>{{ s.topic }}</td><td><a href="{{ s.url }}">{{ s.name }}</a></td><td>{{ 'yes' if s.fetched else 'not fetched' }}</td></tr>
-    {% endfor %}
-  </table>
-  <p class="tiny muted">Fetch them once with <code>python -m carpevigor.sources fetch</code>. Every "why" and "evidence" line of the plan is checked against these texts.</p>
-</details>
+  <details class="card pad">
+    <summary>The public sources the team reads</summary>
+    <div class="table-wrap"><table>
+      <tr><th>Topic</th><th>Source</th><th>On disk</th></tr>
+      {% for s in sources %}<tr><td>{{ s.topic }}</td><td><a href="{{ s.url }}">{{ s.name }}</a></td><td>{{ 'yes' if s.fetched else 'not fetched' }}</td></tr>{% endfor %}
+    </table></div>
+    <p class="tiny muted">Fetch them once with <code>python -m carpevigor.sources fetch</code>. Every "why" and "evidence" line of the plan is checked against these texts.</p>
+  </details>
+</section>
 {% endblock %}
