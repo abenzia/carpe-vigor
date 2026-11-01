@@ -25,7 +25,7 @@ from fastapi.templating import Jinja2Templates
 
 from carpevigor import (__version__, ask, cart_agent, checkup, config, diary, guidelines, kitchen, nutrition, planner, profile,
                         rag, reward, sources, ui, week)
-from carpevigor import coach, health
+from carpevigor import apple_health, coach, health
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -40,6 +40,10 @@ store = Store()
 catalog = Catalog.load()
 
 
+# The only ways in for a phone shortcut (no Origin, maybe through the tunnel); each checks the token itself
+PHONE_DOORS = ("/api/meal", "/api/health")
+
+
 @app.middleware("http")
 async def same_origin_posts(request: Request, call_next):
     """A form on another site cannot post here: the app moves money (PayPal) and keeps health data. Browsers send
@@ -47,9 +51,9 @@ async def same_origin_posts(request: Request, call_next):
     (fail closed). /api/meal is the exception, for a phone shortcut that sends no Origin: it has its own token."""
     # Through the Cloudflare tunnel (marked by cf-connecting-ip) only the watch's door is open: the tunnel exists for
     # the shortcut, and anyone holding its address must not read measures, the diary or press PayPal buttons
-    if "cf-connecting-ip" in request.headers and request.url.path != "/api/meal":
+    if "cf-connecting-ip" in request.headers and request.url.path not in PHONE_DOORS:
         return JSONResponse({"error": "Not available here."}, status_code=404)
-    if request.method == "POST" and request.url.path != "/api/meal":
+    if request.method == "POST" and request.url.path not in PHONE_DOORS:
         source = request.headers.get("origin") or request.headers.get("referer") or ""
         if not source or urlparse(source).netloc != request.headers.get("host", ""):
             return JSONResponse({"error": "Posts are accepted from this app's own pages only."}, status_code=403)
@@ -379,6 +383,34 @@ def diary_remove(at: str = Form(...), dish: str = Form(...)):
         del entries[gone]
         store.put("diary", entries)
     return RedirectResponse("/diary", status_code=303)
+
+
+def _phone_token_ok(request: Request) -> bool:
+    given = request.headers.get("authorization", "").removeprefix("Bearer ").strip()
+    return bool(config.API_TOKEN) and secrets.compare_digest(given, config.API_TOKEN)
+
+
+@app.post("/api/health")
+async def api_health(request: Request):
+    """For an iPhone shortcut reading Apple Health: {"steps": "...", "weight_kg": "...", "sleep_hours": "...",
+    "resting_hr": "...", "systolic": "...", "diastolic": "..."} as Shortcuts writes them, with the same token as
+    /api/meal. Kept only with the consent given on the measures page."""
+    if not _phone_token_ok(request):
+        return JSONResponse({"spoken": "This shortcut is not allowed to write to Carpe Vigor."}, status_code=403)
+    if not (store.get("health") or {}).get("consent"):
+        return JSONResponse({"spoken": "Give your consent on the Measures page first: nothing was kept."}, status_code=403)
+    raw = await request.body()
+    if len(raw) > 20000:
+        return JSONResponse({"spoken": "Too much at once."}, status_code=413)
+    try:
+        body = json.loads(raw)
+    except ValueError:
+        return JSONResponse({"spoken": "The shortcut must send a JSON body."}, status_code=422)
+    if not isinstance(body, dict):
+        return JSONResponse({"spoken": "The shortcut must send a JSON dictionary."}, status_code=422)
+    result = apple_health.apply(body, store)
+    store.log("apple_health", {"fields": sorted(result["kept"])})  # the values stay in the store, not in the log
+    return {"spoken": apple_health.spoken(result), **result}
 
 
 @app.post("/api/meal")

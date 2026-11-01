@@ -30,6 +30,7 @@ MEASURES = {
     "a1c": {"label": "HbA1c", "unit": "%", "good": "below", "topic": "sugar"},
     "waist": {"label": "Waist", "unit": "cm", "good": "below", "topic": "weight"},
     "weight": {"label": "Weight", "unit": "kg", "good": "below", "topic": "weight"},
+    "resting_hr": {"label": "Resting heart rate", "unit": "bpm", "good": "below", "topic": "activity"},
 }
 VERDICTS = ("met", "improving", "not yet")
 

@@ -245,6 +245,30 @@ def test_the_persons_measures_give_bmi_energy_and_a_goal_estimate_inside_public_
     assert health.for_planner({**man, "pregnant": True}) == ""        # no calorie number at all in pregnancy
 
 
+def test_apple_health_arrives_as_an_italian_iphone_writes_it_and_only_with_consent(client, monkeypatch):
+    from carpevigor import apple_health, config
+    assert apple_health.integers("8.234 passi\n6,100 steps\n11 200") == [8234, 6100, 11200]
+    assert apple_health.decimal("92,5 kg") == 92.5 and apple_health.decimal(["91,8", "92,1"]) == 92.1
+    monkeypatch.setattr(config, "API_TOKEN", "s3cret-token")
+    auth = {"Authorization": "Bearer s3cret-token"}
+    sent = {"steps": "8.234\n6.100\n9.400\n7.300\n4.800\n11.200\n7.600", "weight_kg": "92,5 kg", "sleep_hours": "7,2",
+            "resting_hr": "61 bpm", "systolic": "138", "diastolic": "500"}       # 500: no diastolic is that high
+    assert client.post("/api/health", json=sent).status_code == 403                    # no token
+    no_consent = client.post("/api/health", json=sent, headers=auth)
+    assert no_consent.status_code == 403 and "consent" in no_consent.json()["spoken"]  # no consent: nothing kept
+    client.post("/numbers/measures", data={"consent": "1", "height_cm": "178", "weight_kg": "95"})
+    r = client.post("/api/health", json=sent, headers={**auth, "cf-connecting-ip": "203.0.113.9"})   # via the tunnel
+    assert r.status_code == 200 and r.json()["dropped"] == ["diastolic"]
+    assert r.json()["spoken"].startswith("Carpe Vigor updated: 7 days of steps, 7,600 today, weight 92.5 kilograms")
+    state = client.get("/api/state").json()
+    assert state["steps"] == [8234, 6100, 9400, 7300, 4800, 11200, 7600]               # the reward's steps, measured
+    page = client.get("/numbers").text
+    assert "BMI 29.2" in page and "Resting heart rate" in page                         # 92.5 kg at 178 cm
+    client.post("/api/health", json={"resting_hr": "59"}, headers=auth)                # the evening sync, again today
+    rows = [r for r in client.get("/api/state").json().get("numbers") or [] if r["key"] == "resting_hr"]
+    assert len(rows) <= 1                                                               # one reading a day, replaced
+
+
 def test_measures_are_kept_only_with_consent_and_can_be_deleted(client):
     measures = {"height_cm": "178", "weight_kg": "92", "age": "50", "sex": "male", "activity": "light", "goal_kg": "86"}
     r = client.post("/numbers/measures", data=measures, follow_redirects=False)
