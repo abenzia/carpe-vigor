@@ -56,6 +56,11 @@ The header of every screen shows budget · spent · released · paid back. Three
   line Siri can read ("cacio e pepe: about 572 calories, 29 grams of protein, 723 milligrams of sodium"). Meals of the
   plan marked as cooked join the day with their recipe's values. Estimates are labelled as such, there is no calorie
   target, and the diary never touches the reward.
+- **A lab report, read for you**: upload a PDF or a photo; Gemini copies the values, units and date as printed (no
+  judging, no guessing), plain code checks units (mmol/L to mg/dL, mmol/mol to %) and plausibility, and the person
+  ticks and corrects each value before anything is kept. The file is never stored; the form says it goes to Vertex AI.
+- **Apple Health**: an iPhone shortcut sends steps, weight, sleep, resting heart rate and blood pressure to
+  `POST /api/health` (same token as the diary, consent required): the steps become the reward's measured steps.
 - **Ask the sources**: a free question, answered only from passages of the public sources, each sentence citing
   its passage. The safety reviewer reads the answer before you do. If the reviewer still blocks it after one
   rewrite, you see the passages and the reason, never the answer.

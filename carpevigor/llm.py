@@ -42,11 +42,15 @@ def model_for(tier: str) -> str:
     return config.MODELS[provider()][tier]
 
 
-def ask(system: str, task: str, shape: Type[T], tier: str = "strong", temperature: float = 0.1) -> T:
+def ask(system: str, task: str, shape: Type[T], tier: str = "strong", temperature: float = 0.1,
+        attachment: tuple[bytes, str] | None = None) -> T:
+    """`attachment`: (bytes, mime type) of a file the model reads with the task, e.g. a lab report (Vertex only)."""
     p = provider()
     if p == "vertex":
-        return _vertex(system, task, shape, model_for(tier), temperature)
+        return _vertex(system, task, shape, model_for(tier), temperature, attachment)
     if p == "bedrock":
+        if attachment:
+            raise RuntimeError("Reading a file needs the Vertex provider (Gemini).")
         return _bedrock(system, task, shape, model_for(tier), temperature)
     maker = mock_answers.get(shape.__name__)
     if not maker:
@@ -98,11 +102,14 @@ def _mock_vector(text: str) -> list[float]:
     return vector
 
 
-def _vertex(system: str, task: str, shape: Type[T], model: str, temperature: float) -> T:
+def _vertex(system: str, task: str, shape: Type[T], model: str, temperature: float,
+            attachment: tuple[bytes, str] | None = None) -> T:
     from google.genai import types
 
     settings = types.GenerateContentConfig(system_instruction=system, temperature=temperature,
                                            response_mime_type="application/json", response_schema=shape)
+    if attachment:
+        task = [types.Part.from_bytes(data=attachment[0], mime_type=attachment[1]), task]
     started, refused = time.time(), 0
     for wait in RETRY_WAITS + (None,):
         try:

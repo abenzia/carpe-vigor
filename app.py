@@ -18,14 +18,14 @@ import threading
 from datetime import datetime, timezone
 from urllib.parse import quote, urlparse
 
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, File, Form, Request, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from carpevigor import (__version__, ask, cart_agent, checkup, config, diary, guidelines, kitchen, nutrition, planner, profile,
                         rag, reward, sources, ui, week)
-from carpevigor import apple_health, coach, health
+from carpevigor import apple_health, coach, health, report
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -249,6 +249,53 @@ def _number(value: str, low: float, high: float) -> float | None:
     except ValueError:
         return None
     return v if low <= v <= high else None
+
+
+@app.post("/numbers/report")
+async def report_upload(file: UploadFile = File(...), send_ok: str = Form("")):
+    """A lab report to read: sent to Gemini only with the box ticked; the file is read once and never stored."""
+    if not send_ok:
+        return RedirectResponse("/numbers?error=" + quote("Tick the box to send the report to be read: nothing was sent."),
+                              status_code=303)
+    data = await file.read(report.MAX_BYTES + 1)
+    try:
+        draft = report.read(data, file.content_type or "")
+    except ValueError as error:
+        return RedirectResponse(f"/numbers?error={quote(str(error))}", status_code=303)
+    store.put("report_draft", draft)   # the values read, waiting for the person's check; not the file
+    return RedirectResponse("/numbers/report", status_code=303)
+
+
+@app.get("/numbers/report", response_class=HTMLResponse)
+def report_check(request: Request, error: str = ""):
+    draft = store.get("report_draft")
+    if not draft:
+        return RedirectResponse("/numbers")
+    return render(request, "report.html", draft=draft, measures=checkup.MEASURES, error=error)
+
+
+@app.post("/numbers/report/confirm")
+async def report_confirm(request: Request):
+    draft = store.get("report_draft")
+    if not draft:
+        return RedirectResponse("/numbers", status_code=303)
+    form = await request.form()
+    picked = {i: (str(form.get(f"value_{i}", "")), str(form.get(f"date_{i}", "")), str(form.get(f"target_{i}", "")))
+              for i in range(len(draft["rows"])) if form.get(f"keep_{i}")}
+    try:
+        rows = report.confirm(store.get("numbers", []), draft, picked)
+    except ValueError as error:
+        return RedirectResponse(f"/numbers/report?error={quote(str(error))}", status_code=303)
+    store.put("numbers", rows)
+    store.delete("report_draft")
+    store.log("report", {"kept": len(picked)})  # how many, not which values
+    return RedirectResponse("/numbers", status_code=303)
+
+
+@app.post("/numbers/report/discard")
+def report_discard():
+    store.delete("report_draft")
+    return RedirectResponse("/numbers", status_code=303)
 
 
 @app.post("/numbers/measures")

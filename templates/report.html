@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — Check your report{% endblock %}
+{% block content %}
+<section class="section-view">
+  <div class="view-head">
+    <div><p class="eyebrow">Your lab report · read by AI, checked by you</p>
+      <h1 class="view-title">Check every value <i>before it is kept.</i></h1>
+      <p class="view-desc">This is what was read from your report. Compare each line with the paper: correct a number, a date, add your doctor's target, untick what you don't want kept. Nothing is saved until you confirm; the file itself was not stored.</p></div>
+  </div>
+  {% if error %}<div class="flag">{{ error }}</div>{% endif %}
+  <form method="post" action="/numbers/report/confirm" class="card pad">
+    {% if draft.rows %}
+    <div class="table-wrap"><table>
+      <tr><th>Keep</th><th>On the report</th><th>Measure</th><th>Value (our unit)</th><th>Date</th><th>Doctor's target</th></tr>
+      {% for r in draft.rows %}{% set known = r.measure in measures %}
+      <tr>
+        <td><input type="checkbox" name="keep_{{ loop.index0 }}" value="1" {{ 'checked' if r.ok }} {{ 'disabled' if not known }} aria-label="Keep {{ r.printed }}"></td>
+        <td><b>{{ r.printed }}</b><br><span class="tiny muted">{{ '%g'|format(r.printed_value) }} {{ r.printed_unit }}</span>
+          {% if r.note %}<br><span class="tiny" style="color:#a33b22">{{ r.note }}</span>{% endif %}</td>
+        <td>{{ measures[r.measure].label if known else '—' }}</td>
+        <td>{% if known %}<input type="text" name="value_{{ loop.index0 }}" value="{{ '%g'|format(r.value) if r.value is not none else '' }}" style="width:90px"> {{ measures[r.measure].unit }}{% endif %}</td>
+        <td>{% if known %}<input type="date" name="date_{{ loop.index0 }}" value="{{ draft.test_date }}" required>{% endif %}</td>
+        <td>{% if known %}<input type="text" name="target_{{ loop.index0 }}" placeholder="optional" style="width:90px">{% endif %}</td>
+      </tr>{% endfor %}
+    </table></div>
+    <p class="notice" style="margin-top:10px">Read by a language model: it can misread a number. You are the check. Your values are shown next to your doctor's targets; judging them stays with your doctor.</p>
+    <div class="row" style="margin-top:12px"><button type="submit">Keep the ticked values</button></div>
+    {% else %}
+    <p class="muted">No value could be read from this file. Enter them by hand in <a href="/numbers">Measures &amp; progress</a>.</p>
+    {% endif %}
+  </form>
+  <form method="post" action="/numbers/report/discard"><button class="secondary" type="submit">Discard everything</button></form>
+</section>
+{% endblock %}

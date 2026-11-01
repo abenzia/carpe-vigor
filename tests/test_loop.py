@@ -275,6 +275,40 @@ def test_apple_health_arrives_as_an_italian_iphone_writes_it_and_only_with_conse
     assert len(rows) <= 1                                                               # one reading a day, replaced
 
 
+def test_a_lab_report_is_read_then_checked_by_the_person_and_never_stored(client, monkeypatch):
+    from carpevigor import report
+    seen = []
+
+    def reader(system, task, shape, tier="strong", temperature=0.1, attachment=None):
+        seen.append(attachment)
+        return report.Extracted(test_date="2026-10-20", readings=[
+            report.Reading(measure="ldl", printed_name="Colesterolo LDL", value=4.1, unit="mmol/L"),
+            report.Reading(measure="glucose", printed_name="Glicemia", value=96, unit="mg/dL"),
+            report.Reading(measure="hdl", printed_name="Colesterolo HDL", value=4800, unit="mg/dL"),   # misread
+            report.Reading(measure="other", printed_name="Ferritina", value=80, unit="ng/mL")])
+    monkeypatch.setattr(report.llm, "ask", reader)
+    pdf = ("referto.pdf", b"%PDF-1.4 a test report", "application/pdf")
+    r = client.post("/numbers/report", files={"file": pdf}, follow_redirects=False)
+    assert "error=" in r.headers["location"] and not seen                       # not sent without the box ticked
+    client.post("/numbers/report", files={"file": pdf}, data={"send_ok": "1"})
+    assert seen[0] == (b"%PDF-1.4 a test report", "application/pdf")
+    page = client.get("/numbers/report").text
+    assert "Check every value" in page and "converted from 4.1 mmol/L" in page and "looks unlikely" in page
+    import app as webapp
+    d = webapp.store.get("report_draft")
+    assert [r["ok"] for r in d["rows"]] == [True, True, False, False]           # the unlikely HDL is left unticked
+    assert d["rows"][0]["value"] == round(4.1 * 38.67, 1)                         # 158.5 mg/dL
+    assert not any(isinstance(v, (bytes, bytearray)) for v in webapp.store.get("report_draft").values())
+    client.post("/numbers/report/confirm", data={"keep_0": "1", "value_0": "158,5", "date_0": "2026-10-20",
+                                                  "target_0": "130", "value_1": "96", "date_1": "2026-10-20"})
+    numbers = webapp.store.get("numbers")
+    assert [(n["key"], n["value"], n["target"]) for n in numbers] == [("ldl", 158.5, 130.0)]   # only what was ticked
+    assert webapp.store.get("report_draft") is None
+    bad = client.post("/numbers/report", files={"file": ("x.txt", b"hello", "text/plain")}, data={"send_ok": "1"},
+                      follow_redirects=False)
+    assert "error=" in bad.headers["location"]                                   # only PDFs and photos
+
+
 def test_measures_are_kept_only_with_consent_and_can_be_deleted(client):
     measures = {"height_cm": "178", "weight_kg": "92", "age": "50", "sex": "male", "activity": "light", "goal_kg": "86"}
     r = client.post("/numbers/measures", data=measures, follow_redirects=False)
