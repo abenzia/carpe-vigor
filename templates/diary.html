@@ -48,7 +48,18 @@ The numbers come from USDA FoodData Central. They are for you to see, not a targ
   {% endif %}
 </div>
 
-<details class="card pad"{{ ' open' if setup }}>
+{% if qr %}
+<div class="card pad" style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+  <div style="width:200px;height:200px;background:#fff;padding:8px;border-radius:12px">{{ qr|safe }}</div>
+  <div style="flex:1;min-width:220px">
+    <p class="section-kicker">Your phone · scan once</p>
+    <h3>Point your iPhone camera here</h3>
+    <p class="tiny">Tap the link that appears: the phone opens “What are you eating?” and stays paired. Then Share → “Add to Home Screen”. The code works once, for ten minutes; reload this page for a new one.</p>
+  </div>
+</div>
+{% endif %}
+
+<details class="card pad">
   <summary>Add a meal from your watch or phone</summary>
   {% if setup %}
   <div class="flag"><b>Only on this computer:</b> what to copy into the Shortcut on your iPhone. Do not share the token.

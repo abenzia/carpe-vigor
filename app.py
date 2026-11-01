@@ -25,7 +25,7 @@ from fastapi.templating import Jinja2Templates
 
 from carpevigor import (__version__, ask, cart_agent, checkup, config, diary, guidelines, kitchen, nutrition, planner, profile,
                         rag, reward, sources, ui, week)
-from carpevigor import apple_health, coach, health, report
+from carpevigor import apple_health, coach, health, phone, report
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -44,6 +44,11 @@ catalog = Catalog.load()
 PHONE_DOORS = ("/api/meal", "/api/health")
 
 
+def _open_to_phones(path: str) -> bool:
+    """What the tunnel may reach: the shortcuts' doors and the phone page (/m, its own cookie; its styles are inline)."""
+    return path in PHONE_DOORS or path == "/m" or path.startswith("/m/pair/")
+
+
 @app.middleware("http")
 async def same_origin_posts(request: Request, call_next):
     """A form on another site cannot post here: the app moves money (PayPal) and keeps health data. Browsers send
@@ -51,9 +56,10 @@ async def same_origin_posts(request: Request, call_next):
     (fail closed). /api/meal is the exception, for a phone shortcut that sends no Origin: it has its own token."""
     # Through the Cloudflare tunnel (marked by cf-connecting-ip) only the watch's door is open: the tunnel exists for
     # the shortcut, and anyone holding its address must not read measures, the diary or press PayPal buttons
-    if "cf-connecting-ip" in request.headers and request.url.path not in PHONE_DOORS:
+    if "cf-connecting-ip" in request.headers and not _open_to_phones(request.url.path):
         return JSONResponse({"error": "Not available here."}, status_code=404)
-    if request.method == "POST" and request.url.path not in PHONE_DOORS:
+    # /m is exempt too: its cookie is SameSite=Lax, so a form on another site arrives without it and is refused there
+    if request.method == "POST" and request.url.path not in PHONE_DOORS and request.url.path != "/m":
         source = request.headers.get("origin") or request.headers.get("referer") or ""
         if not source or urlparse(source).netloc != request.headers.get("host", ""):
             return JSONResponse({"error": "Posts are accepted from this app's own pages only."}, status_code=403)
@@ -409,7 +415,47 @@ def diary_view(request: Request, error: str = "", on: str = ""):
     here = peer in ("127.0.0.1", "::1") and loopback_name and not proxied
     return render(request, "diary.html", today=diary.day(store.get("diary", []), on or None), error=error,
                   portions=list(diary.PORTIONS), food_db=nutrition.available(), watch=bool(config.API_TOKEN),
-                  setup={"url": config.PUBLIC_URL, "token": config.API_TOKEN} if here and config.API_TOKEN else None)
+                  setup={"url": config.PUBLIC_URL, "token": config.API_TOKEN} if here and config.API_TOKEN else None,
+                  qr=phone.qr_svg(f"{config.PUBLIC_URL}/m/pair/{phone.new_code()}")
+                  if here and config.API_TOKEN and config.PUBLIC_URL else None)
+
+
+def _phone_ok(request: Request) -> bool:
+    given = request.cookies.get(phone.COOKIE, "")
+    return bool(config.API_TOKEN) and secrets.compare_digest(given, config.API_TOKEN)
+
+
+@app.get("/m/pair/{code}", response_class=HTMLResponse)
+def phone_pair(request: Request, code: str):
+    """Opened by the phone's camera from the QR code: one use, ten minutes, then a cookie keeps the phone paired."""
+    if not config.API_TOKEN or not phone.take(code):
+        return templates.TemplateResponse(request, "phone.html", {"paired": False, "expired": True, "version": __version__})
+    response = RedirectResponse("/m", status_code=303)
+    response.set_cookie(phone.COOKIE, config.API_TOKEN, max_age=60 * 60 * 24 * 90, httponly=True,
+                        secure=request.url.scheme == "https" or "cf-connecting-ip" in request.headers, samesite="lax")
+    return response
+
+
+@app.get("/m", response_class=HTMLResponse)
+def phone_page(request: Request, said: str = "", error: str = ""):
+    if not _phone_ok(request):
+        return templates.TemplateResponse(request, "phone.html", {"paired": False, "version": __version__})
+    today = diary.day(store.get("diary", []))
+    return templates.TemplateResponse(request, "phone.html", {"paired": True, "today": today, "said": said,
+                                                               "error": error, "portions": list(diary.PORTIONS),
+                                                               "version": __version__})
+
+
+@app.post("/m")
+def phone_add(request: Request, text: str = Form(""), portion: str = Form("normal")):
+    if not _phone_ok(request):
+        return RedirectResponse("/m", status_code=303)
+    try:
+        entry = diary.say(text, portion if portion in diary.PORTIONS else "normal")
+    except ValueError as error:
+        return RedirectResponse(f"/m?error={quote(str(error))}", status_code=303)
+    store.put("diary", store.get("diary", []) + [entry])
+    return RedirectResponse(f"/m?said={quote(diary.spoken(entry, diary.day(store.get('diary', []))))}", status_code=303)
 
 
 @app.post("/diary")

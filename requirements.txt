@@ -3,6 +3,7 @@ fastapi>=0.115
 uvicorn[standard]>=0.30
 jinja2>=3.1
 python-multipart>=0.0.9
+qrcode>=7.4
 pydantic>=2.7
 requests>=2.32
 python-dotenv>=1.0

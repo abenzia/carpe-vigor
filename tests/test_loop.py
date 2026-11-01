@@ -275,6 +275,35 @@ def test_apple_health_arrives_as_an_italian_iphone_writes_it_and_only_with_conse
     assert len(rows) <= 1                                                               # one reading a day, replaced
 
 
+def test_a_phone_pairs_once_from_the_qr_code_and_then_adds_meals(client, monkeypatch, tmp_path):
+    _tiny_usda(tmp_path)
+    import re
+    from fastapi.testclient import TestClient
+    import app as webapp
+    from carpevigor import config, phone
+    monkeypatch.setattr(config, "API_TOKEN", "s3cret-token")
+    monkeypatch.setattr(config, "PUBLIC_URL", "https://tunnel.example")
+    here = TestClient(webapp.app, base_url="http://127.0.0.1", client=("127.0.0.1", 50000))
+    page = here.get("/diary").text
+    assert "<svg" in page and "Point your iPhone camera here" in page
+    assert "<svg" not in client.get("/diary").text                               # the QR only at this computer
+    code = phone.new_code()
+    tunnel = {"cf-connecting-ip": "203.0.113.9"}
+    pal = TestClient(webapp.app, base_url="https://tunnel.example")
+    assert "Pair" in pal.get("/m", headers=tunnel).text                          # not paired yet: no diary shown
+    assert pal.post("/m", data={"text": "a pear"}, headers=tunnel, follow_redirects=False).headers["location"] == "/m"
+    r = pal.get(f"/m/pair/{code}", headers=tunnel, follow_redirects=False)
+    assert r.status_code == 303 and "httponly" in r.headers["set-cookie"].lower() and "s3cret-token" not in r.headers["location"]
+    assert "expired" in TestClient(webapp.app).get(f"/m/pair/{code}").text       # one use only
+    r = pal.post("/m", data={"text": "cacio e pepe", "portion": "normal"}, headers=tunnel)
+    assert "What are you" in r.text and "cacio e pepe: about" in r.text
+    assert client.get("/api/state").json()["diary"][-1]["dish"] == "cacio e pepe"
+    for path in ("/diary", "/numbers", "/static/app/app.css", "/api/state"):       # the tunnel opens nothing else
+        assert pal.get(path, headers=tunnel).status_code == 404, path
+    monkeypatch.setattr(phone, "VALID_SECONDS", -1)
+    assert "expired" in pal.get(f"/m/pair/{phone.new_code()}").text                # ten minutes, then gone
+
+
 def test_a_lab_report_is_read_then_checked_by_the_person_and_never_stored(client, monkeypatch):
     from carpevigor import report
     seen = []

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Carpe Vigor">
+<meta name="theme-color" content="#102a1e">
+<title>Carpe Vigor — What are you eating?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root{--forest:#163b2a;--deep:#102a1e;--orange:#d9672d;--paper:#f4efe4;--card:#fffdf8;--ink:#1d2b22;--muted:#6f7166;--line:#e4ddce}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font:17px/1.45 'DM Sans',Arial,sans-serif;padding:max(18px,env(safe-area-inset-top)) 18px 28px}
+  .brand{font:26px 'DM Serif Display',Georgia,serif;color:var(--forest);margin:4px 0 14px}.brand b{color:var(--orange);font-weight:400}
+  h1{font:400 34px/1.05 'DM Serif Display',Georgia,serif;color:var(--forest);margin:0 0 14px}h1 i{color:var(--orange)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+  textarea{width:100%;min-height:96px;font:inherit;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+  .portions{display:flex;gap:8px;margin:10px 0}
+  .portions label{flex:1;text-align:center;border:1px solid var(--line);border-radius:999px;padding:9px 4px;font-size:15px;background:#fff}
+  .portions input{display:none}.portions input:checked+span{color:#fff}.portions label:has(input:checked){background:var(--forest);border-color:var(--forest);color:#fff}
+  button{width:100%;padding:15px;border:0;border-radius:999px;background:var(--orange);color:#fff;font:700 18px 'DM Sans',sans-serif}
+  .said{background:var(--deep);color:#f4f0e6}.said b{color:#f3a372}
+  .flag{background:#fbefe4;border-left:3px solid var(--orange);padding:10px 12px;border-radius:10px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+  .stats b{display:block;font:24px 'DM Serif Display',Georgia,serif;color:var(--forest)}.stats small{color:var(--muted);font-size:12px}
+  .muted{color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<div class="brand"><i>carpe</i> <b>vigor</b></div>
+{% if not paired %}
+  <h1>{% if expired %}This code has <i>expired.</i>{% else %}Pair <i>this phone.</i>{% endif %}</h1>
+  <div class="card"><p>On your computer, open <b>What I ate</b> and scan the QR code with this phone's camera.{% if expired %} A code works once, for ten minutes: reload the page on the computer for a new one.{% endif %}</p></div>
+{% else %}
+  <h1>What are you <i>eating?</i></h1>
+  {% if said %}<div class="card said">✓ {{ said }}</div>{% endif %}
+  {% if error %}<div class="card flag">{{ error }}</div>{% endif %}
+  <form method="post" action="/m" class="card">
+    <textarea name="text" required placeholder="Tap the microphone on the keyboard and say it: “a plate of cacio e pepe”" autofocus></textarea>
+    <div class="portions">{% for p in portions %}<label><input type="radio" name="portion" value="{{ p }}" {{ 'checked' if p == 'normal' }}><span>{{ p }}</span></label>{% endfor %}</div>
+    <button type="submit">Add to today</button>
+    <p class="muted" style="margin-top:10px">Counted with USDA FoodData Central: about 10 seconds. An estimate of a typical portion.</p>
+  </form>
+  {% set t = today.total %}
+  <div class="card"><div class="stats">
+    <div><b>{{ t.kcal|round|int }}</b><small>kcal today</small></div>
+    <div><b>{{ t.protein_g|round|int }} g</b><small>protein</small></div>
+    <div><b>{{ '≤ ' if today.sodium_at_most }}{{ t.sodium_mg|round|int }}</b><small>mg sodium</small></div>
+  </div>
+  {% for e in today.entries[-3:]|reverse %}<p class="muted">· {{ e.at[11:16] }} {{ e.dish }} — {{ e.nutrition.kcal|round|int }} kcal</p>{% endfor %}</div>
+  <p class="muted">Tip: tap Share → “Add to Home Screen” to keep Carpe Vigor one tap away.</p>
+{% endif %}
+</body>
+</html>
