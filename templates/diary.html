@@ -23,7 +23,7 @@ The numbers come from USDA FoodData Central. They are for you to see, not a targ
 <div class="card pad">
   <h3>Today{% if today.estimated %} <span class="pill warn">some values estimated</span>{% endif %}</h3>
   {% if today.entries %}
-  <table>
+  <div class="table-wrap"><table>
     <tr><th>When</th><th>What</th><th class="num">kcal</th><th class="num">Protein</th><th class="num">Fiber</th><th class="num">Sat. fat</th><th class="num">Sodium</th><th></th></tr>
     {% for e in today.entries %}{% set n = e.nutrition %}
     <tr>
@@ -41,7 +41,7 @@ The numbers come from USDA FoodData Central. They are for you to see, not a targ
     {% set t = today.total %}
     <tr><td></td><td><b>Today</b></td><td class="num"><b>{{ t.kcal|round|int }}</b></td><td class="num"><b>{{ t.protein_g|round|int }} g</b></td><td class="num"><b>{{ t.fiber_g|round|int }} g</b></td>
       <td class="num"><b>{{ t.sat_fat_g|round|int }} g</b></td><td class="num"><b>{{ '≤ ' if today.sodium_at_most }}{{ t.sodium_mg|round|int }} mg</b></td><td></td></tr>
-  </table>
+  </table></div>
   <p class="tiny muted">For comparison, WHO's number for adults is under 2,000 mg of sodium a day. "Estimated" means a typical portion of what you said, counted on its raw ingredients: what was really on the plate can differ by a third or more. Meals from your plan are counted on their recipe.</p>
   {% else %}
   <p class="muted">Nothing yet today.</p>
