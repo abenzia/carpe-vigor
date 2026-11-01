@@ -19,7 +19,7 @@ from datetime import datetime, timezone
 from urllib.parse import quote, urlparse
 
 from fastapi import FastAPI, File, Form, Request, UploadFile
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -443,6 +443,8 @@ def phone_page(request: Request, said: str = "", error: str = ""):
     today = diary.day(store.get("diary", []))
     return templates.TemplateResponse(request, "phone.html", {"paired": True, "today": today, "said": said,
                                                                "error": error, "portions": list(diary.PORTIONS),
+                                                               "siri_url": f"{config.PUBLIC_URL or str(request.base_url).rstrip('/')}/api/meal?say=1",
+                                                               "siri_header": f"Bearer {config.API_TOKEN}",
                                                                "version": __version__})
 
 
@@ -515,16 +517,21 @@ async def api_health(request: Request):
 
 
 @app.post("/api/meal")
-async def api_meal(request: Request):
+async def api_meal(request: Request, say: str = ""):
     """For a phone or watch shortcut: {"text": "cacio e pepe", "portion": "normal"} with the header
     'Authorization: Bearer <CARPE_API_TOKEN>'. Answers {"spoken": "...", "entry": {...}}. Without a token set in .env
-    the door stays shut: on a deployed app anyone could otherwise write into the diary."""
+    the door stays shut: on a deployed app anyone could otherwise write into the diary. With ?say=1 the answer is just
+    the sentence, as plain text, so the shortcut can hand it straight to Speak Text (one block fewer to set up)."""
+    def answer(spoken: str, status: int = 200, **more):
+        if say:
+            return PlainTextResponse(spoken, status_code=status)
+        return JSONResponse({"spoken": spoken, **more}, status_code=status)
     given = request.headers.get("authorization", "").removeprefix("Bearer ").strip()
     if not config.API_TOKEN or not secrets.compare_digest(given, config.API_TOKEN):
-        return JSONResponse({"spoken": "This shortcut is not allowed to write to the diary."}, status_code=403)
+        return answer("This shortcut is not allowed to write to the diary.", 403)
     raw = await request.body()
     if len(raw) > 4000:  # a sentence and a portion, not a document
-        return JSONResponse({"spoken": "That is too long for one meal."}, status_code=413)
+        return answer("That is too long for one meal.", 413)
     try:
         body = json.loads(raw)
     except ValueError:
@@ -534,9 +541,9 @@ async def api_meal(request: Request):
     try:
         entry = diary.say(str(body.get("text", "")), body.get("portion") if body.get("portion") in diary.PORTIONS else "normal")
     except ValueError as error:
-        return JSONResponse({"spoken": str(error)}, status_code=422)
+        return answer(str(error), 422)
     store.put("diary", store.get("diary", []) + [entry])
-    return {"spoken": diary.spoken(entry, diary.day(store.get("diary", []))), "entry": entry}
+    return answer(diary.spoken(entry, diary.day(store.get("diary", []))), entry=entry)
 
 
 # 3 ------------------------------------------------------------------------------------------------------------------

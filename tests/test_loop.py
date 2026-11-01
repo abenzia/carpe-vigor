@@ -298,6 +298,12 @@ def test_a_phone_pairs_once_from_the_qr_code_and_then_adds_meals(client, monkeyp
     r = pal.post("/m", data={"text": "cacio e pepe", "portion": "normal"}, headers=tunnel)
     assert "What are you" in r.text and "cacio e pepe: about" in r.text
     assert client.get("/api/state").json()["diary"][-1]["dish"] == "cacio e pepe"
+    # the paired phone carries what the Siri shortcut needs, and Siri gets a sentence it can speak as it is
+    assert "https://tunnel.example/api/meal?say=1" in r.text and "Bearer s3cret-token" in r.text
+    siri = pal.post("/api/meal?say=1", content="cacio e pepe".encode(), headers={**tunnel, "Authorization": "Bearer s3cret-token"})
+    assert siri.status_code == 200 and siri.headers["content-type"].startswith("text/plain")
+    assert siri.text.startswith("cacio e pepe: about ")
+    assert pal.post("/api/meal?say=1", content=b"x", headers=tunnel).text == "This shortcut is not allowed to write to the diary."
     for path in ("/diary", "/numbers", "/static/app/app.css", "/api/state"):       # the tunnel opens nothing else
         assert pal.get(path, headers=tunnel).status_code == 404, path
     monkeypatch.setattr(phone, "VALID_SECONDS", -1)

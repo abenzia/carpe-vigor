@@ -52,6 +52,36 @@
   </div>
   {% for e in today.entries[-3:]|reverse %}<p class="muted">· {{ e.at[11:16] }} {{ e.dish }} — {{ e.nutrition.kcal|round|int }} kcal</p>{% endfor %}</div>
   <p class="muted">Tip: tap Share → “Add to Home Screen” to keep Carpe Vigor one tap away.</p>
+
+  <details class="card">
+    <summary><b>Siri &amp; Apple Watch</b> · set up once</summary>
+    <p class="muted">Two things to copy into the Shortcuts app. They are yours: don't share them.</p>
+    <p><b>1 · Address</b></p>
+    <div class="copy"><code id="siri-url">{{ siri_url }}</code><button type="button" data-copy="siri-url">Copy</button></div>
+    <p><b>2 · Header value</b> <span class="muted">(key: Authorization)</span></p>
+    <div class="copy"><code id="siri-header">{{ siri_header }}</code><button type="button" data-copy="siri-header">Copy</button></div>
+    <ol class="muted" style="padding-left:18px">
+      <li>Shortcuts → <b>+</b> → add <b>Dictate Text</b>.</li>
+      <li>Add <b>Get Contents of URL</b>: paste the address; Show More → Method <b>POST</b>; Headers → Add: key <code>Authorization</code>, value: paste the header value; Request Body <b>File</b> → choose <b>Dictated Text</b>.</li>
+      <li>Add <b>Speak Text</b> (it speaks the Contents of URL).</li>
+      <li>Name it <b>Carpe Vigor</b>; ⓘ → <b>Show on Apple Watch</b>.</li>
+    </ol>
+  </details>
+  <style>
+    .copy{display:flex;gap:8px;align-items:center;margin:6px 0 12px}
+    .copy code{flex:1;min-width:0;overflow-wrap:anywhere;font-size:12px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px}
+    .copy button{width:auto;padding:10px 16px;font-size:15px;background:var(--forest)}
+    summary{cursor:pointer}
+  </style>
+  <script>
+    document.querySelectorAll('[data-copy]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var text = document.getElementById(b.dataset.copy).textContent;
+        navigator.clipboard.writeText(text).then(function () { b.textContent = 'Copied ✓'; },
+          function () { b.textContent = 'Hold the text to copy'; });
+      });
+    });
+  </script>
 {% endif %}
 </body>
 </html>
