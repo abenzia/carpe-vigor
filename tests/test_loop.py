@@ -249,6 +249,12 @@ def test_apple_health_arrives_as_an_italian_iphone_writes_it_and_only_with_conse
     from carpevigor import apple_health, config
     assert apple_health.integers("8.234 passi\n6,100 steps\n11 200") == [8234, 6100, 11200]
     assert apple_health.decimal("92,5 kg") == 92.5 and apple_health.decimal(["91,8", "92,1"]) == 92.1
+    class Bare:
+        def __init__(self): self.kv = {"health": {"consent": True}}
+        def get(self, k, d=None): return self.kv.get(k, d)
+        def put(self, k, v): self.kv[k] = v
+    for sent_sleep in ("7,5", "450", "27000"):                         # hours, minutes or seconds: 7.5 hours
+        assert apple_health.apply({"sleep_hours": sent_sleep}, Bare())["kept"]["sleep_hours"] == 7.5
     monkeypatch.setattr(config, "API_TOKEN", "s3cret-token")
     auth = {"Authorization": "Bearer s3cret-token"}
     sent = {"steps": "8.234\n6.100\n9.400\n7.300\n4.800\n11.200\n7.600", "weight_kg": "92,5 kg", "sleep_hours": "7,2",

@@ -60,6 +60,9 @@ def apply(payload: dict, store, today: str | None = None) -> dict:
         if payload.get(key) in (None, ""):
             continue
         v = decimal(payload[key])
+        if key == "sleep_hours" and v is not None and v > 24:
+            # a shortcut summing sleep samples' durations sends minutes (up to a day's 1,440) or seconds
+            v = v / 60 if v <= 1440 else v / 3600
         lo, hi = RANGES[key]
         if v is None or not lo <= v <= hi:
             dropped.append(key)
