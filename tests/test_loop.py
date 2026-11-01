@@ -335,6 +335,7 @@ def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(cli
     # the watch's door: shut without a token, refused with a wrong one, open with the right one
     meal = {"text": "cacio e pepe"}
     assert client.post("/api/meal", json=meal).status_code == 403
+    assert "set Method to POST" in client.get("/api/meal").json()["spoken"]     # a shortcut left on GET is told why
     monkeypatch.setattr(config, "API_TOKEN", "s3cret-token")
     assert client.post("/api/meal", json=meal, headers={"Authorization": "Bearer wrong"}).status_code == 403
     r = client.post("/api/meal", json=meal, headers={"Authorization": "Bearer s3cret-token"})

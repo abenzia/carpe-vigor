@@ -437,6 +437,14 @@ def _phone_token_ok(request: Request) -> bool:
     return bool(config.API_TOKEN) and secrets.compare_digest(given, config.API_TOKEN)
 
 
+@app.get("/api/meal")
+@app.get("/api/health")
+def phone_door_wrong_method():
+    """A shortcut left on GET (the default of "Get Contents of URL"): say what to fix, in words the phone reads aloud."""
+    return JSONResponse({"spoken": "Almost there: in the shortcut, open Get Contents of URL, set Method to POST, "
+                                   "then add the Authorization header and the JSON body."}, status_code=405)
+
+
 @app.post("/api/health")
 async def api_health(request: Request):
     """For an iPhone shortcut reading Apple Health: {"steps": "...", "weight_kg": "...", "sleep_hours": "...",
