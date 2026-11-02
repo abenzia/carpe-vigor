@@ -28,7 +28,7 @@ Numbers said aloud are the ones read back from the sandbox (devpost-draft.md). R
 |---|---|---|
 | 0:30 | `/doctor`, press the button; cut the wait (about 3 minutes in reality) | I type what my doctor told me. Gemini turns it into guidance for food, movement and sleep. Anything about medicines or a diagnosis is set aside for the doctor. The app never acts on it. |
 | 0:42 | `/team`, the review board | Before I see the plan, a board of AI reviewers checks it. Three fact jurors, on three different Gemini models, check every claim against public sources. A safety reviewer blocks anything clinical. |
-| 0:55 | `/week` then one `/recipes/<n>` card | Fourteen meals, written as recipe cards for my own kitchen machine, each with real nutrition data from the USDA. And a movement plan that reaches the 150 minutes a week public guidelines ask for. |
+| 0:55 | `/week` then one `/recipes/<n>` card | Fourteen meals, written as recipe cards for the kitchen machine I own (a Thermomix, an Instant Pot, an air fryer), each step checked against what that machine can really do, each with real nutrition data from the USDA. And a movement plan that reaches the 150 minutes a week public guidelines ask for. |
 
 ## 1:10–2:00 · Home, cart, PayPal
 
@@ -63,4 +63,6 @@ Numbers said aloud are the ones read back from the sandbox (devpost-draft.md). R
 - Start from a clean week (`/reset`) and prepare the doctor's words in advance: invented, never your own.
 - The lab report in the video is the invented PDF used in the tests, never your real one.
 - Hide the address bar if it shows the tunnel address or a token; the phone page shows the Siri header: do not film the "Siri & Apple Watch" box open.
-- Voice: yours, or a synthetic one. Decide before recording.
+- Voice: synthetic (Ale, 2 Nov). Recorded section by section from the lines above, then laid over the screen.
+- Machines named as examples only (Ale, 2 Nov): Thermomix, Instant Pot, air fryer, the ones `kitchen.py` really models.
+  In the US the Thermomix is sold as Thermomix (Bimby is the Italian name) and is far less common than the Instant Pot.
