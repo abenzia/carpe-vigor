@@ -16,3 +16,5 @@ mockups/
 static/models/anatomy/
 .serena/
 .tools/
+# Demo video files (narration, recordings): made locally, not published
+video/

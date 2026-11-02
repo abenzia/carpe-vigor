@@ -1,7 +1,7 @@
 # Demo video script: DRAFT for Ale
 
-Target 2:50 (Devpost limit to check: usually 3:00). Narration in English, about 330 words: Gemini TTS reads at about
-105 words a minute, sped up about 10% afterwards (ffmpeg atempo, pitch unchanged). Screen recording of the real app
+Target 2:50 (Devpost limit to check: usually 3:00). Narration in English, about 330 words: Gemini TTS (voice
+Algieba) reads them in about 2:05, leaving time for screens with no voice. `scripts/narrate.py` makes it. Screen recording of the real app
 on the PC (sandbox PayPal, real Gemini), cut where the app waits. Times below are a guide: the audio sets them.
 Only "Carpe Vigor" on screen and in the voice: no other brand of ours.
 
@@ -21,7 +21,7 @@ Numbers said aloud are the ones read back from the sandbox (devpost-draft.md). R
 | 0:00 | Landing page, slogan "Care that pays you back" | After a check-up, most of us leave with a few sentences. Less salt. More vegetables. Walk more. Then nothing changes. |
 | 0:08 | `/doctor` with the doctor's words typed in | Carpe Vigor turns what your doctor said into a week: meals to cook, movement to do, and a cart with only what's missing. |
 | 0:18 | `/cart`, the PayPal button | You authorize the week's budget once with PayPal. It's held, not spent. |
-| 0:24 | `/reward` | Do your part, and part of it comes back. For what you did. Never for your weight. |
+| 0:24 | `/reward` | Do your part, and part of it comes back. For what you did. Never for what the scale says. |
 
 ## 0:30–1:10 · From the doctor's words to the week
 
@@ -35,8 +35,8 @@ Numbers said aloud are the ones read back from the sandbox (devpost-draft.md). R
 
 | Time | Screen | Voice |
 |---|---|---|
-| 1:10 | `/home`, tick a few items | I tick what I already have. |
-| 1:16 | `/cart` | The agent buys only what the recipes need. Plain code picks the items and the prices. The models write; they never spend. |
+| 1:10 | `/home`, tick a few items | I check off what I already have at home. |
+| 1:16 | `/cart` | The agent buys only what the recipes need. Plain code picks the items and the prices. The AI writes the words. It never spends the money. |
 | 1:28 | PayPal sandbox approval window | I authorize the budget once. PayPal holds it. |
 | 1:36 | Order placed; header "budget · spent · released · paid back" | Each order is captured against that one authorization: in this run, 106 dollars and 39 cents. At the end of the week, the rest is released. |
 
@@ -53,7 +53,7 @@ Numbers said aloud are the ones read back from the sandbox (devpost-draft.md). R
 
 | Time | Screen | Voice |
 |---|---|---|
-| 2:35 | Landing, logo | Carpe Vigor. Your doctor's advice, turned into a week you can live. Care that pays you back. |
+| 2:35 | Landing, logo | Carpe Vigor. Your doctor's advice, turned into seven days you can live. Care that pays you back. |
 | 2:45 | Repository link, AGPL-3.0 | Open source. Built on PayPal and Google Gemini. |
 
 ---
