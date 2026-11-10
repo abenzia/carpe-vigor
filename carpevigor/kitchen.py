@@ -158,3 +158,16 @@ def check(recipes: list[dict], dev: Device, people: int) -> dict[int, list[str]]
         if out:
             problems[i] = out
     return problems
+
+
+def schema_recipe(r: dict) -> dict:
+    """The recipe as schema.org/Recipe, the format recipe apps read when they import from a link (a kitchen machine's
+    own app among them): ingredients as lines, each step with its machine setting written the way recipe cards print it."""
+    ingredients = [" ".join(p for p in (g.get("amount", ""), g.get("name", "")) if p) + (f", {g['note']}" if g.get("note") else "")
+                   if isinstance(g, dict) else str(g) for g in r.get("ingredients", [])]
+    return {"@context": "https://schema.org", "@type": "Recipe", "name": r.get("title", ""),
+            "description": r.get("why", ""), "recipeYield": _servings(int(r.get("servings") or 1)),
+            "prepTime": f"PT{int(r.get('prep_minutes') or 0)}M", "totalTime": f"PT{int(r.get('total_minutes') or 0)}M",
+            "recipeIngredient": ingredients,
+            "recipeInstructions": [{"@type": "HowToStep", "text": step_text(s)} for s in r.get("steps", [])],
+            "tool": r.get("accessories", [])}

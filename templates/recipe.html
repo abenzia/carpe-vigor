@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% from "_cards.html" import tile, nutri %}
 {% block title %}Carpe Vigor — {{ r.title }}{% endblock %}
+{# the same recipe for apps that import from a link (schema.org): tojson escapes <, > and & inside the script #}
+{% block head %}<script type="application/ld+json">{{ r|schema_recipe|tojson }}</script>{% endblock %}
 {% block content %}
 <section class="section-view">
   <p class="tiny"><a href="/recipes">← All recipes</a> · <a href="/week?day={{ r.day }}">{{ r.day }} in the week</a></p>

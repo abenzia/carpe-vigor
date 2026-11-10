@@ -36,6 +36,7 @@ app.mount("/static", StaticFiles(directory=str(config.ROOT / "static")), name="s
 templates = Jinja2Templates(directory=str(config.ROOT / "templates"))
 # A recipe step as a recipe card prints it: what to do, the machine setting in bold, what follows
 templates.env.filters["step_parts"] = kitchen.step_parts
+templates.env.filters["schema_recipe"] = kitchen.schema_recipe
 store = Store()
 catalog = Catalog.load()
 
