@@ -212,7 +212,8 @@ def move_view(request: Request):
     plan = _plan_or_start()
     return render(request, "move.html", movement=plan["plan"]["movement"] if plan else [], days=planner.DAYS,
                   coach=((plan or {}).get("report") or {}).get("coach"),
-                  steps=store.get("steps", []), goal=config.STEPS_GOAL)
+                  steps=store.get("steps", []), goal=config.STEPS_GOAL,
+                  exercises=coach.exercises_in(plan["plan"]["movement"] if plan else []))
 
 
 @app.get("/body", response_class=HTMLResponse)

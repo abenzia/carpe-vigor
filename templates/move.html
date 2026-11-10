@@ -33,5 +33,15 @@
       </section>
     </div>
   </div>
+  {% if exercises %}
+  <section class="card pad" style="margin-top:16px">
+    <p class="section-kicker">How to do this week's exercises</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:8px">
+      {% for e in exercises %}<figure style="margin:0"><video src="/static/exercises/{{ e.name }}.mp4" autoplay muted loop playsinline preload="metadata" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:#e9e5da" aria-label="{{ e.label }}, demonstration"></video>
+        <figcaption class="tiny" style="margin-top:4px"><b>{{ e.label }}</b></figcaption></figure>{% endfor %}
+    </div>
+    <p class="tiny muted" style="margin-top:10px">Demonstrations generated with Google Veo (AI). They show how to move, not how much: the plan above and your doctor say that.</p>
+  </section>
+  {% endif %}
 </section>
 {% endblock %}

@@ -27,3 +27,12 @@ def test_the_recipe_page_carries_it_in_a_json_ld_script(tmp_path, monkeypatch):
     html = TestClient(app.app).get("/recipes/0").text
     block = re.search(r'<script type="application/ld\+json">(.*?)</script>', html, re.S)
     assert block and json.loads(block[1])["name"] == "Soup </script><b>x"  # escaped: the title cannot close the script
+
+
+def test_the_week_s_movement_lines_call_for_their_demonstration_clips_each_once():
+    from carpevigor import coach
+    week = ["Mon: 30-minute brisk walk", "Tue: walk, then 2 sets of 10 wall push-ups and 10 chair sit-to-stands",
+            "Thu: 10 counter push-ups and 10 bodyweight squats", "Sun: gentle stretching"]
+    names = [e["name"] for e in coach.exercises_in(week)]
+    assert names == ["wall_pushup", "counter_pushup", "sit_to_stand", "squat", "walk", "stretch"]
+    assert coach.exercises_in([]) == [] and coach.exercises_in(["Rest day"]) == []

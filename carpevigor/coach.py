@@ -111,3 +111,23 @@ def areas_worked(line: str) -> list[str]:
         if re.search(pattern, line or "", re.I):
             found += [a for a in areas if a not in found]
     return [a for a in AREAS if a in found]
+
+
+# words of a movement line -> the short demonstration clip of that exercise (static/exercises/<name>.mp4, made with Veo
+# on Vertex AI): how to do it, never how much to do; the plan's own words say that
+EXERCISES = [
+    ("wall_pushup", "Wall push-up", r"wall push-?up"),
+    ("counter_pushup", "Counter push-up", r"(counter|incline|table) push-?up"),
+    ("sit_to_stand", "Chair sit-to-stand", r"sit-?to-?stand|chair stand"),
+    ("squat", "Bodyweight squat", r"squat"),
+    ("glute_bridge", "Glute bridge", r"(glute|hip) bridge"),
+    ("calf_raise", "Standing calf raise", r"calf raise"),
+    ("walk", "Brisk walk", r"walk"),
+    ("stretch", "Gentle stretching", r"stretch"),
+]
+
+
+def exercises_in(lines: list[str]) -> list[dict]:
+    """The clips the week's movement lines call for, each once, in the order of EXERCISES."""
+    text = " ".join(lines or [])
+    return [{"name": name, "label": label} for name, label, pattern in EXERCISES if re.search(pattern, text, re.I)]
