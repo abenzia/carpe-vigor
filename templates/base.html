@@ -36,6 +36,7 @@
       <div class="top-actions"><div class="lang" aria-label="Language"><a href="/lang?to=en&amp;back={{ here }}" class="{{ 'active' if lang != 'it' }}">EN</a><a href="/lang?to=it&amp;back={{ here }}" class="{{ 'active' if lang == 'it' }}">IT</a></div></div>
     </header>
     <div class="content">
+      {% if hosted %}<p class="note tiny"><b>Public demo.</b> Everyone who opens this address shares the same week: press “{{ t('start_over') }}” at the bottom for a clean one. PayPal {{ money.mode }}: no real money.{% if llm_mode == 'mock' %} The AI is simulated here (a ready-made plan): the full app runs Gemini, see the README.{% endif %} Do not enter real health data.</p>{% endif %}
       {% if lang == 'it' %}<p class="note tiny">{{ t('interface_only') }}</p>{% endif %}
       {% block content %}{% endblock %}
       <footer class="app-foot">{{ t('disclaimer') }}

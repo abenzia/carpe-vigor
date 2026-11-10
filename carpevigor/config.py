@@ -26,6 +26,8 @@ PAYPAL_REWARD_VIA = os.environ.get("PAYPAL_REWARD_VIA", "rest")
 API_TOKEN = os.environ.get("CARPE_API_TOKEN", "")
 # Where a phone reaches this app (a tunnel or a deployment), shown on the diary page to copy into the shortcut
 PUBLIC_URL = os.environ.get("CARPE_PUBLIC_URL", "").rstrip("/")
+# A public demo for the judges (Render): every page open to anyone, a notice on each page; never set on a personal PC
+HOSTED = os.environ.get("CARPE_HOSTED", "") == "1"
 CURRENCY = os.environ.get("CURRENCY", "USD")
 
 # The agents. Provider `vertex` = Gemini on Google Vertex AI (the default when GOOGLE_CLOUD_PROJECT is set);

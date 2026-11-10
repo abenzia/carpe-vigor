@@ -56,7 +56,8 @@ async def same_origin_posts(request: Request, call_next):
     (fail closed). /api/meal is the exception, for a phone shortcut that sends no Origin: it has its own token."""
     # Through the Cloudflare tunnel (marked by cf-connecting-ip) only the watch's door is open: the tunnel exists for
     # the shortcut, and anyone holding its address must not read measures, the diary or press PayPal buttons
-    if "cf-connecting-ip" in request.headers and not _open_to_phones(request.url.path):
+    # A hosted demo (config.HOSTED) is public on purpose, and its host may sit behind Cloudflare too: the rule is off there
+    if not config.HOSTED and "cf-connecting-ip" in request.headers and not _open_to_phones(request.url.path):
         return JSONResponse({"error": "Not available here."}, status_code=404)
     # /m is exempt too: its cookie is SameSite=Lax, so a form on another site arrives without it and is refused there
     if request.method == "POST" and request.url.path not in PHONE_DOORS and request.url.path != "/m":
@@ -70,7 +71,8 @@ def render(request: Request, name: str, **ctx) -> HTMLResponse:
     lang = ui.lang_of(request.cookies.get("lang"))
     base = {"request": request, "money": week.status(store), "currency": config.CURRENCY,
             "profile": store.get("profile"), "plan": store.get("plan"), "version": __version__,
-            "lang": lang, "t": lambda key: ui.t(key, lang), "nav": ui.NAV, "more": ui.MORE}
+            "lang": lang, "t": lambda key: ui.t(key, lang), "nav": ui.NAV, "more": ui.MORE,
+            "hosted": config.HOSTED, "llm_mode": config.LLM_PROVIDER}
     return templates.TemplateResponse(request, name, {**base, **ctx})
 
 

@@ -1140,3 +1140,16 @@ def test_a_bot_check_page_is_not_saved_as_the_source(tmp_path, monkeypatch):
     monkeypatch.setattr(sources.requests, "get", lambda *a, **k: Page())
     assert sources.fetch("it-min-sale") == []                                  # refused, reported, nothing written
     assert not (tmp_path / "it-min-sale.txt").exists()
+
+
+def test_the_hosted_demo_is_open_behind_cloudflare_says_so_and_keeps_the_phone_doors_shut(client, monkeypatch):
+    from carpevigor import config
+    behind = {"cf-connecting-ip": "203.0.113.9"}                         # Render may sit behind Cloudflare too
+    assert client.get("/doctor", headers=behind).status_code == 404       # on a PC, the tunnel opens only the phone doors
+    monkeypatch.setattr(config, "HOSTED", True)
+    r = client.get("/doctor", headers=behind)
+    assert r.status_code == 200 and "Public demo." in r.text and "Do not enter real health data." in r.text
+    monkeypatch.setattr(config, "API_TOKEN", "")
+    assert client.post("/api/meal", content="an apple", headers=behind).status_code in (401, 403)  # no token, no door
+    monkeypatch.setattr(config, "HOSTED", False)
+    assert "Public demo." not in client.get("/doctor").text

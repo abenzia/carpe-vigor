@@ -1,0 +1,25 @@
+# The public demo for the judges, on Render (Blueprint). The AI is simulated here (LLM_PROVIDER=mock: the ready-made
+# plan in data/demo_plan.json), so a public address cannot spend on Google Cloud; the README runs the real Gemini.
+# PayPal: sandbox if the two PAYPAL_ values are filled in the Render dashboard, else simulated. No real money either way.
+services:
+  - type: web
+    name: carpe-vigor
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python -m carpevigor.nutrition fetch
+    startCommand: uvicorn app:app --host 0.0.0.0 --port $PORT --proxy-headers
+    healthCheckPath: /doctor
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: CARPE_HOSTED
+        value: "1"
+      - key: LLM_PROVIDER
+        value: mock
+      # Render's proxy sets the scheme: PayPal's return address must be https
+      - key: FORWARDED_ALLOW_IPS
+        value: "*"
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
