@@ -39,14 +39,14 @@ Numbers said aloud are the ones read back from the sandbox (devpost-draft.md). R
 | 1:10 | `/home`, tick a few items | I check off what I already have at home. |
 | 1:16 | `/cart` | The agent buys only what the recipes need, and it is plain code a person can read. The AI writes the words. It never spends the money. |
 | 1:28 | PayPal sandbox approval window | I authorize the budget once. PayPal holds it. |
-| 1:36 | Order placed; header "budget · spent · released · paid back" | Each order is captured against that one authorization: in this run, 106 dollars and 39 cents. At the end of the week, the rest is released. |
+| 1:36 | Order placed; header "budget · spent · released · paid back" | Each order is captured against that one authorization: in this run, 105 dollars and 92 cents. At the end of the week, the other 34 dollars are released. |
 
 ## 2:00–2:35 · The reward and the daily life
 
 | Time | Screen | Voice |
 |---|---|---|
 | 2:00 | `/reward` | At the end of the month, up to twenty percent of what I spent comes back: half for how healthy my groceries were, the rest for the days I moved and the meals I cooked. |
-| 2:12 | Refund confirmed | Paid back through PayPal's MCP server: 16 dollars and 96 cents, in about eight seconds. |
+| 2:12 | Refund confirmed | Paid back through PayPal's MCP server: 17 dollars and 99 cents, as a refund on the order. |
 | 2:20 | Phone page `/m`, say "an apple"; then `/diary` | During the week, I just tell my phone what I ate. |
 | 2:28 | `/numbers`, a lab report being read (invented report, never Ale's) | And if I want, the app reads my lab report and shows each value next to my doctor's target. Judging it stays with the doctor. |
 
