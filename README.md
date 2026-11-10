@@ -70,7 +70,7 @@ The header of every screen shows budget · spent · released · paid back. Three
 
 | Part | Weight | Comes from | Checked by |
 |---|---|---|---|
-| The basket | 50% | what PayPal actually captured, item by item | **verified**: PayPal |
+| The basket | 50% | the orders PayPal actually captured, split by the items the agent put in them | **amounts captured by PayPal**; the split is the agent's cart (PayPal does not see the items) |
 | Moving | 30% | days over the step goal (7,000 by default) | from your watch or phone (typed in the demo) |
 | Cooking | 20% | meals ticked as cooked | **self-reported**, so it weighs least |
 | Check-up bonus | +5% / +2.5% / 0 | your doctor's verdict on the goals they set: met / improving / not yet | your doctor |
@@ -169,7 +169,8 @@ PayPal.
 ## Models and services
 
 - **Google Vertex AI**, region `global`:
-  - Gemini 4 Argon (`gemini-4-argon`) writes the plan and runs the safety and clarity reviewers;
+  - Gemini 3.8 Flash (`gemini-3.8-flash`) writes the plan and reads the lab report; Gemini 4 Argon (`gemini-4-argon`)
+    runs the safety and clarity reviewers;
   - the three fact jurors run on three different models: Gemini 4 Argon, Gemini 3.8 Flash and Gemini 3.5
     Flash-Lite;
   - Ask the sources answers on Gemini 3.8 Flash;

@@ -3,7 +3,8 @@
 Why behaviour and not results: an app that pays for kilos lost also pays for skipping meals. What
 is rewarded here is doing your part, and most of it is measured, not declared:
 
-- the basket (half the score), verified by PayPal: the share of the money that went on vegetables, legumes,
+- the basket (half the score): money PayPal really captured, split by what the agent bought in it (PayPal confirms
+  the amounts, not the items: the split comes from our cart). The share of the money that went on vegetables, legumes,
   fruit, fish and whole grains, minus twice the share that went on sweets, snacks, cured meat, sugary drinks
   and saturated fat. Each dollar of junk costs twice what a dollar of vegetables earns;
 - moving (30%): days over the step goal, from the phone's health platform (typed in the demo);
@@ -66,7 +67,7 @@ def score(behaviour: WeekBehaviour) -> Reward:
     junk_pct = round(100 * b.unhealthy_spend / b.spent) if b.spent else 0
     parts = [
         {"key": "basket", "label": f"Basket: {healthy_pct}% healthy food, {junk_pct}% sweets, snacks and cured meat",
-         "share": basket, "weight": WEIGHTS["basket"], "source": "verified by PayPal"},
+         "share": basket, "weight": WEIGHTS["basket"], "source": "captured by PayPal"},
         {"key": "moved", "label": f"Moved on {b.days_with_steps} of 7 days ({config.STEPS_GOAL:,} steps or more)",
          "share": round(moved, 3), "weight": WEIGHTS["moved"], "source": "from your watch"},
         {"key": "cooked", "label": f"Cooked {b.cooked_meals} of {b.planned_meals} planned meals",

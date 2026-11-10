@@ -63,8 +63,14 @@ Carpe Vigor does that work, and spends your grocery money only within a limit yo
 - PayPal's agent toolkit has no authorize/capture/void, so the budget hold stays on the REST API and MCP is used
   where it fits honestly: the refund.
 
-### What's next
+### What's next, and the limits we know
 
+- One merchant per budget: a PayPal authorization belongs to the payee that captures it, so the hold works when one
+  grocer (or Carpe Vigor as merchant of record) fills the whole week. Several stores would need one hold each.
+- PayPal guarantees an authorized amount for its 3-day honor period; captures after that, up to day 29, can fail if
+  the funds are gone. A week longer than 3 days needs a reauthorization.
+- The basket score splits money PayPal really captured by the items the agent put in each order: PayPal confirms the
+  amounts, not the items.
 - A doctor's portal so the check-up verdict comes from the doctor, not the user.
 - Real grocery stores instead of the demo catalog.
 - Italian everywhere (today the interface is bilingual, the long texts are English).

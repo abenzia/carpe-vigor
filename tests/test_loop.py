@@ -88,7 +88,7 @@ def test_the_basket_moves_the_rate_vegetables_up_sweets_and_bacon_down():
 
 def test_each_part_of_the_reward_says_how_it_is_known():
     parts = {p["key"]: p for p in reward.score(week()).parts}
-    assert parts["basket"]["source"] == "verified by PayPal" and parts["basket"]["weight"] == 0.5
+    assert parts["basket"]["source"] == "captured by PayPal" and parts["basket"]["weight"] == 0.5
     assert parts["moved"]["weight"] == 0.3 and parts["cooked"]["weight"] == 0.2
     assert parts["cooked"]["source"] == "self-reported"
 
@@ -964,7 +964,7 @@ def test_full_loop_through_the_web_app(client):
     for title in [r["title"] for r in state["plan"]["plan"]["recipes"]][:12]:
         client.post("/week/cooked", data={"title": title}, follow_redirects=False)
     r = client.get("/reward")
-    assert "pays you back" in r.text and "verified by PayPal" in r.text and "self-reported" in r.text
+    assert "pays you back" in r.text and "captured by PayPal" in r.text and "self-reported" in r.text
     client.post("/budget/release", follow_redirects=False)                    # ends the week: its reward goes into the month
     state = client.get("/api/state").json()
     assert state["money"]["released"] == round(140 - state["money"]["spent"], 2)

@@ -17,7 +17,7 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
     <table class="tiny" style="margin-top:6px">
       {% for p in result.parts %}
       <tr><td>{{ p.label }}</td><td class="num">{{ (p.share * 100)|round|int }}%</td><td class="num">× {{ (p.weight * 100)|int }}</td>
-          <td><span class="pill {{ 'ok' if p.source == 'verified by PayPal' else ('warn' if p.source == 'self-reported' else '') }}">{{ p.source }}</span></td></tr>
+          <td><span class="pill {{ 'ok' if p.source == 'captured by PayPal' else ('warn' if p.source == 'self-reported' else '') }}">{{ p.source }}</span></td></tr>
       {% endfor %}
     </table>
     {% if behaviour.spent == 0 %}

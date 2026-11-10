@@ -28,8 +28,8 @@ Five screens, one loop: `/doctor` → `/week` → `/home` → `/cart` → `/rewa
   (at most about 1 kg a week; not under about 1,200 kcal a day for women, 1,500 for men, without a doctor; no
   goal under BMI 18.5; no weight-loss goal for minors or in pregnancy or breastfeeding): past them the plan gets
   longer, and the app says why. A calorie number the doctor wrote wins over the estimate. Weight never pays.
-- **Reward what people do; outcomes only as the doctor judges them.** `reward.py` scores the basket (verified by
-  PayPal), days moved and meals cooked. The only outcome that pays is the check-up bonus: the doctor's verdict on
+- **Reward what people do; outcomes only as the doctor judges them.** `reward.py` scores the basket (amounts captured by
+  PayPal, items from the cart), days moved and meals cooked. The only outcome that pays is the check-up bonus: the doctor's verdict on
   the goals they set (met / improving / not yet), never a single number read by the app, never weight alone.
 - **PayPal sandbox only.** `paypal.py` refuses live. Credentials in `.env`, never in code or commits.
 - **No personal data in the repo.** No real lab values, no real names, no files from Segnavia. The repo goes
