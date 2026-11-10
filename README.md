@@ -111,8 +111,12 @@ an employer inside its welfare plan, an insurer, or a retailer whose basket beco
   week's reward (16.96, 15.9% at score 80/100) paid back with "Close the month" through PayPal's MCP server in about
   8 seconds. Read back from PayPal: authorization VOIDED, capture PARTIALLY_REFUNDED, refund COMPLETED under our
   `invoice_id`.
-- **Known limit**: PayPal guarantees a capture for 3 days (the honor period) of the 29-day authorization. So the
-  weekly budget is authorized on shopping day; longer plans would use a saved payment method.
+- **The 3-day honor period**: PayPal guarantees held funds for 3 days of the 29-day authorization. Before a capture
+  past day 3, `week.py` reauthorizes the uncaptured rest (`POST /v2/payments/authorizations/{id}/reauthorize`, a new
+  3 days each time) and captures against the new authorization; past day 29 it refuses and asks for a new week.
+  Tested on the simulated PayPal only: the sandbox accepts a reauthorization from day 4, so it has not run there yet.
+- **Known limit**: one authorization belongs to one payee, so one budget hold works for one grocer (or Carpe Vigor
+  as merchant of record); several stores would need one hold each.
 - **Sandbox only**: `paypal.py` refuses live. With no credentials the app runs in mock mode and says so on
   every screen.
 

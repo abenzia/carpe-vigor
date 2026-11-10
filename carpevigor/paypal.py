@@ -90,6 +90,14 @@ class MockPayPal:
         self.captures[cid] = {"id": cid, "authorization": authorization_id, "amount": round(amount, 2), "note": note, "refunded": 0.0}
         return {"capture_id": cid, "status": "COMPLETED", "amount": round(amount, 2)}
 
+    def reauthorize(self, authorization_id: str, amount: float) -> dict:
+        auth = self.authorizations.get(authorization_id)
+        if not auth or auth["status"] == "VOIDED":
+            raise PayPalError(f"no live authorization {authorization_id}")
+        aid = f"MOCK-AUTH-{uuid.uuid4().hex[:10].upper()}"
+        self.authorizations[aid] = {**auth, "id": aid, "amount": round(amount, 2), "captured": 0.0, "status": "CREATED"}
+        return {"authorization_id": aid, "status": "CREATED"}
+
     def void(self, authorization_id: str) -> dict:
         auth = self.authorizations.get(authorization_id)
         if not auth:
@@ -167,6 +175,13 @@ class SandboxPayPal:
             "final_capture": final, "note_to_payer": note[:255]})
         # The money has moved once PayPal answers: never fail here for a missing field, or the capture goes unrecorded.
         return {"capture_id": cap["id"], "status": cap["status"], "amount": float((cap.get("amount") or {}).get("value", amount))}
+
+    def reauthorize(self, authorization_id: str, amount: float) -> dict:
+        """After the 3-day honor period (days 4 to 29) the hold is renewed for what is still uncaptured; the answer's id
+        is the authorization later captures and the void go to (PayPal Payments v2, read 10 Nov 2026)."""
+        auth = self._call("POST", f"/v2/payments/authorizations/{authorization_id}/reauthorize",
+                          {"amount": {"currency_code": config.CURRENCY, "value": f"{amount:.2f}"}})
+        return {"authorization_id": auth["id"], "status": auth.get("status", "")}
 
     def void(self, authorization_id: str) -> dict:
         self._call("POST", f"/v2/payments/authorizations/{authorization_id}/void")

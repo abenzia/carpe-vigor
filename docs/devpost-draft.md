@@ -67,8 +67,9 @@ Carpe Vigor does that work, and spends your grocery money only within a limit yo
 
 - One merchant per budget: a PayPal authorization belongs to the payee that captures it, so the hold works when one
   grocer (or Carpe Vigor as merchant of record) fills the whole week. Several stores would need one hold each.
-- PayPal guarantees an authorized amount for its 3-day honor period; captures after that, up to day 29, can fail if
-  the funds are gone. A week longer than 3 days needs a reauthorization.
+- PayPal guarantees an authorized amount for its 3-day honor period. Past day 3 the app reauthorizes the uncaptured
+  rest before the next capture; past day 29 it asks for a new week. Tested on the simulated PayPal: the sandbox only
+  allows a reauthorization from day 4.
 - The basket score splits money PayPal really captured by the items the agent put in each order: PayPal confirms the
   amounts, not the items.
 - A doctor's portal so the check-up verdict comes from the doctor, not the user.

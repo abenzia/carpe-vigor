@@ -6,8 +6,13 @@ turns the reward into a refund.
 """
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
+
 from . import config, paypal, reward
 from .store import Store
+
+HONOR_DAYS = 3   # PayPal's honor period for authorized funds
+HOLD_DAYS = 29   # an authorization can be renewed until then, no later
 
 
 def status(store: Store) -> dict:
@@ -43,8 +48,9 @@ def complete_authorization(store: Store, order_id: str) -> dict:
     if pending.get("order_id") != order_id:
         raise paypal.PayPalError("This approval does not match the pending order.")
     auth = paypal.client().authorize_order(order_id)
+    now = _now().isoformat()
     record = {"order_id": order_id, "authorization_id": auth["authorization_id"], "amount": auth["amount"],
-              "currency": auth["currency"], "voided": False, "released": 0.0}
+              "currency": auth["currency"], "voided": False, "released": 0.0, "authorized_at": now, "held_at": now}
     store.put("authorization", record)
     store.put("captures", [])
     store.put("refunds", [])
@@ -57,14 +63,40 @@ def capture_order(store: Store, amount: float, note: str) -> dict:
     auth = store.get("authorization")
     if not auth or auth.get("voided"):
         raise paypal.PayPalError("No active budget authorization.")
-    if round(sum(c["amount"] for c in store.get("captures", [])) + amount, 2) > auth["amount"] + 1e-9:
+    spent = round(sum(c["amount"] for c in store.get("captures", [])), 2)
+    if round(spent + amount, 2) > auth["amount"] + 1e-9:
         raise paypal.PayPalError("This order would exceed the authorized budget.")
+    auth = _keep_hold(store, auth, spent)
     cap = paypal.client().capture(auth["authorization_id"], amount, note)
     captures = store.get("captures", [])
     captures.append({"capture_id": cap["capture_id"], "amount": amount, "note": note, "refunded": 0.0})
     store.put("captures", captures)
     store.log("captured", {"capture_id": cap["capture_id"], "amount": amount, "note": note})
     return cap
+
+
+def _now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _keep_hold(store: Store, auth: dict, spent: float) -> dict:
+    """PayPal guarantees held funds for a 3-day honor period; after it, until day 29, a capture may fail if the money
+    is gone. So past day 3 the uncaptured rest is reauthorized first (a new 3 days each time); past day 29 the hold
+    cannot be renewed and the week needs a new budget. Holds made before this rule carry no date: left as they were."""
+    if not auth.get("held_at"):
+        return auth
+    if _now() - datetime.fromisoformat(auth["authorized_at"]) > timedelta(days=HOLD_DAYS):
+        raise paypal.PayPalError(f"The budget hold is over {HOLD_DAYS} days old and PayPal no longer renews it: "
+                                 "release it and authorize a new week.")
+    if _now() - datetime.fromisoformat(auth["held_at"]) <= timedelta(days=HONOR_DAYS):
+        return auth
+    left = round(auth["amount"] - spent, 2)
+    renewed = paypal.client().reauthorize(auth["authorization_id"], left)
+    store.log("reauthorized", {"from": auth["authorization_id"], "authorization_id": renewed["authorization_id"],
+                               "amount": left})
+    auth = {**auth, "authorization_id": renewed["authorization_id"], "held_at": _now().isoformat()}
+    store.put("authorization", auth)
+    return auth
 
 
 def release_remainder(store: Store) -> dict:
@@ -170,6 +202,9 @@ def ledger(store: Store) -> list[dict]:
         elif e["kind"] == "captured":
             rows.append({"at": e["at"], "what": "Order captured", "paypal_id": e["capture_id"], "amount": e["amount"],
                          "effect": "charged", "note": e.get("note", "")})
+        elif e["kind"] == "reauthorized":
+            rows.append({"at": e["at"], "what": "Budget hold renewed", "paypal_id": e["authorization_id"], "amount": e["amount"],
+                         "effect": "held", "note": f"past PayPal's 3-day honor period · renews {e['from']}"})
         elif e["kind"] == "released":
             rows.append({"at": e["at"], "what": "Remainder released", "paypal_id": e.get("authorization_id", ""),
                          "amount": e["released"], "effect": "back to you", "note": "authorization voided"})

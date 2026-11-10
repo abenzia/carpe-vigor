@@ -1153,3 +1153,28 @@ def test_the_hosted_demo_is_open_behind_cloudflare_says_so_and_keeps_the_phone_d
     assert client.post("/api/meal", content="an apple", headers=behind).status_code in (401, 403)  # no token, no door
     monkeypatch.setattr(config, "HOSTED", False)
     assert "Public demo." not in client.get("/doctor").text
+
+
+def test_a_hold_older_than_the_honor_period_is_renewed_before_a_capture_and_refused_after_29_days(tmp_path, monkeypatch):
+    from datetime import timedelta
+    from carpevigor import week
+    store, pp = Store(tmp_path / "t.sqlite"), paypal.MockPayPal()
+    paypal.use(pp)
+    order = week.start_authorization(store, 100.0, "http://x/ok", "http://x/no")
+    first = week.complete_authorization(store, order["id"])["authorization_id"]
+    week.capture_order(store, 30.0, "day one")                                    # inside the 3 days: no renewal
+    assert store.get("authorization")["authorization_id"] == first
+    real_now = week._now()
+    monkeypatch.setattr(week, "_now", lambda: real_now + timedelta(days=5))
+    week.capture_order(store, 20.0, "day five")
+    renewed = store.get("authorization")["authorization_id"]
+    assert renewed != first and pp.authorizations[renewed]["amount"] == 70.0      # the uncaptured rest, held again
+    assert pp.authorizations[renewed]["captured"] == 20.0                         # the capture went to the new hold
+    assert [r["what"] for r in week.ledger(store)].count("Budget hold renewed") == 1
+    week.capture_order(store, 10.0, "day six")                                    # the renewal has its own 3 days
+    assert store.get("authorization")["authorization_id"] == renewed
+    monkeypatch.setattr(week, "_now", lambda: real_now + timedelta(days=30))
+    with pytest.raises(paypal.PayPalError, match="29 days"):
+        week.capture_order(store, 5.0, "day thirty")
+    assert week.release_remainder(store)["released"] == 40.0                      # 100 - 30 - 20 - 10
+    assert pp.authorizations[renewed]["status"] == "VOIDED"
