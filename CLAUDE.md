@@ -3,7 +3,8 @@
 Entry for the PayPal AI Hackathon (Devpost, deadline 12 Nov 2026, 12:00 PST = 21:00 Italy). One person
 (Alessandro "Ale" Benzia), two Claudes: the cloud session writes code and the plan; the terminal
 session on Ale's PC runs it with his keys and fixes what breaks. `PIANO.md` is the shared to-do: read it
-first, update it when you finish or discover something, commit it.
+first, update it when you finish or discover something. It stays on Ale's PC and is NOT committed (gitignored since
+11 Nov, removed from the history before the repo went public: it held account names and local paths).
 
 ## What this is
 
