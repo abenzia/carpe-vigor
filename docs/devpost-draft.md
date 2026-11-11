@@ -59,6 +59,12 @@ against, and a rule a person can read for what goes in the cart.
 9. **A week that adapts, if you ask.** Two of the last three days over your calorie reference? The report offers to
    have the team rewrite the week: portions sized to the reference, lighter dinners, more vegetables and legumes,
    never under the public minimum. Meals already cooked still count for the reward.
+10. **My training.** A home program, day by day, built around your record: sets, repetitions, rest and effort for
+    each exercise, a month calendar, and the reason for every choice. Over 65: balance three days a week. BMI 30 or
+    more: low impact, nothing on the floor. Blood pressure above your doctor's target: moderate effort, no
+    breath-holding. What the doctor said ("no running, mind your knee") is read into limits and quoted. Tell it how
+    each exercise felt and the next session moves one step up or down; pain twice takes the exercise out.
+    Chest pain, fainting, pregnancy or under 18: no program, the doctor decides.
 
 ### How we built it
 

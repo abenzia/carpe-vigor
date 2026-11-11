@@ -38,7 +38,7 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
     <p class="tiny"><b>{{ steps|select('ge', steps_goal)|list|length }} of {{ steps|length }} days</b> over {{ '{:,}'.format(steps_goal) }} steps. <a href="/report">Day, week and month →</a></p>
     {% endif %}
     <details class="tiny"><summary>Type steps by hand (demo)</summary>
-    <p class="tiny muted">In the demo, type seven days of steps as a watch would send them (Health Connect / Apple Health in the product, where steps typed by hand are left out). Goal: {{ '{:,}'.format(steps_goal) }} a day.</p>
+    <p class="tiny muted">In the demo, type seven days of steps as a watch would send them (from the phone's health app in the product, where steps typed by hand are left out). Goal: {{ '{:,}'.format(steps_goal) }} a day.</p>
     <form method="post" action="/reward/steps" class="row">
       <input type="text" name="steps" value="{{ steps|join(', ') if steps else '8200, 6100, 9400, 7300, 4800, 11200, 7600' }}" style="flex:1">
       <button class="secondary" type="submit">Sync</button>

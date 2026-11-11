@@ -98,3 +98,8 @@ def test_the_pages_walk_from_questions_to_a_logged_session(tmp_path, monkeypatch
     assert "How did it go?" in day
     client.post(f"/training/log/{today}", data={"done": "yes", "rpe": "6"})
     assert webapp.store.get("training")["log"][today]["rpe"] == 6
+
+
+def test_bmi_comes_from_height_and_weight_when_not_stored():
+    L = T.limits({"height_cm": 165, "weight_kg": 90}, [], None, {}, False)
+    assert L.low_impact and any("BMI 33.1" in r["why"] for r in L.reasons)

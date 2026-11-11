@@ -70,6 +70,16 @@ The header of every screen shows budget · spent · released · paid back. Three
   a pace mark, bar charts and daily rings drawn as SVG on the server, calories eaten as a reference, and this week's
   reward. After 2 of the last 3 days more than 10% over the calorie reference, it offers (never by itself) to have
   the team adapt the week; meals already cooked stay counted.
+- **My training**: a home program, day by day: warm-up, exercises with sets, repetitions and rest (a rest timer on
+  the page), cool-down, and a month calendar. Built by plain code from public guidelines (HHS, Ministero della
+  Salute, EpiCentro) and from the person's record, each choice shown with its reason: six readiness questions after
+  the public PAR-Q+ (chest pain, fainting or "supervised only" stop it until the doctor is seen; any other yes keeps
+  it gentle until the person says the doctor cleared it), age (balance on 3 days at 65+, no program under 18), BMI
+  (low impact and no floor work at 30+), the doctor's words (read once by Gemini into limits, quoted), numbers above
+  the doctor's targets (pressure: moderate effort and short holds; blood sugar: never two still days), pregnancy (no
+  program). 4-week blocks with a lighter 4th; each exercise moves one rung of its ladder on "too easy" / "too hard";
+  "it hurt" twice takes it out. A block grows only if the one before was done. It does not pay: the reward still
+  counts measured steps. The demo in the video uses an invented person's record (`video/rec/seed_training.py`).
 - **Ask the sources**: a free question, answered only from passages of the public sources, each sentence citing
   its passage. The safety reviewer reads the answer before you do. If the reviewer still blocks it after one
   rewrite, you see the passages and the reason, never the answer.

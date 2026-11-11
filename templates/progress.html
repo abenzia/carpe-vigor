@@ -12,9 +12,9 @@
   .charts{display:grid;grid-template-columns:1fr 1fr;gap:16px} @media (max-width:900px){.charts{grid-template-columns:1fr}}
 </style>
 <section class="section-view">
-<div class="view-head"><div><p class="eyebrow">From your iPhone and your watch</p>
+<div class="view-head"><div><p class="eyebrow">From your phone and your watch</p>
   <h1 class="view-title">How you are <i>doing.</i></h1>
-  <p class="view-desc" style="max-width:660px">Steps and exercise minutes come from Apple Health on your iPhone and Apple Watch, sent by your shortcut: nothing to type. What you ate comes from your voice or a photo of the plate. Every total on this page is added up by plain code.</p></div>
+  <p class="view-desc" style="max-width:660px">Steps and exercise minutes come from the health app on your phone and your watch, sent by your shortcut: nothing to type. What you ate comes from your voice or a photo of the plate. Every total on this page is added up by plain code.</p></div>
   <a class="button line" href="/reward">☆ My reward →</a></div>
 
 <section class="card pad goals">
@@ -49,9 +49,9 @@
 </section>
 {% endif %}
 <div class="charts">
-  {% if r.view != 'day' %}<section class="card pad"><p class="section-kicker">Steps · Apple Health</p>{{ bars(r.rows, 'steps', r.max_steps, r.steps_goal, '#163b2a', 'steps') }}
+  {% if r.view != 'day' %}<section class="card pad"><p class="section-kicker">Steps · from your phone</p>{{ bars(r.rows, 'steps', r.max_steps, r.steps_goal, '#163b2a', 'steps') }}
     <p class="tiny muted">Green: the day counts as moved for your reward (30% of it). Grey: under the goal.</p></section>
-  <section class="card pad"><p class="section-kicker">Exercise minutes · Apple Watch</p>{{ bars(r.rows, 'exercise_min', r.max_minutes, r.daily_minutes, '#2f7d4f', 'minutes') }}
+  <section class="card pad"><p class="section-kicker">Exercise minutes · from your watch</p>{{ bars(r.rows, 'exercise_min', r.max_minutes, r.daily_minutes, '#2f7d4f', 'minutes') }}
     <p class="tiny muted">The line is 150 minutes a week spread over 7 days ({{ r.daily_minutes }} a day), the US guidelines for adults.</p></section>
 <section class="card pad"><p class="section-kicker">Calories eaten · your voice and your photos</p>
   {{ bars(r.rows, 'kcal', r.max_kcal, None, '#d9672d', 'kcal') }}

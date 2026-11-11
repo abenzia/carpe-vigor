@@ -133,6 +133,8 @@ def limits(health: dict, rows: list[dict], doctor: DoctorLimits | dict | None, a
     doctor = DoctorLimits(**doctor) if isinstance(doctor, dict) else doctor or DoctorLimits()
     L = Limits()
     age, bmi = health.get("age"), health.get("bmi")
+    if bmi is None and health.get("height_cm") and health.get("weight_kg"):
+        bmi = round(health["weight_kg"] / (health["height_cm"] / 100) ** 2, 1)
     if age is not None and age < 18:
         L.stop = "This program is for adults: under 18, movement is planned with your doctor or pediatrician."
         return L
