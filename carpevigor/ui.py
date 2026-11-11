@@ -21,6 +21,7 @@ TEXT = {
     "body": ("My body · 3D", "Il mio corpo · 3D"),
     "diary": ("What I ate", "Cosa ho mangiato"),
     "progress": ("Measures & progress", "Misure e progressi"),
+    "report": ("My report", "Il mio resoconto"),
     "team": ("The team", "Il team"),
     "reward": ("My reward", "Il mio premio"),
     "ledger": ("Ledger", "Registro"),
@@ -49,7 +50,7 @@ TEXT = {
 
 NAV = [("/journey", "⌂", "journey"), ("/doctor", "✎", "doctor"), ("/week", "▦", "week"), ("/recipes", "✳", "recipes"),
        ("/home", "⌑", "pantry"), ("/cart", "⌗", "shop"), ("/move", "↗", "move"), ("/body", "◌", "body"),
-       ("/diary", "☰", "diary"), ("/numbers", "⌁", "progress"), ("/team", "◉", "team"), ("/reward", "☆", "reward")]
+       ("/diary", "☰", "diary"), ("/report", "▥", "report"), ("/numbers", "⌁", "progress"), ("/team", "◉", "team"), ("/reward", "☆", "reward")]
 MORE = [("/ledger", "≡", "ledger"), ("/ask", "?", "ask")]
 
 

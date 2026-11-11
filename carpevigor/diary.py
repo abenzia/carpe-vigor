@@ -53,11 +53,37 @@ def say(text: str, portion: Literal["small", "normal", "large"] = "normal") -> d
     split = llm.ask(SPLIT, f"THE PERSON SAYS: {text}", Breakdown, tier="mid")
     if not split.parts:
         raise ValueError(f'"{text}" does not sound like food or drink: nothing was added.')
+    return _entry(split, text, portion)
+
+
+PHOTO_TYPES = {"image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"}
+MAX_PHOTO = 10 * 1024 * 1024
+
+SEE = """You look at a photo of a meal and list what is on the plate (or in the glass), each food with its raw weight \
+in grams as you can judge it from the photo, as a food database would name them. Judge the portion from what is \
+visible (plate size, cutlery, hands). Do not comment on health, do not judge, do not give advice. If the photo shows \
+no food or drink, return an empty dish and no parts."""
+
+
+def photo(data: bytes, mime: str, portion: Literal["small", "normal", "large"] = "normal") -> dict:
+    """A photo of the plate -> a diary entry. The model only names the foods and judges their grams; the values come
+    from USDA, as for a sentence. The photo itself is not kept."""
+    if mime not in PHOTO_TYPES:
+        raise ValueError("Send a photo (JPEG, PNG, HEIC).")
+    if not data or len(data) > MAX_PHOTO:
+        raise ValueError("The photo is empty or larger than 10 MB.")
+    split = llm.ask(SEE, "What is in this meal?", Breakdown, tier="mid", attachment=(data, mime))
+    if not split.parts:
+        raise ValueError("No food or drink could be seen in the photo: nothing was added.")
+    return _entry(split, "", portion) | {"from_photo": True}
+
+
+def _entry(split: Breakdown, said: str, portion: str) -> dict:
     factor = PORTIONS.get(portion, 1.0)
     values = nutrition.count([(p.name, p.grams * factor) for p in split.parts[:MAX_PARTS]], 1)
     if values is None:
         raise ValueError("The food database is not on this machine: run python -m carpevigor.nutrition fetch.")
-    return {"at": _now().isoformat(timespec="minutes"), "said": text, "dish": split.dish or text, "portion": portion,
+    return {"at": _now().isoformat(timespec="minutes"), "said": said, "dish": split.dish or said, "portion": portion,
             "assumed": split.assumed, "estimate": True, "nutrition": values.model_dump()}
 
 
@@ -89,6 +115,8 @@ def spoken(entry: dict, today: dict) -> str:
 
 def _mock_split(task: str) -> Breakdown:
     """No model: the sentence as one food of 300 g, which the database may or may not know."""
+    if "THE PERSON SAYS:" not in task:  # a photo: without a model nothing can be seen in it
+        return Breakdown(dish="", parts=[])
     said = task.split("THE PERSON SAYS:", 1)[-1].strip()
     return Breakdown(dish=said, parts=[Part(name=said, grams=300)], assumed="no model: one typical 300 g portion")
 

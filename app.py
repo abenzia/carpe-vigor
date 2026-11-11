@@ -25,7 +25,7 @@ from fastapi.templating import Jinja2Templates
 
 from carpevigor import (__version__, ask, cart_agent, checkup, config, diary, guidelines, kitchen, nutrition, planner, profile,
                         rag, reward, sources, ui, week)
-from carpevigor import apple_health, coach, health, phone, report
+from carpevigor import activity, apple_health, coach, health, phone, report
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -474,6 +474,44 @@ def diary_add(text: str = Form(...), portion: str = Form("normal")):
     return RedirectResponse("/diary", status_code=303)
 
 
+async def _meal_photo(file: UploadFile, portion: str) -> dict:
+    data = await file.read(diary.MAX_PHOTO + 1)
+    entry = diary.photo(data, file.content_type or "", portion if portion in diary.PORTIONS else "normal")
+    store.put("diary", store.get("diary", []) + [entry])
+    return entry
+
+
+@app.post("/diary/photo")
+async def diary_photo(file: UploadFile = File(...), portion: str = Form("normal")):
+    """A photo of the plate: read once by Gemini, counted with USDA, never stored."""
+    try:
+        await _meal_photo(file, portion)
+    except ValueError as error:
+        return RedirectResponse(f"/diary?error={quote(str(error))}", status_code=303)
+    return RedirectResponse("/diary", status_code=303)
+
+
+@app.post("/m/photo")
+async def phone_photo(request: Request, file: UploadFile = File(...), portion: str = Form("normal")):
+    if not _phone_ok(request):
+        return RedirectResponse("/m", status_code=303)
+    try:
+        entry = await _meal_photo(file, portion)
+    except ValueError as error:
+        return RedirectResponse(f"/m?error={quote(str(error))}", status_code=303)
+    return RedirectResponse(f"/m?said={quote(diary.spoken(entry, diary.day(store.get('diary', []))))}", status_code=303)
+
+
+@app.get("/report", response_class=HTMLResponse)
+def report_view(request: Request, view: str = "week"):
+    """Day, week, month: steps and exercise minutes from Apple Health, calories from the diary, against the goals."""
+    view = view if view in ("day", "week", "month") else "week"
+    b = behaviour()
+    return render(request, "progress.html",
+                  r=activity.report(store, view, kcal_reference=health.read(store.get("health") or {}).get("target_kcal")),
+                  result=reward.score(b), behaviour=b, month=week.month(store), max_rate=config.CASHBACK_MAX)
+
+
 @app.post("/diary/remove")
 def diary_remove(at: str = Form(...), dish: str = Form(...)):
     entries = store.get("diary", [])
@@ -696,6 +734,7 @@ def steps_submit(steps: str = Form(...), back: str = Form("/reward")):
     """Seven numbers, comma separated: what a watch would send. Simulated in the demo."""
     values = [int(x) for x in steps.replace(";", ",").split(",") if x.strip().isdigit()][:7]
     store.put("steps", values)
+    activity.record(store, {"steps": values})
     return RedirectResponse(back if back in ("/reward", "/move") else "/reward", status_code=303)
 
 

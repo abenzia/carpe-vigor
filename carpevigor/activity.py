@@ -1,0 +1,56 @@
+"""Day by day: what the watch and the phone counted, and what was eaten, against the week's goals.
+
+Apple Health sends, through the person's shortcut, the last days of steps and exercise minutes (Apple's "Exercise
+Minutes", the green ring: brisk movement or more). Each value is kept under its date, so the report can show a day, a
+week or a month. The goals are the ones the app already uses, not new ones: STEPS_GOAL steps a day (the reward's
+"moved" days) and the US guidelines' 150 moderate minutes a week (coach.py). Calories eaten come from the diary and are
+shown next to the energy reference of the measures page: a reference, never a goal that pays.
+"""
+from __future__ import annotations
+
+from datetime import date, timedelta
+
+from . import coach, config
+
+FIELDS = ("steps", "exercise_min")
+
+
+def record(store, values: dict[str, list[int]], today: str | None = None) -> None:
+    """{"steps": [... , today]} -> each value under its date, the last one today's. A later sync replaces a day."""
+    end = date.fromisoformat(today) if today else date.today()
+    days = dict(store.get("days") or {})
+    for field, series in values.items():
+        for back, v in enumerate(reversed(series)):
+            on = (end - timedelta(days=back)).isoformat()
+            days[on] = {**days.get(on, {}), field: int(v)}
+    store.put("days", days)
+
+
+def _eaten(diary: list[dict]) -> dict[str, float]:
+    out: dict[str, float] = {}
+    for e in diary:
+        out[e["at"][:10]] = out.get(e["at"][:10], 0) + e["nutrition"].get("kcal", 0)
+    return out
+
+
+def report(store, view: str = "week", today: str | None = None, kcal_reference: int | None = None) -> dict:
+    """The bars of one view (day, week, month) and how the goals stand, all added up here by plain arithmetic."""
+    end = date.fromisoformat(today) if today else date.today()
+    span = {"day": 1, "week": 7, "month": 30}.get(view, 7)
+    days, eaten = store.get("days") or {}, _eaten(store.get("diary", []))
+    rows = []
+    for back in range(span - 1, -1, -1):
+        on = (end - timedelta(days=back)).isoformat()
+        d = days.get(on, {})
+        rows.append({"on": on, "steps": d.get("steps"), "exercise_min": d.get("exercise_min"),
+                     "kcal": round(eaten[on]) if on in eaten else None})
+    known = [r for r in rows if r["steps"] is not None]
+    minutes = sum(r["exercise_min"] or 0 for r in rows)
+    weekly = coach.MIN_MINUTES * span / 7  # 150 a week, spread over the days shown
+    return {"view": view, "rows": rows, "steps_goal": config.STEPS_GOAL, "kcal_reference": kcal_reference,
+            "days_moved": sum(1 for r in known if r["steps"] >= config.STEPS_GOAL), "days_known": len(known),
+            "minutes": minutes, "minutes_goal": round(weekly), "minutes_met": minutes >= weekly,
+            "daily_minutes": round(coach.MIN_MINUTES / 7),
+            "max_steps": max([r["steps"] or 0 for r in rows] + [config.STEPS_GOAL]),
+            "max_minutes": max([r["exercise_min"] or 0 for r in rows] + [round(coach.MIN_MINUTES / 7)]),
+            "max_kcal": max([r["kcal"] or 0 for r in rows] + [kcal_reference or 0, 1])}

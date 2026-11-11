@@ -1,4 +1,4 @@
-"""What Apple Health sends, through an iPhone shortcut: steps, weight, sleep, resting heart rate, blood pressure.
+"""What Apple Health sends, through an iPhone shortcut: steps, exercise minutes, weight, sleep, resting heart rate, blood pressure.
 
 Apple gives web apps no access to Health; the Shortcuts app does ("Find Health Samples"), and a shortcut posts what it
 found to /api/meal's sibling /api/health with the same secret token. The person sets it up and can run it by hand or
@@ -16,9 +16,9 @@ from __future__ import annotations
 import re
 from datetime import date
 
-from . import checkup, health
+from . import activity, checkup, health
 
-RANGES = {"steps": (0, 100_000), "weight_kg": (30, 300), "sleep_hours": (0, 16), "resting_hr": (30, 200),
+RANGES = {"steps": (0, 100_000), "exercise_min": (0, 1440),"weight_kg": (30, 300), "sleep_hours": (0, 16), "resting_hr": (30, 200),
           "systolic": (60, 260), "diastolic": (30, 160)}
 _TOKEN = re.compile(r"\d[\d.,'   ]*")
 
@@ -54,6 +54,15 @@ def apply(payload: dict, store, today: str | None = None) -> dict:
             kept["steps"] = steps
         else:
             dropped.append("steps")
+    if payload.get("exercise_min") not in (None, ""):
+        lo, hi = RANGES["exercise_min"]
+        minutes = [m for m in integers(payload["exercise_min"]) if lo <= m <= hi][-31:]
+        if minutes:
+            kept["exercise_min"] = minutes
+        else:
+            dropped.append("exercise_min")
+    # each day under its date, for the report (activity.py): the last value sent is today's
+    activity.record(store, {k: kept[k] for k in activity.FIELDS if k in kept}, today)
     h = dict(store.get("health") or {})
     rows = store.get("numbers", [])
     for key in ("weight_kg", "sleep_hours", "resting_hr", "systolic", "diastolic"):
@@ -90,6 +99,8 @@ def spoken(result: dict) -> str:
     parts = []
     if "steps" in k:
         parts.append(f"{len(k['steps'])} days of steps, {k['steps'][-1]:,} today")
+    if "exercise_min" in k:
+        parts.append(f"{k['exercise_min'][-1]} exercise minutes today")
     if "weight_kg" in k:
         parts.append(f"weight {k['weight_kg']:g} kilograms")
     if "sleep_hours" in k:

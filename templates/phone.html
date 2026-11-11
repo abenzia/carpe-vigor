@@ -44,6 +44,12 @@
     <button type="submit">Add to today</button>
     <p class="muted" style="margin-top:10px">Counted with USDA FoodData Central: about 10 seconds. An estimate of a typical portion.</p>
   </form>
+  <form method="post" action="/m/photo" enctype="multipart/form-data" class="card" id="photo-form">
+    <label class="photo">📷 Or take a photo of your plate
+      <input type="file" name="file" accept="image/*" capture="environment" onchange="this.form.querySelector('.photo').textContent='Reading your plate…';this.form.submit()"></label>
+    <p class="muted" style="margin-top:10px">Gemini sees what is on the plate and how much; the calories are counted with USDA. The photo is not kept.</p>
+  </form>
+  <style>.photo{display:block;text-align:center;padding:15px;border-radius:999px;background:var(--forest);color:#fff;font:700 18px 'DM Sans',sans-serif;cursor:pointer}.photo input{display:none}</style>
   {% set t = today.total %}
   <div class="card"><div class="stats">
     <div><b>{{ t.kcal|round|int }}</b><small>kcal today</small></div>
