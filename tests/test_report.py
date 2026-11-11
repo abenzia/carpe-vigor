@@ -61,3 +61,16 @@ def test_a_photo_of_the_plate_is_read_by_the_model_counted_by_code_and_not_kept(
         raise AssertionError("a photo with no food was counted")
     except ValueError as e:
         assert "No food" in str(e)
+
+
+def test_the_lab_report_can_be_sent_from_the_doctors_page_and_an_error_comes_back_there(tmp_path):
+    import app as webapp
+    webapp.store = Store(tmp_path / "d.sqlite")
+    c = TestClient(webapp.app, headers={"Origin": "http://testserver"})
+    assert 'action="/numbers/report"' in c.get("/doctor").text
+    r = c.post("/numbers/report", files={"file": ("r.txt", b"x", "text/plain")}, data={"send_ok": "1", "back": "/doctor"},
+               follow_redirects=False)
+    assert r.headers["location"].startswith("/doctor?error=")
+    r = c.post("/numbers/report", files={"file": ("r.txt", b"x", "text/plain")}, data={"send_ok": "1", "back": "//evil"},
+               follow_redirects=False)
+    assert r.headers["location"].startswith("/numbers?error=")                  # nowhere else

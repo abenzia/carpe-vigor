@@ -105,8 +105,8 @@ def journey(request: Request):
 
 # 1 ------------------------------------------------------------------------------------------------------------------
 @app.get("/doctor", response_class=HTMLResponse)
-def doctor(request: Request):
-    return render(request, "doctor.html", devices=profile.DEVICES, sources=sources.status())
+def doctor(request: Request, error: str = ""):
+    return render(request, "doctor.html", devices=profile.DEVICES, sources=sources.status(), error=error)
 
 
 @app.post("/doctor")
@@ -262,16 +262,18 @@ def _number(value: str, low: float, high: float) -> float | None:
 
 
 @app.post("/numbers/report")
-async def report_upload(file: UploadFile = File(...), send_ok: str = Form("")):
-    """A lab report to read: sent to Gemini only with the box ticked; the file is read once and never stored."""
+async def report_upload(file: UploadFile = File(...), send_ok: str = Form(""), back: str = Form("/numbers")):
+    """A lab report to read: sent to Gemini only with the box ticked; the file is read once and never stored.
+    Sent from the doctor's page or from My numbers: an error goes back to the page it came from."""
+    back = back if back in ("/doctor", "/numbers") else "/numbers"
     if not send_ok:
-        return RedirectResponse("/numbers?error=" + quote("Tick the box to send the report to be read: nothing was sent."),
+        return RedirectResponse(f"{back}?error=" + quote("Tick the box to send the report to be read: nothing was sent."),
                               status_code=303)
     data = await file.read(report.MAX_BYTES + 1)
     try:
         draft = report.read(data, file.content_type or "")
     except ValueError as error:
-        return RedirectResponse(f"/numbers?error={quote(str(error))}", status_code=303)
+        return RedirectResponse(f"{back}?error={quote(str(error))}", status_code=303)
     store.put("report_draft", draft)   # the values read, waiting for the person's check; not the file
     return RedirectResponse("/numbers/report", status_code=303)
 

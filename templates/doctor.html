@@ -7,6 +7,7 @@
       <h1 class="view-title">Start with what <i>your doctor said.</i></h1>
       <p class="view-desc">In your own words. Food, movement, sleep and habits are what this app plans for. Medicines and diagnoses stay with your doctor — if you mention them, we hand them back.</p></div>
   </div>
+  {% if error %}<div class="flag">{{ error }}</div>{% endif %}
   <div class="hero-grid">
     <form method="post" action="/doctor" class="card pad">
       <p class="section-kicker">A few details to make it yours</p>
@@ -23,7 +24,7 @@
       <label for="constraints">Allergies, dislikes, anything else</label>
       <input type="text" id="constraints" name="constraints" placeholder="no shellfish, dislikes celery" value="{{ profile.constraints_text if profile else '' }}">
       <label class="check"><input type="checkbox" name="report_attached" value="1"> I have a lab report
-        <span class="muted tiny">— add its values in <a href="/numbers">Measures &amp; progress</a> (optional): shown next to your doctor's targets, never judged by the app.</span></label>
+        <span class="muted tiny">— upload it on the right (optional): its values are shown next to your doctor's targets, never judged by the app.</span></label>
       <div class="row" style="margin-top:16px;justify-content:space-between"><span class="tiny muted">About three minutes: the team writes and checks 14 recipes.</span><button type="submit">Plan my week →</button></div>
     </form>
     <div class="stack">
@@ -32,12 +33,15 @@
         <h3>Goals and targets are theirs.</h3>
         <p>Carpe Vigor organizes everyday food and movement around your doctor's advice. It does not set medical targets or interpret diagnoses.</p>
       </section>
-      <section class="card pad">
-        <p class="section-kicker">Want the plan more yours?</p>
-        <h3>Your measures and results</h3>
-        <p class="tiny">Height, weight, test results: optional, with your consent, kept on this device. The more you share, the more the plan fits you.</p>
-        <p><a class="button line small" href="/numbers">Measures &amp; progress →</a></p>
-      </section>
+      <form method="post" action="/numbers/report" enctype="multipart/form-data" class="card pad">
+        <input type="hidden" name="back" value="/doctor">
+        <p class="section-kicker">Your lab results · optional</p>
+        <h3>Upload your lab report</h3>
+        <p class="tiny">A PDF or a photo of the page. AI reads the values; you check each one before anything is kept, and each is shown next to your doctor's target, never judged by the app. The file is not stored.</p>
+        <input type="file" name="file" accept="application/pdf,image/jpeg,image/png,image/heic,image/heif,image/webp" required>
+        <label class="check"><input type="checkbox" name="send_ok" value="1" required> I agree that the file is sent to Google Vertex AI (Gemini) to read the values.</label>
+        <div class="row" style="justify-content:space-between;margin-top:8px"><a class="tiny" href="/numbers">Height, weight, other measures →</a><button type="submit">Read it</button></div>
+      </form>
     </div>
   </div>
   <details class="card pad">
