@@ -1178,3 +1178,39 @@ def test_a_hold_older_than_the_honor_period_is_renewed_before_a_capture_and_refu
         week.capture_order(store, 5.0, "day thirty")
     assert week.release_remainder(store)["released"] == 40.0                      # 100 - 30 - 20 - 10
     assert pp.authorizations[renewed]["status"] == "VOIDED"
+
+
+def test_days_over_the_reference_offer_an_adapted_week_and_cooked_meals_stay_counted(client, monkeypatch):
+    import app as webapp
+    from datetime import date, timedelta
+    from carpevigor import activity
+    on = lambda back: (date.today() - timedelta(days=back)).isoformat()
+    meal = lambda back, kcal: {"at": f"{on(back)}T13:00", "dish": "x", "estimate": True, "nutrition": {"kcal": kcal}}
+    # 2,250 is over 2,000 by more than 10%; 2,150 is not; today does not count, it is not over yet
+    webapp.store.put("diary", [meal(3, 2250), meal(2, 2150), meal(1, 2400), meal(0, 5000)])
+    assert activity.over_reference(webapp.store, None) is None                     # no reference: nothing to compare
+    got = activity.over_reference(webapp.store, 2000)
+    assert [d["on"] for d in got["days"]] == [on(3), on(1)] and got["of"] == 3
+    webapp.store.put("diary", [meal(3, 2250), meal(2, 2150), meal(0, 5000)])
+    assert activity.over_reference(webapp.store, 2000) is None                     # one day over is not enough
+
+    client.post("/doctor", data={"doctor_said": "Eat less salt, walk more", "device": "Thermomix / Bimby TM7", "budget": "140"},
+                follow_redirects=False)
+    _built_week(client)
+    plan = webapp.store.get("plan")
+    for r in plan["plan"]["recipes"][:3]:
+        client.post("/week/cooked", data={"title": r["title"]})
+    monkeypatch.setattr(webapp, "_kcal_reference", lambda: 2000)
+    assert "Adapt my week" not in client.get("/report").text
+    assert client.post("/plan/adapt", follow_redirects=False).headers["location"] == "/report"   # not earned: nothing
+    webapp.store.put("diary", webapp.store.get("diary") + [meal(3, 2250), meal(1, 2400)])
+    assert "Adapt my week" in client.get("/report").text
+    assert client.post("/plan/adapt", follow_redirects=False).headers["location"] == "/week?build=1"
+    assert "2000 kcal" in webapp.store.get("profile")["adapted"]["goal"]
+    page = _built_week(client).text
+    plan = webapp.store.get("plan")
+    assert plan["cooked_before"] == 3 and plan["cooked"] == [] and "Adapted to you" in page
+    assert webapp.behaviour().cooked_meals == 3                                     # asking for help costs nothing
+    assert "adapted" not in webapp.store.get("profile")                             # once: the next rebuild is plain
+    assert "Adapt my week" not in client.get("/report").text                       # the same days are answered
+    assert client.post("/plan/adapt", follow_redirects=False).headers["location"] == "/report"

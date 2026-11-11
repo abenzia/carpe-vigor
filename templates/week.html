@@ -10,6 +10,7 @@
     <a class="button line" href="/recipes">✳ All {{ recipes|length }} recipes</a>
   </div>
 
+  {% if plan and plan.adapted %}<div class="flag"><b>Adapted to you on {{ plan.adapted.on[8:10] }}/{{ plan.adapted.on[5:7] }}:</b> after {{ plan.adapted.days|length }} days over your reference of {{ '{:,}'.format(plan.adapted.reference) }} kcal, portions follow your reference, dinners are lighter and there are more vegetables and legumes.{% if plan.cooked_before %} The {{ plan.cooked_before }} meals you had already cooked still count for your reward.{% endif %}</div>{% endif %}
   {% if plan and plan.focus %}<div class="flag"><b>From My numbers:</b> this week also focuses on {{ plan.focus|join(' · ') }}. <a href="/numbers">Measures &amp; progress →</a></div>{% endif %}
   <div class="card pad">
     <div class="day-picker" role="tablist" aria-label="Days of the week">

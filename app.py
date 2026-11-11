@@ -146,11 +146,20 @@ def _build_week(prof: dict):
         focus = [v for v in checkup.view(store.get("numbers", [])) if v["target"] is not None and not v["status"].startswith("at ")]
         guidance.topics = list(dict.fromkeys(guidance.topics + [v["topic"] for v in focus]))
         guidance.goals = guidance.goals + [f"Food and habits that help with {v['label']}" for v in focus]
+        adapted = prof.get("adapted")  # asked for from My report, after days over the energy reference
+        if adapted:
+            guidance.goals = guidance.goals + [adapted["goal"]]
         made, report, used = planner.make(guidance, prof["device"], prof.get("people", 1), progress,
                                           energy=health.for_planner(store.get("health") or {}),
                                           activity=(store.get("health") or {}).get("activity"), steps=store.get("steps", []))
         plan = {"plan": made.model_dump(), "report": report, "sources": used, "cooked": [],
                 "focus": [f"{v['label']}: {v['status']}" for v in focus], "numbers": guidelines.for_week(guidance.topics)}
+        if adapted:
+            # the meals already cooked this week stay counted: asking for help must not lower the reward
+            old = store.get("plan") or {}
+            plan["cooked_before"] = len(old.get("cooked", [])) + old.get("cooked_before", 0)
+            plan["adapted"] = {k: adapted[k] for k in ("on", "days", "reference")}
+            store.put("profile", {k: v for k, v in prof.items() if k != "adapted"})  # once: a later rebuild is plain
         store.put("plan", plan)
         store.log("plan", {"approved": report.get("approved"), "provider": report.get("provider")})
         with _building_lock:
@@ -504,15 +513,47 @@ async def phone_photo(request: Request, file: UploadFile = File(...), portion: s
     return RedirectResponse(f"/m?said={quote(diary.spoken(entry, diary.day(store.get('diary', []))))}", status_code=303)
 
 
+def _kcal_reference() -> int | None:
+    return health.read(store.get("health") or {}).get("target_kcal")
+
+
+def _adapt_offer() -> dict | None:
+    """Days over the reference not yet answered: once the week was adapted after the last of them, no offer again."""
+    if not store.get("profile"):
+        return None
+    over = activity.over_reference(store, _kcal_reference())
+    done = ((store.get("plan") or {}).get("adapted") or {}).get("on", "")
+    return over if over and done < over["days"][-1]["on"] else None
+
+
 @app.get("/report", response_class=HTMLResponse)
 def report_view(request: Request, view: str = "week"):
     """Day, week, month: steps and exercise minutes from Apple Health, calories from the diary, against the goals."""
     view = view if view in ("day", "week", "month") else "week"
     b = behaviour()
-    return render(request, "progress.html",
-                  r=activity.report(store, view, kcal_reference=health.read(store.get("health") or {}).get("target_kcal")),
+    return render(request, "progress.html", r=activity.report(store, view, kcal_reference=_kcal_reference()),
+                  adapt=_adapt_offer(),
                   goals=activity.goals(store), result=reward.score(b), behaviour=b, month=week.month(store),
                   max_rate=config.CASHBACK_MAX)
+
+
+@app.post("/plan/adapt")
+def plan_adapt():
+    """The person asked for it, on My report: the team rewrites the week around the days eaten past the reference.
+    Checked again here (the page may be old); portions follow the reference, which health.py keeps inside public
+    limits and under the doctor's own number."""
+    prof = store.get("profile")
+    over = _adapt_offer()
+    if not over:
+        return RedirectResponse("/report", status_code=303)
+    goal = (f"On {len(over['days'])} of the last {over['of']} days the person ate more than their energy reference of "
+            f"about {over['reference']} kcal. Adapt the week to help, without judging: lunch and dinner portions sized "
+            f"to the reference, lighter dinners, more vegetables, legumes and whole grains that keep one full, fewer "
+            f"energy-dense extras. Never under the reference itself.")
+    store.put("profile", {**prof, "adapted": {"on": datetime.now().date().isoformat(), "days": over["days"],
+                                              "reference": over["reference"], "goal": goal}})
+    store.log("adapt", {"days": len(over["days"])})
+    return RedirectResponse("/week?build=1", status_code=303)
 
 
 @app.post("/diary/remove")
@@ -718,7 +759,8 @@ def behaviour() -> reward.WeekBehaviour:
     money = week.status(store)
     orders = this_week("order")
     return reward.WeekBehaviour(
-        planned_meals=len(plan["plan"]["recipes"]), cooked_meals=len(plan.get("cooked", [])),
+        planned_meals=len(plan["plan"]["recipes"]),
+        cooked_meals=min(len(plan["plan"]["recipes"]), len(plan.get("cooked", [])) + plan.get("cooked_before", 0)),
         days_with_steps=sum(1 for s in steps if s >= config.STEPS_GOAL), spent=money["spent"],
         healthy_spend=round(sum(o.get("healthy", 0.0) for o in orders), 2),
         unhealthy_spend=round(sum(o.get("unhealthy", 0.0) for o in orders), 2))

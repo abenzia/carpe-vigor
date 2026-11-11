@@ -79,3 +79,23 @@ def goals(store, today: str | None = None) -> list[dict]:
                     "minutes": sum(d.get("exercise_min") or 0 for d in seen), "minutes_goal": minutes_goal,
                     "minutes_pace": round(coach.MIN_MINUTES * elapsed / 7)})
     return out
+
+
+OVER = 1.10        # more than 10% over the energy reference...
+OVER_DAYS = 2      # ...on 2 of the last 3 full days (today is not over yet) proposes adapting the week
+LOOK_BACK = 3
+
+
+def over_reference(store, kcal_reference: int | None, today: str | None = None) -> dict | None:
+    """The days that ate past the reference, when there are enough of them to offer the person an adapted week.
+    None without a reference (no measures, no doctor's number): nothing to compare with. The diary is an estimate
+    (a third either way), so this only offers; the person decides, and it never touches the reward."""
+    if not kcal_reference:
+        return None
+    end = date.fromisoformat(today) if today else date.today()
+    eaten = _eaten(store.get("diary", []))
+    days = [(end - timedelta(days=back)).isoformat() for back in range(LOOK_BACK, 0, -1)]
+    over = [{"on": on, "kcal": round(eaten[on])} for on in days if eaten.get(on, 0) > kcal_reference * OVER]
+    if len(over) < OVER_DAYS:
+        return None
+    return {"days": over, "reference": kcal_reference, "of": LOOK_BACK}
