@@ -104,3 +104,15 @@ def test_watch_answers_in_the_language_spoken():
     assert diary.spoken(entry, today) == ("pizza margherita: circa 812 calorie, 33 grammi di proteine, "
                                           "1.640 milligrammi di sodio. Oggi finora: 1.183 calorie.")
     assert diary.spoken(entry | {"said": "a plate of cacio e pepe"}, today).startswith("pizza margherita: about 812 calories")
+
+
+def test_the_opening_word_is_not_eaten(monkeypatch):
+    from carpevigor import diary, llm
+    seen = []
+    monkeypatch.setattr(llm, "ask", lambda system, task, shape, **k: seen.append(task) or diary.Breakdown(dish="", parts=[]))
+    for said in ("Segna una pizza", "log, a pizza"):
+        try:
+            diary.say(said)
+        except ValueError:
+            pass
+    assert seen == ["THE PERSON SAYS: una pizza", "THE PERSON SAYS: a pizza"]

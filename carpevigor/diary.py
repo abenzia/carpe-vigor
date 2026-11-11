@@ -9,6 +9,7 @@ shown as one; a meal of the plan is counted from its own recipe. The diary shows
 """
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
 from typing import Literal
 
@@ -50,7 +51,10 @@ def say(text: str, portion: Literal["small", "normal", "large"] = "normal") -> d
         raise ValueError("Say what you are eating, for example: a plate of cacio e pepe.")
     if len(text) > MAX_TEXT:  # a meal is a sentence; a page of text would only cost model calls
         raise ValueError(f"Keep it to a sentence (under {MAX_TEXT} characters).")
-    split = llm.ask(SPLIT, f"THE PERSON SAYS: {text}", Breakdown, tier="mid")
+    # "segna" / "log" opens a sentence said to the watch: dictation tends to lose the first word, so a word that may be
+    # lost goes first; it is not part of the meal
+    food = re.sub(r"^(segna|log)\b[\s,.:]*", "", text, flags=re.IGNORECASE) or text
+    split = llm.ask(SPLIT, f"THE PERSON SAYS: {food}", Breakdown, tier="mid")
     if not split.parts:
         raise ValueError(f'"{text}" does not sound like food or drink: nothing was added.')
     return _entry(split, text, portion)
