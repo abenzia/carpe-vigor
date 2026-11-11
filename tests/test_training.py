@@ -103,3 +103,15 @@ def test_the_pages_walk_from_questions_to_a_logged_session(tmp_path, monkeypatch
 def test_bmi_comes_from_height_and_weight_when_not_stored():
     L = T.limits({"height_cm": 165, "weight_kg": 90}, [], None, {}, False)
     assert L.low_impact and any("BMI 33.1" in r["why"] for r in L.reasons)
+
+
+def test_every_exercise_and_warm_up_move_has_its_clip():
+    from pathlib import Path
+    from carpevigor.exercises import COOL_DOWN, WARM_UP, all_exercises
+    clips = {e.clip for e in all_exercises().values() if e.clip} | {c for *_, c in WARM_UP + COOL_DOWN if c}
+    from carpevigor import coach
+    clips |= {name for name, _, _ in coach.EXERCISES}   # the Movement page's demonstrations
+    from carpevigor.exercises import media
+    files = lambda c: media(c)["src"] if isinstance(media(c)["src"], list) else [media(c)["src"]]
+    missing = sorted(c for c in clips if not all(Path(f.lstrip("/")).exists() for f in files(c)))
+    assert not missing, f"no clip for: {missing}"

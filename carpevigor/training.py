@@ -28,6 +28,7 @@ from pydantic import BaseModel, Field
 
 from . import checkup, llm
 from .exercises import COOL_DOWN, LADDERS, WARM_UP, Exercise, all_exercises
+from .exercises import media as exercises_media
 
 SOURCES = {
     "hhs": ("US HHS — Physical Activity Guidelines for Americans, 2nd edition",
