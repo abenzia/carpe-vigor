@@ -138,3 +138,11 @@ def test_the_watch_says_in_italian_what_it_could_not_count(tmp_path, monkeypatch
     monkeypatch.setattr(config, "VOICE_LANG", "it")
     r = client.post("/api/meal?say=1", content=b"", headers={"authorization": "Bearer t0k"})
     assert r.status_code == 422 and r.text.startswith("Non ho sentito niente")
+
+
+def test_the_health_notification_speaks_the_voice_language(monkeypatch):
+    from carpevigor import apple_health
+    monkeypatch.setattr(config, "VOICE_LANG", "it")
+    said = apple_health.spoken({"kept": {"steps": [6542], "exercise_min": [24]}, "dropped": ["weight_kg"]})
+    assert said == ("Carpe Vigor aggiornato: 6.542 passi oggi, 24 minuti di esercizio oggi. "
+                    "Non tenuti, fuori dai valori possibili: peso.")

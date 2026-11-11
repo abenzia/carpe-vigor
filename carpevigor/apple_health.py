@@ -16,7 +16,7 @@ from __future__ import annotations
 import re
 from datetime import date
 
-from . import activity, checkup, health
+from . import activity, checkup, config, health
 
 RANGES = {"steps": (0, 100_000), "exercise_min": (0, 1440),"weight_kg": (30, 300), "sleep_hours": (0, 16), "resting_hr": (30, 200),
           "systolic": (60, 260), "diastolic": (30, 160)}
@@ -97,6 +97,9 @@ def apply(payload: dict, store, today: str | None = None) -> dict:
 
 
 def spoken(result: dict) -> str:
+    """The notification the shortcut shows: in the app's voice language (config.VOICE_LANG), like the diary's answer."""
+    if config.VOICE_LANG == "it":
+        return _spoken_it(result)
     k = result["kept"]
     parts = []
     if "steps" in k:
@@ -115,4 +118,30 @@ def spoken(result: dict) -> str:
     said = "Carpe Vigor updated: " + ", ".join(parts) + "." if parts else "Nothing new was received."
     if result["dropped"]:
         said += f" Not kept, out of range: {', '.join(result['dropped'])}."
+    return said
+
+
+_IT_NAMES = {"steps": "passi", "exercise_min": "minuti di esercizio", "weight_kg": "peso", "sleep_hours": "sonno",
+             "resting_hr": "battito a riposo", "systolic": "pressione massima", "diastolic": "pressione minima"}
+
+
+def _spoken_it(result: dict) -> str:
+    k, it = result["kept"], lambda v: f"{v:,}".replace(",", ".")
+    parts = []
+    if "steps" in k:
+        parts.append(f"{len(k['steps'])} giorni di passi, {it(k['steps'][-1])} oggi" if len(k["steps"]) > 1
+                     else f"{it(k['steps'][0])} passi oggi")
+    if "exercise_min" in k:
+        parts.append(f"{k['exercise_min'][-1]} minuti di esercizio oggi")
+    if "weight_kg" in k:
+        parts.append(f"peso {k['weight_kg']:g} chili".replace(".", ","))
+    if "sleep_hours" in k:
+        parts.append(f"{k['sleep_hours']:g} ore di sonno".replace(".", ","))
+    if "resting_hr" in k:
+        parts.append(f"battito a riposo {k['resting_hr']:g}")
+    if "systolic" in k and "diastolic" in k:
+        parts.append(f"pressione {k['systolic']:g} su {k['diastolic']:g}")
+    said = "Carpe Vigor aggiornato: " + ", ".join(parts) + "." if parts else "Non è arrivato niente di nuovo."
+    if result["dropped"]:
+        said += f" Non tenuti, fuori dai valori possibili: {', '.join(_IT_NAMES[d] for d in result['dropped'])}."
     return said
