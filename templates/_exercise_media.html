@@ -1,8 +1,8 @@
 {# An exercise's demonstration: a looping video, its start and end positions alternating, or the photo of the position (carpevigor/exercises.media). Used by My training and Movement. #}
-{% macro show(clip, label) %}{% set m = exercise_media(clip) %}{% if m and m.kind == 'video' %}<video src="{{ m.src }}" autoplay muted loop playsinline preload="metadata" aria-label="{{ label }}, demonstration"></video>{% elif m and m.kind == 'pair' %}<div class="pair" role="img" aria-label="{{ label }}: start and end of the movement"><img src="{{ m.src[0] }}" alt=""><img src="{{ m.src[1] }}" alt=""><span>start ⇄ end</span></div>{% elif m %}<img src="{{ m.src }}" alt="{{ label }}: the position" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px">{% endif %}{% endmacro %}
+{% macro show(clip, label) %}{% set m = exercise_media(clip) %}{% if m and m.kind == 'video' %}<video class="demo" src="{{ m.src }}" autoplay muted loop playsinline preload="metadata" aria-label="{{ label }}, demonstration"></video>{% elif m and m.kind == 'pair' %}<div class="pair" role="img" aria-label="{{ label }}: start and end of the movement"><img src="{{ m.src[0] }}" alt=""><img src="{{ m.src[1] }}" alt=""><span>start ⇄ end</span></div>{% elif m %}<img class="demo" src="{{ m.src }}" alt="{{ label }}: the position">{% endif %}{% endmacro %}
 <style>
-  .media video{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:#e9e5da}
-  .pair{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden}
+  .demo{display:block;width:100%;max-width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:#e9e5da}
+  .pair{position:relative;width:100%;aspect-ratio:16/9;border-radius:10px;overflow:hidden}
   .pair img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .pair img+img{animation:pair 3.2s ease-in-out infinite alternate}
   @keyframes pair{0%,30%{opacity:0}70%,100%{opacity:1}}
