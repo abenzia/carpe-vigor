@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — {{ s.title }}{% endblock %}
+{% block content %}
+<style>
+  .ex{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:18px;border-top:1px solid var(--line);padding:16px 0}
+  @media (max-width:820px){.ex{grid-template-columns:1fr}}
+  .ex h3{margin:0 0 4px} .dose{font:600 22px var(--serif);color:var(--forest)}
+  .ex ol{margin:8px 0 6px 18px;padding:0} .ex .watch{font-size:13px;color:#8a4a22}
+  .sets{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .sets label{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:99px;padding:5px 10px;font-size:13px;cursor:pointer;background:var(--card)}
+  .sets label:has(input:checked){background:#2f7d4f;border-color:#2f7d4f;color:#fff}
+  .timer{border:1px solid var(--forest);background:transparent;color:var(--forest);border-radius:99px;padding:5px 12px;font-weight:600;cursor:pointer}
+  .timer.run{background:#d9672d;border-color:#d9672d;color:#fff}
+  video{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:#e9e5da}
+  .fb{display:flex;gap:6px;flex-wrap:wrap} .fb input{display:none}
+  .fb span{padding:5px 10px;border:1px solid var(--line);border-radius:99px;font-size:13px;cursor:pointer;background:var(--card)}
+  .fb input:checked+span{background:var(--forest);color:#fff;border-color:var(--forest)}
+  .fb input[value=hurt]:checked+span{background:#b4442a;border-color:#b4442a}
+  .rpe{width:100%} .rpe-l{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+  .stop{border-left:4px solid #b4442a;background:#fbecea}
+</style>
+<section class="section-view">
+<div class="view-head"><div><p class="eyebrow"><a href="/training">← My training</a> · {{ s.weekday }} {{ s.on[8:10] }}/{{ s.on[5:7] }} · block {{ s.block }}, week {{ s.week_of_block }} of 4</p>
+  <h1 class="view-title">{{ s.title }} <i>· {{ s.minutes }} minutes</i></h1>
+  <p class="view-desc"><span class="pill">effort {{ s.rpe }} out of 10</span>{% if s.blocks %}<span class="pill">rest {{ s.blocks[0].rest }} s between sets</span>{% endif %}<span class="pill">{{ s.level }}</span>
+    {% if logged and logged.done %}<span class="pill ok">done ✓{% if logged.rpe is not none %} · felt {{ logged.rpe }}/10{% endif %}</span>{% endif %}</p></div></div>
+
+{% if s.blocks %}
+<section class="card pad">
+  <p class="section-kicker">Warm-up · 5 minutes</p>
+  <ul>{% for what, much in s.warm_up %}<li>{{ what }} — <b>{{ much }}</b></li>{% endfor %}</ul>
+</section>
+
+<section class="card pad">
+  <p class="section-kicker">The session · {{ s.blocks|length }} exercises, in order</p>
+  {% for b in s.blocks %}{% set e = b.exercise %}
+  <div class="ex"><div>
+    <h3>{{ loop.index }}. {{ e.name }}</h3>
+    <div class="dose">{{ b.sets }} × {{ b.reps if b.reps else (b.seconds ~ ' seconds') }}{% if e.id in ('step_up_rail','backpack_row','split_squat','single_bridge','single_calf_raise','single_leg_stand','tandem_stand','standing_march','supported_lunge','reverse_lunge','dead_bug','bird_dog') %} <span class="tiny">each side</span>{% endif %}</div>
+    <ol>{% for step in e.how %}<li>{{ step }}</li>{% endfor %}</ol>
+    <p class="watch">Watch for: {{ e.mistakes|join(' · ') }}</p>
+    <div class="sets">{% for i in range(b.sets) %}<label><input type="checkbox"> set {{ i + 1 }}</label>{% endfor %}
+      <button type="button" class="timer" data-rest="{{ b.rest }}">Rest {{ b.rest }} s</button></div>
+  </div>
+  <div>{% if e.clip %}<video src="/static/exercises/{{ e.clip }}.mp4" autoplay muted loop playsinline preload="metadata" aria-label="{{ e.name }}, demonstration"></video>
+    <p class="tiny muted">Demonstration made with Google Veo (AI): how to move, not how much.</p>{% endif %}</div></div>
+  {% endfor %}
+  {% for w in s.left_out %}<p class="flag tiny">Left out — {{ w }}.</p>{% endfor %}
+  {% if s.finisher %}<p style="margin-top:12px"><b>Finish with a {{ s.finisher }}-minute brisk walk</b> <span class="tiny muted">(counts toward the week's aerobic minutes)</span></p>{% endif %}
+</section>
+
+<section class="card pad">
+  <p class="section-kicker">Cool-down · 5 minutes</p>
+  <ul>{% for what, much in s.cool_down %}<li>{{ what }} — <b>{{ much }}</b></li>{% endfor %}</ul>
+</section>
+
+{% elif s.cardio %}
+<section class="card pad"><div class="ex" style="border:0;padding-top:0"><div>
+  <p class="section-kicker">{{ s.cardio.what }}</p>
+  <div class="dose">{{ s.cardio.minutes }} minutes</div>
+  <p>{{ s.cardio.how }}.</p>
+  <p class="tiny muted">Or the same minutes {{ s.cardio.alt }}. Start and end with 5 easy minutes.</p></div>
+  <div><video src="/static/exercises/walk.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Brisk walk, demonstration"></video></div></div>
+  {% if s.balance %}<p><b>Then balance: {{ s.balance.name }}</b> — 2 × {{ s.balance.seconds }} seconds each side. {{ s.balance.exercise.how|join(' ') }}</p>{% endif %}
+</section>
+
+{% else %}
+<section class="card pad"><p class="section-kicker">Active rest</p>
+  <ul>{% for i in s['items'] %}<li>{{ i }}</li>{% endfor %}</ul>
+  <p class="tiny muted">Rest days are part of the program: muscles get stronger between sessions, not during them.</p></section>
+{% endif %}
+
+<section class="card pad">
+  <p class="section-kicker">How did it go?</p>
+  <form method="post" action="/training/log/{{ s.on }}">
+    <div class="fb" style="margin-bottom:12px"><label><input type="radio" name="done" value="yes" {{ 'checked' if not logged or logged.done }}><span>I did it</span></label>
+      <label><input type="radio" name="done" value="no" {{ 'checked' if logged and logged.done is sameas false }}><span>I skipped it</span></label></div>
+    <label for="rpe"><b>How hard did it feel, from 0 to 10?</b> <output id="rpe-out">{{ logged.rpe if logged and logged.rpe is not none else s.rpe }}</output></label>
+    <input class="rpe" type="range" min="0" max="10" id="rpe" name="rpe" value="{{ logged.rpe if logged and logged.rpe is not none else s.rpe }}" oninput="document.getElementById('rpe-out').value=this.value">
+    <div class="rpe-l"><span>0 sitting</span><span>5-6 moderate</span><span>7-8 vigorous</span><span>10 all-out</span></div>
+    {% if s.blocks %}<p style="margin:14px 0 6px"><b>Each exercise</b> <span class="tiny muted">— next time it moves one step up or down</span></p>
+    {% for b in s.blocks %}<div class="row" style="justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line)"><span>{{ b.name }}</span>
+      <div class="fb">{% for v, l in (('easy', 'Too easy'), ('ok', 'Right'), ('hard', 'Too hard'), ('hurt', 'It hurt')) %}
+        <label><input type="radio" name="fb_{{ b.id }}" value="{{ v }}" {{ 'checked' if (logged.feedback.get(b.id) if logged else 'ok') == v }}><span>{{ l }}</span></label>{% endfor %}</div></div>{% endfor %}
+    <p class="tiny muted">“It hurt” takes the exercise one step down; twice, and it leaves the program until you have asked your doctor.</p>{% endif %}
+    <button type="submit" style="margin-top:12px">Save</button>
+  </form>
+</section>
+<section class="card pad stop tiny">Stop at once and call your doctor if you feel chest pain or pressure, faintness or dizziness, unusual shortness of breath, or a racing or irregular heartbeat. Emergencies: 112. Muscle effort is fine; joint pain is not: stop that exercise.</section>
+</section>
+<script>
+  // a rest countdown on the button itself; a short beep at the end where the browser allows sound
+  document.querySelectorAll('.timer').forEach(function (b) {
+    var label = b.textContent, t = null;
+    b.addEventListener('click', function () {
+      if (t) { clearInterval(t); t = null; b.textContent = label; b.classList.remove('run'); return; }
+      var left = +b.dataset.rest; b.classList.add('run'); b.textContent = left + ' s';
+      t = setInterval(function () {
+        left -= 1; b.textContent = left + ' s';
+        if (left <= 0) { clearInterval(t); t = null; b.textContent = 'Go ✓'; b.classList.remove('run');
+          try { var a = new AudioContext(), o = a.createOscillator(); o.connect(a.destination); o.start(); o.stop(a.currentTime + 0.25); } catch (e) {} }
+      }, 1000);
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,19 @@
+{# The readiness questions, days a week and minutes a session: first time, and when the person changes them. #}
+{% set answers = (state.setup.answers if state else {}) %}
+<form method="post" action="/training/setup" class="setup">
+  <p class="section-kicker">Before you start · six questions</p>
+  <p class="tiny muted">After the public PAR-Q+ readiness questionnaire. A yes does not stop you moving: it means your doctor should know first.</p>
+  {% for key, q in questions %}
+  <div class="q"><span>{{ q }}</span>
+    <label><input type="radio" name="q_{{ key }}" value="no" {{ 'checked' if not answers.get(key) }}> No</label>
+    <label><input type="radio" name="q_{{ key }}" value="yes" {{ 'checked' if answers.get(key) }}> Yes</label></div>
+  {% endfor %}
+  <label class="tiny cleared"><input type="checkbox" name="cleared" value="1" {{ 'checked' if state and state.setup.cleared }}>
+    My doctor has seen my answers and said I can follow this program</label>
+  <div class="pick-row">
+    <div><p class="section-kicker">Days a week</p><div class="seg">{% for n in (3, 4, 5, 6) %}<label><input type="radio" name="days" value="{{ n }}" {{ 'checked' if (state.setup.days if state else 3) == n }}><span>{{ n }}</span></label>{% endfor %}</div></div>
+    <div><p class="section-kicker">Minutes a session</p><div class="seg">{% for n in (20, 30, 45, 60) %}<label><input type="radio" name="minutes" value="{{ n }}" {{ 'checked' if (state.setup.minutes if state else 30) == n }}><span>{{ n }}</span></label>{% endfor %}</div></div>
+  </div>
+  <button type="submit">{{ 'Update my program' if state else 'Build my program →' }}</button>
+  <span class="tiny muted">Your answers stay in this app, with your measures.</span>
+</form>

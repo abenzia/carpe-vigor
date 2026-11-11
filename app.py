@@ -15,7 +15,7 @@ from __future__ import annotations
 import json
 import secrets
 import threading
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from urllib.parse import quote, urlparse
 
 from fastapi import FastAPI, File, Form, Request, UploadFile
@@ -25,7 +25,7 @@ from fastapi.templating import Jinja2Templates
 
 from carpevigor import (__version__, ask, cart_agent, checkup, config, diary, guidelines, kitchen, nutrition, planner, profile,
                         rag, reward, sources, ui, week)
-from carpevigor import activity, apple_health, coach, health, phone, report
+from carpevigor import activity, apple_health, coach, health, phone, report, training
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -223,6 +223,94 @@ def move_view(request: Request):
                   coach=((plan or {}).get("report") or {}).get("coach"),
                   steps=store.get("steps", []), goal=config.STEPS_GOAL, week_rows=activity.last_week(store),
                   exercises=coach.exercises_in(plan["plan"]["movement"] if plan else []))
+
+
+def _training():
+    """The program's state and the limits the person's record sets today (they follow new measures and numbers)."""
+    state = store.get("training")
+    if not state:
+        return None, None
+    limits = training.limits(store.get("health") or {}, store.get("numbers", []), state.get("doctor"),
+                             state["setup"].get("answers", {}), state["setup"].get("cleared", False))
+    return state, limits
+
+
+@app.get("/training", response_class=HTMLResponse)
+def training_view(request: Request, on: str = ""):
+    """My training: the readiness questions first; then the week, today's session and the month."""
+    state, limits = _training()
+    try:
+        day = datetime.fromisoformat(on).date() if on else datetime.now().date()
+    except ValueError:
+        day = datetime.now().date()
+    if not state:
+        return render(request, "training.html", state=None, questions=training.QUESTIONS, health=store.get("health") or {},
+                      doctor_said=(store.get("profile") or {}).get("doctor_said", ""),
+                      off=checkup.topics(store.get("numbers", [])))
+    days = [] if limits.stop else training.week(state, store.get("health") or {}, store.get("steps", []), limits, day)
+    today = next((d for d in days if d["on"] == datetime.now().date().isoformat()), None)
+    return render(request, "training.html", state=state, limits=limits, days=days, today=today, on=day,
+                  summary=training.summary(days, limits) if days else None, calendar=training.month(state, day),
+                  sources=training.SOURCES, questions=training.QUESTIONS, level=training.LEVELS[state.get("level", 0)],
+                  prev=(day.replace(day=1) - timedelta(days=1)).isoformat(), next=(day.replace(day=28) + timedelta(days=4)).isoformat())
+
+
+@app.post("/training/setup")
+async def training_setup(request: Request):
+    """The readiness answers, days a week and minutes a session. The doctor's words are read once, here."""
+    form = await request.form()
+    days = min(6, max(3, int(form.get("days") or 3)))
+    minutes = min(60, max(20, int(form.get("minutes") or 30)))
+    answers = {k: form.get(f"q_{k}") == "yes" for k, _ in training.QUESTIONS}
+    old = store.get("training") or {}
+    said = (store.get("profile") or {}).get("doctor_said", "")
+    doctor = old.get("doctor") if old.get("doctor_said") == said and "doctor" in old else training.read_doctor(said).model_dump()
+    state = {**old, "setup": {"days": days, "minutes": minutes, "answers": answers, "cleared": bool(form.get("cleared"))},
+             "doctor": doctor, "doctor_said": said, "start": old.get("start") or datetime.now().date().isoformat(),
+             "log": old.get("log", {})}
+    limits = training.limits(store.get("health") or {}, store.get("numbers", []), doctor, answers, state["setup"]["cleared"])
+    state["level"] = training.level(store.get("health") or {}, store.get("steps", []), limits)
+    store.put("training", state)
+    store.log("training", {"days": days, "minutes": minutes})  # the answers stay in the store, not in the log
+    return RedirectResponse("/training", status_code=303)
+
+
+@app.get("/training/day/{on}", response_class=HTMLResponse)
+def training_day(request: Request, on: str):
+    state, limits = _training()
+    if not state or limits.stop:
+        return RedirectResponse("/training", status_code=303)
+    try:
+        when = datetime.fromisoformat(on).date()
+    except ValueError:
+        return RedirectResponse("/training", status_code=303)
+    days = training.week(state, store.get("health") or {}, store.get("steps", []), limits, when)
+    session = next(d for d in days if d["on"] == when.isoformat())
+    return render(request, "training_day.html", s=session, limits=limits, logged=state.get("log", {}).get(on),
+                  sources=training.SOURCES)
+
+
+@app.post("/training/log/{on}")
+async def training_log(request: Request, on: str):
+    state = store.get("training")
+    if not state:
+        return RedirectResponse("/training", status_code=303)
+    form = await request.form()
+    rpe = form.get("rpe")
+    feedback = {k[3:]: v for k, v in form.items() if k.startswith("fb_")}
+    try:
+        state = training.log_session(state, on, form.get("done") == "yes", int(rpe) if rpe not in (None, "") else None,
+                                     feedback, int(form.get("minutes")) if (form.get("minutes") or "").isdigit() else None)
+    except ValueError:
+        return RedirectResponse("/training", status_code=303)
+    store.put("training", state)
+    return RedirectResponse(f"/training?on={on}", status_code=303)
+
+
+@app.post("/training/reset")
+def training_reset():
+    store.delete("training")
+    return RedirectResponse("/training", status_code=303)
 
 
 @app.get("/body", response_class=HTMLResponse)

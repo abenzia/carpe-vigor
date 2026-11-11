@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — {{ t('training') }}{% endblock %}
+{% block content %}
+<style>
+  .setup .q{display:flex;gap:14px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);flex-wrap:wrap}
+  .setup .q span{flex:1;min-width:240px}
+  .setup .cleared{display:block;margin:10px 0}
+  .pick-row{display:flex;gap:28px;flex-wrap:wrap;margin:10px 0 14px}
+  .seg{display:flex;gap:6px} .seg input{display:none}
+  .seg span{display:inline-block;min-width:44px;text-align:center;padding:8px 12px;border:1px solid var(--line);border-radius:99px;font-weight:600;cursor:pointer;background:var(--card)}
+  .seg input:checked+span{background:var(--forest);border-color:var(--forest);color:#fff}
+  .blockbar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 4px}
+  .blockbar i{display:block;height:10px;border-radius:99px;background:#e9e5da} .blockbar i.on{background:var(--forest)} .blockbar i.now{background:#d9672d}
+  .blockbar-l{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:12px;color:var(--muted)}
+  .why-list{list-style:none;padding:0;margin:8px 0 0} .why-list li{padding:10px 0;border-bottom:1px dashed var(--line)}
+  .why-list b{display:block;color:var(--forest)}
+  .wk{display:grid;grid-template-columns:repeat(7,1fr);gap:8px} @media (max-width:820px){.wk{grid-template-columns:repeat(2,1fr)}}
+  .tile{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--card);min-height:112px;position:relative}
+  .tile.today{border:2px solid #d9672d} .tile .k{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+  .tile.S .k{color:#163b2a} .tile.C .k,.tile.L .k{color:#2f7d4f} .tile.R .k{color:var(--muted)}
+  .tile .ok{position:absolute;top:8px;right:10px;color:#2f7d4f;font-weight:700}
+  .tile b{display:block;font-size:15px;margin:4px 0}
+  .cal{width:100%;border-collapse:separate;border-spacing:4px} .cal th{font-size:11px;color:var(--muted);font-weight:600}
+  .cal td{height:46px;border-radius:10px;text-align:center;font-size:13px;background:#f3f0e8;vertical-align:middle}
+  .cal td.out{opacity:.35} .cal td.today{outline:2px solid #d9672d}
+  .cal td.S{background:#dfe8e1} .cal td.C,.cal td.L{background:#e5efe6}
+  .cal td.done{background:#2f7d4f;color:#fff} .cal td.skip{background:#f6dccd}
+  .cal a{color:inherit;text-decoration:none;display:block}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)} .legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:4px;vertical-align:-1px}
+  .today-card{background:#102a1e;color:#f4f0e6;border-color:#102a1e} .today-card .section-kicker{color:#f3a372}
+  .today-card a.button{background:#d9672d;border-color:#d9672d;color:#fff}
+  .today-card ul{margin:8px 0 12px 18px;padding:0}
+</style>
+<section class="section-view">
+<div class="view-head"><div><p class="eyebrow">The coach · your program</p>
+  <h1 class="view-title">Training that <i>fits your record.</i></h1>
+  <p class="view-desc" style="max-width:680px">A home program, day by day: what to do, how many sets and repetitions, how hard. Built by plain code from public guidelines and from what your record says — your age, your weight, your doctor's words and your numbers against your doctor's targets. Each choice shows its reason.</p></div>
+  <a class="button line" href="/move">↗ Movement and steps →</a></div>
+
+{% if not state %}
+<div class="hero-grid">
+  <section class="card pad">{% include "_training_setup.html" %}</section>
+  <section class="card pad">
+    <p class="section-kicker">What the program will read from your record</p>
+    <ul class="why-list">
+      <li><b>Age{% if health.age %} · {{ health.age }}{% endif %}</b>{% if health.age %}65 and over: balance on 3 days and a prudent start. Under 18: no program.{% else %}<span class="tiny muted">Not given: add it on <a href="/numbers">Measures</a>.</span>{% endif %}</li>
+      <li><b>Weight and BMI{% if health.bmi %} · {{ health.bmi }}{% endif %}</b>{% if health.bmi %}30 and over: low impact, nothing on the floor.{% else %}<span class="tiny muted">Not given: add height and weight on <a href="/numbers">Measures</a>.</span>{% endif %}</li>
+      <li><b>Your doctor's words</b>{% if doctor_said %}<span class="tiny">“{{ doctor_said[:220] }}{{ '…' if doctor_said|length > 220 }}”</span> — read for limits: no running, joints to spare, how hard.{% else %}<span class="tiny muted">Not given yet: <a href="/doctor">tell us what your doctor said</a>.</span>{% endif %}</li>
+      <li><b>Your numbers against your doctor's targets</b>{% if off %}<span class="tiny">Above target now: {{ off|join(', ')|replace('_', ' ') }}.{% if 'blood_pressure' in off or 'activity' in off %} Moderate effort only, no breath-holding.{% endif %}{% if 'sugar' in off %} Some movement every day.{% endif %}</span>{% else %}<span class="tiny muted">None above your doctor's targets, or none entered (<a href="/numbers">My numbers</a>).</span>{% endif %}</li>
+    </ul>
+    <p class="tiny muted" style="margin-top:10px">General exercise for adults, not a medical prescription: anything your doctor told you comes first.</p>
+  </section>
+</div>
+
+{% elif limits.stop %}
+<section class="card pad flag"><p class="section-kicker">Not yet</p><h3>{{ limits.stop }}</h3>
+  <p class="tiny">A daily walk at an easy pace is still good for almost everyone; if anything feels wrong, stop and call your doctor.</p></section>
+<details class="card pad"><summary><b>Change my answers</b></summary>{% include "_training_setup.html" %}</details>
+
+{% else %}
+{% set wk = days[0].week_of_block %}
+<div class="hero-grid">
+  <section class="card pad">
+    <p class="section-kicker">Block {{ days[0].block }} · week {{ wk }} of 4 · {{ days[0].level }}</p>
+    <div class="blockbar">{% for i in range(1, 5) %}<i class="{{ 'now' if i == wk else 'on' if i < wk }}"></i>{% endfor %}</div>
+    <div class="blockbar-l"><span>Build</span><span>More</span><span>Most</span><span>Lighter</span></div>
+    <p style="margin-top:12px">
+      <span class="pill {{ 'ok' if summary.aerobic >= 150 else 'warn' }}">{{ summary.aerobic }} aerobic minutes this week</span>
+      <span class="pill ok">{{ summary.strength_days }} strength days</span>
+      {% if limits.balance_days %}<span class="pill ok">{{ summary.balance_days }} balance days</span>{% endif %}
+      <span class="pill">effort {{ days[0].rpe }} out of 10</span></p>
+    <p class="tiny muted">The guideline for adults is 150 to 300 minutes a week and strength on at least 2 days (<a href="{{ sources.hhs[1] }}">HHS</a>).{% if summary.aerobic < 150 %} You build up to it block by block: start low, go slow.{% endif %} Each block grows only if you did the one before.</p>
+  </section>
+  {% if today %}
+  <section class="card pad today-card">
+    <p class="section-kicker">Today · {{ today.weekday }}</p>
+    <h2 style="margin:4px 0">{{ today.title }} · {{ today.minutes }} min</h2>
+    <ul>{% if today.blocks %}{% for b in today.blocks %}<li>{{ b.name }} — {{ b.sets }} × {{ b.reps if b.reps else (b.seconds ~ ' s') }}</li>{% endfor %}
+      {% elif today.cardio %}<li>{{ today.cardio.what }}, {{ today.cardio.minutes }} minutes</li><li class="tiny">{{ today.cardio.how }}</li>
+      {% else %}{% for i in today['items'] %}<li>{{ i }}</li>{% endfor %}{% endif %}</ul>
+    <a class="button" href="/training/day/{{ today.on }}">{{ 'Done ✓ — see it' if state.log.get(today.on, {}).get('done') else ('See today →' if today.kind == 'R' else 'Start today’s session →') }}</a>
+  </section>{% endif %}
+</div>
+
+<section class="card pad">
+  <p class="section-kicker">This week</p>
+  <div class="wk">{% for d in days %}{% set lg = state.log.get(d.on, {}) %}
+    <a class="tile {{ d.kind }}{{ ' today' if today and d.on == today.on }}" href="/training/day/{{ d.on }}">
+      {% if lg.get('done') %}<span class="ok">✓</span>{% endif %}
+      <span class="tiny muted">{{ d.weekday }} {{ d.on[8:10] }}/{{ d.on[5:7] }}</span>
+      <span class="k">{{ {'S': 'Strength', 'C': 'Aerobic', 'L': 'Longer aerobic', 'R': 'Active rest'}[d.kind] }}</span>
+      <b>{{ d.title if d.kind != 'R' else 'Easy walk' }}</b>
+      <span class="tiny">{{ d.minutes }} min{% if d.blocks %} · {{ d.blocks|length }} exercises{% endif %}{% if d.balance %} · + balance{% endif %}</span></a>
+  {% endfor %}</div>
+</section>
+
+<div class="hero-grid">
+  <section class="card pad">
+    <p class="section-kicker">Built around your record</p>
+    {% if limits.reasons %}<ul class="why-list">{% for r in limits.reasons %}
+      <li><b>{{ r.what }}</b><span class="tiny">Because {{ r.why }}.{% if r.source in sources %} <a href="{{ sources[r.source][1] }}">{{ sources[r.source][0] }}</a>{% endif %}</span></li>{% endfor %}</ul>
+    {% else %}<p class="tiny">Nothing in your record limits the program. Add your age, weight and numbers on <a href="/numbers">Measures</a>, and what your doctor said on <a href="/doctor">the doctor's page</a>: the program follows them.</p>{% endif %}
+    <p class="tiny muted" style="margin-top:10px">Effort on a 0-10 scale: moderate is 5-6, vigorous 7-8 (<a href="{{ sources.rpe[1] }}">Ministero della Salute</a>).</p>
+  </section>
+  <section class="card pad">
+    <div class="row" style="justify-content:space-between"><p class="section-kicker" style="margin:0">{{ on.strftime('%B %Y') }}</p>
+      <span class="tiny"><a href="/training?on={{ prev }}">← previous</a> · <a href="/training?on={{ next }}">next →</a></span></div>
+    <table class="cal"><tr>{% for n in ('Mon','Tue','Wed','Thu','Fri','Sat','Sun') %}<th>{{ n }}</th>{% endfor %}</tr>
+      {% for row in calendar %}<tr>{% for c in row %}
+        <td class="{{ c.kind }}{{ ' out' if not c.in_month }}{{ ' today' if c.today }}{{ ' done' if c.done }}{{ ' skip' if c.skipped }}">
+          {% if c.started %}<a href="/training/day/{{ c.on }}" title="{{ {'S': 'Strength', 'C': 'Aerobic', 'L': 'Longer aerobic', 'R': 'Active rest'}[c.kind] }}">{{ c.day }}{% if c.done %} ✓{% endif %}</a>{% else %}{{ c.day }}{% endif %}</td>{% endfor %}</tr>{% endfor %}</table>
+    <div class="legend"><span><i style="background:#dfe8e1"></i>strength</span><span><i style="background:#e5efe6"></i>aerobic</span><span><i style="background:#f3f0e8"></i>active rest</span><span><i style="background:#2f7d4f"></i>done</span><span><i style="background:#f6dccd"></i>skipped</span></div>
+  </section>
+</div>
+
+<details class="card pad"><summary><b>Change days, minutes or my answers</b></summary>{% include "_training_setup.html" %}
+  <form method="post" action="/training/reset" style="margin-top:12px"><button class="secondary" type="submit">Start the program over</button>
+    <span class="tiny muted">Deletes the program and what you logged in it.</span></form></details>
+{% endif %}
+<p class="tiny muted">Stop and call your doctor if you feel chest pain or pressure, faintness, unusual shortness of breath or a racing heart. Emergencies: 112.</p>
+</section>
+{% endblock %}

@@ -18,6 +18,7 @@ TEXT = {
     "pantry": ("Fridge & pantry", "Frigo e dispensa"),
     "shop": ("Groceries", "La spesa"),
     "move": ("Movement", "Movimento"),
+    "training": ("My training", "Il mio allenamento"),
     "body": ("My body · 3D", "Il mio corpo · 3D"),
     "diary": ("What I ate", "Cosa ho mangiato"),
     "progress": ("Measures & progress", "Misure e progressi"),
@@ -49,7 +50,7 @@ TEXT = {
 }
 
 NAV = [("/journey", "⌂", "journey"), ("/doctor", "✎", "doctor"), ("/week", "▦", "week"), ("/recipes", "✳", "recipes"),
-       ("/home", "⌑", "pantry"), ("/cart", "⌗", "shop"), ("/move", "↗", "move"), ("/body", "◌", "body"),
+       ("/home", "⌑", "pantry"), ("/cart", "⌗", "shop"), ("/move", "↗", "move"), ("/training", "⚑", "training"), ("/body", "◌", "body"),
        ("/diary", "☰", "diary"), ("/report", "▥", "report"), ("/numbers", "⌁", "progress"), ("/team", "◉", "team"), ("/reward", "☆", "reward")]
 MORE = [("/ledger", "≡", "ledger"), ("/ask", "?", "ask")]
 
