@@ -8,6 +8,7 @@ shown next to the energy reference of the measures page: a reference, never a go
 """
 from __future__ import annotations
 
+import calendar
 from datetime import date, timedelta
 
 from . import coach, config
@@ -42,7 +43,7 @@ def report(store, view: str = "week", today: str | None = None, kcal_reference: 
     for back in range(span - 1, -1, -1):
         on = (end - timedelta(days=back)).isoformat()
         d = days.get(on, {})
-        rows.append({"on": on, "steps": d.get("steps"), "exercise_min": d.get("exercise_min"),
+        rows.append({"on": on, "label": f"{on[8:10]}/{on[5:7]}", "steps": d.get("steps"), "exercise_min": d.get("exercise_min"),
                      "kcal": round(eaten[on]) if on in eaten else None})
     known = [r for r in rows if r["steps"] is not None]
     minutes = sum(r["exercise_min"] or 0 for r in rows)
@@ -54,3 +55,27 @@ def report(store, view: str = "week", today: str | None = None, kcal_reference: 
             "max_steps": max([r["steps"] or 0 for r in rows] + [config.STEPS_GOAL]),
             "max_minutes": max([r["exercise_min"] or 0 for r in rows] + [round(coach.MIN_MINUTES / 7)]),
             "max_kcal": max([r["kcal"] or 0 for r in rows] + [kcal_reference or 0, 1])}
+
+
+def goals(store, today: str | None = None) -> list[dict]:
+    """Today, this calendar week (Mon-Sun) and this calendar month: steps days and exercise minutes against the goals,
+    with where the person should be by today ("pace") so a Tuesday is not judged against a whole week."""
+    end = date.fromisoformat(today) if today else date.today()
+    days = store.get("days") or {}
+    week_start = end - timedelta(days=end.weekday())
+    month_days = calendar.monthrange(end.year, end.month)[1]
+    out = []
+    for name, start, length in (("Today", end, 1), ("This week", week_start, 7), ("This month", end.replace(day=1), month_days)):
+        elapsed = (end - start).days + 1
+        seen = [days.get((start + timedelta(days=i)).isoformat(), {}) for i in range(elapsed)]
+        minutes_goal = round(coach.MIN_MINUTES * length / 7)
+        if length == 1:
+            out.append({"name": name, "steps": seen[0].get("steps"), "steps_goal": config.STEPS_GOAL, "steps_pace": None,
+                        "steps_unit": "steps", "minutes": seen[0].get("exercise_min"), "minutes_goal": minutes_goal,
+                        "minutes_pace": None})
+            continue
+        out.append({"name": name, "steps": sum(1 for d in seen if (d.get("steps") or 0) >= config.STEPS_GOAL),
+                    "steps_goal": length, "steps_pace": elapsed, "steps_unit": f"days over {config.STEPS_GOAL:,} steps",
+                    "minutes": sum(d.get("exercise_min") or 0 for d in seen), "minutes_goal": minutes_goal,
+                    "minutes_pace": round(coach.MIN_MINUTES * elapsed / 7)})
+    return out

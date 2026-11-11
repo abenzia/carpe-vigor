@@ -1,43 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Carpe Vigor — {{ t('report') }}{% endblock %}
 {% block content %}
-{# One bar chart, drawn here as SVG: a value per day, a dashed line at the goal. No chart library, nothing to load. #}
-{% macro bars(rows, key, top, goal, color, unit) %}
-{% set n = rows|length %}{% set w = 700 / n %}
-<svg viewBox="0 0 815 200" class="chart" role="img" aria-label="{{ unit }} per day">
-  {% for r in rows %}{% set v = r[key] %}{% set x = 10 + loop.index0 * w %}
-    {% if v is not none %}{% set h = 140 * v / top %}
-      <rect x="{{ x + w * 0.15 }}" y="{{ 170 - h }}" width="{{ w * 0.7 }}" height="{{ h }}" rx="3"
-            fill="{{ color if not goal or v >= goal else '#c9cbbf' }}"><title>{{ r.on }}: {{ '{:,}'.format(v) }} {{ unit }}</title></rect>
-      {% if n <= 7 %}<text x="{{ x + w / 2 }}" y="{{ 164 - h }}" text-anchor="middle" class="v">{{ '{:,}'.format(v) }}</text>{% endif %}
-    {% else %}<rect x="{{ x + w * 0.15 }}" y="167" width="{{ w * 0.7 }}" height="3" fill="#e4ddce"><title>{{ r.on }}: no data</title></rect>{% endif %}
-    {% if n <= 7 or loop.index0 % 5 == 4 or loop.last %}<text x="{{ x + w / 2 }}" y="188" text-anchor="middle" class="d">{{ r.on[8:10] }}/{{ r.on[5:7] }}</text>{% endif %}
-  {% endfor %}
-  {% if goal %}{% set gy = 170 - 140 * goal / top %}
-    <line x1="10" x2="710" y1="{{ gy }}" y2="{{ gy }}" stroke="#d9672d" stroke-dasharray="6 5" stroke-width="1.5"/>
-    <text x="716" y="{{ gy + 4 }}" class="g">goal {{ '{:,}'.format(goal) }}</text>{% endif %}
-</svg>
-{% endmacro %}
-{# Today: how far along each goal is, as a filled line; a reference (calories) fills but never turns green. #}
-{% macro meter(label, source, v, goal, color, unit, is_goal=True) %}
-<div class="meter"><div class="meter-head"><span class="section-kicker">{{ label }} · {{ source }}</span>
-  <b>{{ '{:,}'.format(v) if v is not none else '—' }}</b><small> / {{ '{:,}'.format(goal) if goal else '—' }} {{ unit }}</small>
-  {% if is_goal and v is not none and goal and v >= goal %}<span class="pill ok">goal kept</span>{% endif %}</div>
-  <div class="track"><span style="width:{{ [100, 100 * (v or 0) / goal]|min if goal else 0 }}%;background:{{ color }}"></span></div></div>
-{% endmacro %}
+{% from "_charts.html" import bars, meter, style %}
+{{ style() }}
 <style>
-  .meter{margin:6px 0 18px} .meter-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-  .meter-head .section-kicker{flex:1;min-width:220px;margin:0} .meter-head b{font:400 30px var(--serif);color:var(--forest)}
-  .track{height:16px;border-radius:99px;background:#e9e5da;overflow:hidden;margin-top:6px}.track span{display:block;height:100%;border-radius:99px}
-  .chart{width:100%;height:auto;display:block}
-  .chart .v{font:600 17px var(--sans);fill:var(--forest)} .chart .d{font:16px var(--sans);fill:var(--muted)}
-  .chart .g{font:600 16px var(--sans);fill:var(--orange)}
   .tabs{display:flex;gap:6px;margin:0 0 14px}
   .tabs a{padding:8px 16px;border:1px solid var(--line);border-radius:99px;text-decoration:none;color:var(--forest);font-weight:600;background:var(--card)}
   .tabs a.on{background:var(--forest);border-color:var(--forest);color:#fff}
-  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
-  .kpi b{display:block;font:400 34px/1 var(--serif);color:var(--forest)} .kpi small{color:var(--muted)}
-  .kpi.ok b{color:#2f7d4f}
+  .goals{margin-bottom:16px} .goal-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .goal-cols h3{margin:6px 0 4px} @media (max-width:900px){.goal-cols{grid-template-columns:1fr}}
   .charts{display:grid;grid-template-columns:1fr 1fr;gap:16px} @media (max-width:900px){.charts{grid-template-columns:1fr}}
 </style>
 <section class="section-view">
@@ -46,24 +17,24 @@
   <p class="view-desc" style="max-width:660px">Steps and exercise minutes come from Apple Health on your iPhone and Apple Watch, sent by your shortcut: nothing to type. What you ate comes from your voice or a photo of the plate. Every total on this page is added up by plain code.</p></div>
   <a class="button line" href="/reward">☆ My reward →</a></div>
 
-<nav class="tabs">{% for v, label in [('day', 'Today'), ('week', 'This week'), ('month', '30 days')] %}<a href="/report?view={{ v }}" class="{{ 'on' if r.view == v }}">{{ label }}</a>{% endfor %}</nav>
+<section class="card pad goals">
+  <p class="section-kicker">Your goals · how close you are</p>
+  <div class="goal-cols">{% for g in goals %}
+    <div><h3>{{ g.name }}</h3>
+      {{ meter('Steps' if g.name == 'Today' else 'Days moved', '', g.steps, g.steps_goal, '#163b2a', g.steps_unit, True, g.steps_pace) }}
+      {{ meter('Exercise minutes', '', g.minutes, g.minutes_goal, '#2f7d4f', 'minutes', True, g.minutes_pace) }}
+    </div>{% endfor %}</div>
+  <p class="tiny muted">{{ '{:,}'.format(r.steps_goal) }} steps make a day count as moved (30% of your reward); 150 exercise minutes a week is the US guideline for adults. The orange mark is where you should be by today: a Tuesday is not judged against the whole week.</p>
+</section>
 
 {% if not r.days_known %}<div class="flag">No days from your watch yet. Run your Apple Health shortcut (or sync the steps on <a href="/move">Movement</a>) and they appear here.</div>{% endif %}
 
-<div class="kpis">
-  <div class="card pad kpi {{ 'ok' if r.days_known and r.days_moved == r.days_known }}"><b>{{ r.days_moved }}<span style="font-size:18px"> / {{ r.rows|length }}</span></b><small>days over {{ '{:,}'.format(r.steps_goal) }} steps</small></div>
-  <div class="card pad kpi {{ 'ok' if r.minutes_met }}"><b>{{ r.minutes }}<span style="font-size:18px"> / {{ r.minutes_goal }}</span></b><small>exercise minutes · guideline 150 a week</small></div>
-  {% set eaten = r.rows|map(attribute='kcal')|select|list %}
-  <div class="card pad kpi"><b>{{ '{:,}'.format((eaten|sum / eaten|length)|round|int) if eaten else '—' }}</b><small>kcal eaten a day{% if r.kcal_reference %} · your reference {{ '{:,}'.format(r.kcal_reference) }}{% endif %}</small></div>
-  <div class="card pad kpi {{ 'ok' if result.earned }}"><b>{{ currency }} {{ '%.2f'|format(result.cashback) }}</b><small>back this week via PayPal · score {{ (result.score * 100)|round|int }}/100</small></div>
-</div>
+<nav class="tabs">{% for v, label in [('day', 'Today'), ('week', 'This week'), ('month', '30 days')] %}<a href="/report?view={{ v }}" class="{{ 'on' if r.view == v }}">{{ label }}</a>{% endfor %}</nav>
 
 {% if r.view == 'day' %}{% set d = r.rows[-1] %}
 <section class="card pad" style="margin-bottom:16px">
-  {{ meter('Steps', 'Apple Health', d.steps, r.steps_goal, '#163b2a', 'steps') }}
-  {{ meter('Exercise minutes', 'Apple Watch', d.exercise_min, r.daily_minutes, '#2f7d4f', 'minutes') }}
-  {{ meter('Calories eaten', 'your voice and photos', d.kcal, r.kcal_reference, '#d9672d', 'kcal, your reference', False) }}
-  <p class="tiny muted">Steps: {{ '{:,}'.format(r.steps_goal) }} a day makes the day count for your reward. Minutes: 150 a week, about {{ r.daily_minutes }} a day (US guidelines). Calories are a reference to see, never a goal that pays.</p>
+  {{ meter('Calories eaten today', 'your voice and photos', d.kcal, r.kcal_reference, '#d9672d', 'kcal, your reference', False) }}
+  <p class="tiny muted">Calories are a reference to see, never a goal that pays.</p>
 </section>
 {% endif %}
 <div class="charts">
@@ -73,7 +44,8 @@
     <p class="tiny muted">The line is 150 minutes a week spread over 7 days ({{ r.daily_minutes }} a day), the US guidelines for adults.</p></section>
 <section class="card pad"><p class="section-kicker">Calories eaten · your voice and your photos</p>
   {{ bars(r.rows, 'kcal', r.max_kcal, None, '#d9672d', 'kcal') }}
-  <p class="tiny muted">{% if r.kcal_reference %}Your energy reference is {{ '{:,}'.format(r.kcal_reference) }} kcal a day (your doctor's number, or the estimate on <a href="/numbers">Measures</a>). {% endif %}Estimates from USDA FoodData Central: for you to see, never a target that pays.</p></section>{% endif %}
+  {% set eaten = r.rows|map(attribute='kcal')|select|list %}
+  <p class="tiny muted">{% if eaten %}On average {{ '{:,}'.format((eaten|sum / eaten|length)|round|int) }} kcal a day. {% endif %}{% if r.kcal_reference %}Your energy reference is {{ '{:,}'.format(r.kcal_reference) }} kcal a day (your doctor's number, or the estimate on <a href="/numbers">Measures</a>). {% endif %}Estimates from USDA FoodData Central: for you to see, never a target that pays.</p></section>{% endif %}
 
 <section class="card dark pad">
   <p class="section-kicker light">Goals kept → money back</p>

@@ -39,8 +39,10 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
       <button class="secondary" type="submit">Sync</button>
     </form>
     {% if steps %}
-    <div class="scroll-x"><table style="margin-top:10px"><tr>{% for d in days %}<th>{{ d }}</th>{% endfor %}</tr>
-      <tr>{% for s in steps %}<td class="{{ 'num' }}">{{ s }} {% if s >= steps_goal %}<span class="pill ok">✓</span>{% endif %}</td>{% endfor %}</tr></table></div>
+    {% from "_charts.html" import bars, style %}{{ style() }}
+    {% set rows = [] %}{% for s in steps %}{% set _ = rows.append({'label': days[loop.index0], 'steps': s}) %}{% endfor %}
+    <div style="margin-top:10px">{{ bars(rows, 'steps', [steps|max, steps_goal]|max, steps_goal, '#163b2a', 'steps') }}</div>
+    <p class="tiny muted">Green: the day counts as moved. <a href="/report">Day, week and month →</a></p>
     {% endif %}
   </div>
 </div>

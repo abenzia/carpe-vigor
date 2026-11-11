@@ -1,0 +1,42 @@
+{# Charts drawn as SVG on the server: no chart library, nothing to load. Used by My report, Movement and My reward. #}
+
+{# A value per day as a bar, a dashed line at the goal; a day under the goal is grey. rows: [{label, <key>}] #}
+{% macro bars(rows, key, top, goal, color, unit) %}
+{% set n = rows|length %}{% set w = 700 / n %}
+<svg viewBox="0 0 815 200" class="chart" role="img" aria-label="{{ unit }} per day">
+  {% for r in rows %}{% set v = r[key] %}{% set x = 10 + loop.index0 * w %}
+    {% if v is not none %}{% set h = 140 * v / top %}
+      <rect x="{{ x + w * 0.15 }}" y="{{ 170 - h }}" width="{{ w * 0.7 }}" height="{{ h }}" rx="3"
+            fill="{{ color if not goal or v >= goal else '#c9cbbf' }}"><title>{{ r.label }}: {{ '{:,}'.format(v) }} {{ unit }}</title></rect>
+      {% if n <= 7 %}<text x="{{ x + w / 2 }}" y="{{ 164 - h }}" text-anchor="middle" class="v">{{ '{:,}'.format(v) }}</text>{% endif %}
+    {% else %}<rect x="{{ x + w * 0.15 }}" y="167" width="{{ w * 0.7 }}" height="3" fill="#e4ddce"><title>{{ r.label }}: no data</title></rect>{% endif %}
+    {% if n <= 7 or loop.index0 % 5 == 4 or loop.last %}<text x="{{ x + w / 2 }}" y="188" text-anchor="middle" class="d">{{ r.label }}</text>{% endif %}
+  {% endfor %}
+  {% if goal %}{% set gy = 170 - 140 * goal / top %}
+    <line x1="10" x2="710" y1="{{ gy }}" y2="{{ gy }}" stroke="#d9672d" stroke-dasharray="6 5" stroke-width="1.5"/>
+    <text x="716" y="{{ gy + 4 }}" class="g">goal {{ '{:,}'.format(goal) }}</text>{% endif %}
+</svg>
+{% endmacro %}
+
+{# How far along a goal is, as a filled line; `pace` marks where you should be by now. A reference (calories) fills
+   but never says "kept". #}
+{% macro meter(label, source, v, goal, color, unit, is_goal=True, pace=None) %}
+<div class="meter"><div class="meter-head"><span class="section-kicker">{{ label }}{% if source %} · {{ source }}{% endif %}</span>
+  <b>{{ '{:,}'.format(v) if v is not none else '—' }}</b><small> / {{ '{:,}'.format(goal) if goal else '—' }} {{ unit }}</small>
+  {% if is_goal and v is not none and goal %}{% if v >= goal %}<span class="pill ok">goal kept{% if v > goal %} · +{{ '{:,}'.format(v - goal) }}{% endif %}</span>
+  {% else %}<span class="pill {{ 'ok' if pace is not none and v >= pace else 'warn' }}">{{ '{:,}'.format(goal - v) }} to go{% if pace is not none %} · {{ 'on pace' if v >= pace else 'behind pace' }}{% endif %}</span>{% endif %}{% endif %}</div>
+  <div class="track"><span style="width:{{ [100, 100 * (v or 0) / goal]|min if goal else 0 }}%;background:{{ color }}"></span>
+    {% if pace is not none and goal %}<i style="left:{{ [100, 100 * pace / goal]|min }}%" title="where you should be by today"></i>{% endif %}</div></div>
+{% endmacro %}
+
+{% macro style() %}
+<style>
+  .meter{margin:6px 0 16px} .meter-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .meter-head .section-kicker{flex:1;min-width:180px;margin:0} .meter-head b{font:400 28px var(--serif);color:var(--forest)}
+  .track{position:relative;height:14px;border-radius:99px;background:#e9e5da;overflow:hidden;margin-top:6px}
+  .track span{display:block;height:100%;border-radius:99px} .track i{position:absolute;top:0;bottom:0;width:3px;background:var(--orange)}
+  .chart{width:100%;height:auto;display:block}
+  .chart .v{font:600 17px var(--sans);fill:var(--forest)} .chart .d{font:16px var(--sans);fill:var(--muted)}
+  .chart .g{font:600 16px var(--sans);fill:var(--orange)}
+</style>
+{% endmacro %}

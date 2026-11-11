@@ -19,6 +19,12 @@ def test_each_synced_day_is_kept_under_its_date_and_the_report_adds_them_up(tmp_
     assert w["rows"][-2]["kcal"] == 1340 and w["rows"][0]["kcal"] is None  # a day with nothing said is no data, not 0
     assert len(activity.report(s, "month", today="2026-11-11")["rows"]) == 30
     assert activity.report(s, "day", today="2026-11-11")["minutes_goal"] == 21
+    # Wednesday 11 Nov: the week started on Monday 9, the month on the 1st (30 days)
+    today, week, month = activity.goals(s, today="2026-11-11")
+    assert (today["steps"], today["steps_goal"], today["steps_pace"]) == (9500, 7000, None)
+    assert (week["steps"], week["steps_goal"], week["steps_pace"]) == (2, 7, 3)     # 8,000 and 9,500 of 3 days so far
+    assert (week["minutes"], week["minutes_goal"], week["minutes_pace"]) == (75, 150, 64)
+    assert (month["steps_goal"], month["minutes_goal"], month["minutes_pace"]) == (30, 643, 236)
 
 
 def test_the_watch_sends_exercise_minutes_and_the_report_page_shows_them(tmp_path, monkeypatch):
@@ -31,7 +37,7 @@ def test_the_watch_sends_exercise_minutes_and_the_report_page_shows_them(tmp_pat
                headers={"Authorization": "Bearer s3cret-token"})
     assert r.status_code == 200 and "22 exercise minutes today" in r.json()["spoken"]
     page = c.get("/report?view=week").text
-    assert "How you are" in page and "57<span" in page and "7,600" in page
+    assert "How you are" in page and "Your goals" in page and "7,600" in page
     assert "Never for your weight" in page
     assert c.get("/report?view=nonsense").status_code == 200
 

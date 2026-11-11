@@ -511,7 +511,8 @@ def report_view(request: Request, view: str = "week"):
     b = behaviour()
     return render(request, "progress.html",
                   r=activity.report(store, view, kcal_reference=health.read(store.get("health") or {}).get("target_kcal")),
-                  result=reward.score(b), behaviour=b, month=week.month(store), max_rate=config.CASHBACK_MAX)
+                  goals=activity.goals(store), result=reward.score(b), behaviour=b, month=week.month(store),
+                  max_rate=config.CASHBACK_MAX)
 
 
 @app.post("/diary/remove")
