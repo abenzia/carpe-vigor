@@ -3,6 +3,7 @@ import os
 
 os.environ["LLM_PROVIDER"] = "mock"
 os.environ["PAYPAL_MODE"] = "mock"
+os.environ["CARPE_VOICE_LANG"] = "en"  # the app's own .env may say it; the tests expect English
 
 import pytest
 from fastapi.testclient import TestClient

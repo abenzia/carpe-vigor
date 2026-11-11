@@ -1,3 +1,7 @@
+import os
+
+os.environ["CARPE_VOICE_LANG"] = "en"  # the app's own .env may say it; the tests expect English
+
 from fastapi.testclient import TestClient
 
 from carpevigor import activity, config, diary, llm
@@ -124,3 +128,13 @@ def test_a_dish_name_alone_takes_the_voice_language(monkeypatch):
     monkeypatch.setattr(config, "VOICE_LANG", "it")
     assert diary.italian("pizza margherita e una birra") and diary.italian("pizza margherita")
     assert not diary.italian("a plate of cacio e pepe")              # English words still answer in English
+
+
+def test_the_watch_says_in_italian_what_it_could_not_count(tmp_path, monkeypatch):
+    import app as webapp
+    webapp.store = Store(tmp_path / "t.sqlite")
+    client = TestClient(webapp.app)
+    monkeypatch.setattr(config, "API_TOKEN", "t0k")
+    monkeypatch.setattr(config, "VOICE_LANG", "it")
+    r = client.post("/api/meal?say=1", content=b"", headers={"authorization": "Bearer t0k"})
+    assert r.status_code == 422 and r.text.startswith("Non ho sentito niente")

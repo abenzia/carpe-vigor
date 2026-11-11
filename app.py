@@ -625,9 +625,13 @@ async def api_meal(request: Request, say: str = ""):
         body = {"text": raw.decode("utf-8", "replace")}
     if not isinstance(body, dict):
         body = {"text": str(body)}
+    text = str(body.get("text", "")).strip()
     try:
-        entry = diary.say(str(body.get("text", "")), body.get("portion") if body.get("portion") in diary.PORTIONS else "normal")
+        entry = diary.say(text, body.get("portion") if body.get("portion") in diary.PORTIONS else "normal")
     except ValueError as error:
+        if diary.italian(text):  # the watch reads this aloud: in the language that was spoken
+            return answer(f"Ho sentito: «{text}». Non sembra cibo o una bevanda, non ho segnato niente." if text
+                          else "Non ho sentito niente. Riprova e di' cosa hai mangiato, per esempio: una pizza margherita.", 422)
         return answer(str(error), 422)
     store.put("diary", store.get("diary", []) + [entry])
     return answer(diary.spoken(entry, diary.day(store.get("diary", []))), entry=entry)
