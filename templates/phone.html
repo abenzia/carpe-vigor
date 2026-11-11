@@ -46,9 +46,20 @@
   </form>
   <form method="post" action="/m/photo" enctype="multipart/form-data" class="card" id="photo-form">
     <label class="photo">📷 Or take a photo of your plate
-      <input type="file" name="file" accept="image/*" capture="environment" onchange="this.form.querySelector('.photo').textContent='Reading your plate…';this.form.submit()"></label>
+      <input type="file" name="file" accept="image/*" capture="environment"></label>
+    <img id="plate" alt="Your plate" hidden style="width:100%;border-radius:12px;margin-top:10px">
     <p class="muted" style="margin-top:10px">Gemini sees what is on the plate and how much; the calories are counted with USDA. The photo is not kept.</p>
   </form>
+  <script>
+    // the photo shows at once, while Gemini reads it; the form is sent as soon as one is chosen
+    document.querySelector('#photo-form input[type=file]').addEventListener('change', function () {
+      if (!this.files.length) return;
+      var img = document.getElementById('plate');
+      img.src = URL.createObjectURL(this.files[0]); img.hidden = false;
+      this.parentNode.firstChild.textContent = 'Reading your plate…';
+      var form = this.form; setTimeout(function () { form.submit(); }, 50);
+    });
+  </script>
   <style>.photo{display:block;text-align:center;padding:15px;border-radius:999px;background:var(--forest);color:#fff;font:700 18px 'DM Sans',sans-serif;cursor:pointer}.photo input{display:none}</style>
   {% set t = today.total %}
   <div class="card"><div class="stats">

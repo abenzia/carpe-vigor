@@ -20,7 +20,8 @@ Opening card, no voice: "Your doctor gave you advice. Who helps you follow it, e
 | 0:44 | `/team` | Before you see it, a board of AI reviewers checks the plan against public health sources. |
 | 0:51 | `/week`, then one recipe card | Fourteen meals, written for the kitchen you have: a kitchen robot, a pressure cooker, an air fryer. Every step comes with the machine's own settings, checked by code, with USDA nutrition data. |
 | 1:04 | `/move`, then `/body` | And movement made for you: a weekly plan with strength days, shown on your own body, with the steps from your watch counted every day. |
-| 1:14 | Phone page `/m`, "an apple" | No forms to fill in. Tell your phone or your watch what you ate, with your voice, and it is counted with USDA data. A daily check that takes five seconds. |
+| 1:14 | Phone page `/m`: "an apple" by voice, then a photo of the plate | No forms to fill in. Tell your phone or your watch what you ate, or just snap a photo of the plate. Gemini sees the food, and USDA data counts it. A daily check that takes five seconds. |
+| 1:22 | `/report`: today, this week, 30 days | And the day adds itself up. Steps and exercise minutes come from Apple Health, on your iPhone and your Apple Watch. Today, this week, this month: you see how you are doing against your goals. Keep them, and PayPal pays you back. |
 | 1:26 | `/home`, then `/cart` | Then the shopping. The agent buys only what the recipes need, minus what you have at home, inside a budget you authorize once with PayPal. Plain code picks the cart: the AI writes the words, never spends the money. |
 | 1:40 | PayPal sandbox approval | PayPal holds the budget. Nothing is charged yet. |
 | 1:44 | Money card | Each order is captured against that one authorization: 105 dollars and 92 cents this week. The other 34 are released. The agent cannot spend a cent more. |
