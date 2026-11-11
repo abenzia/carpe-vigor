@@ -105,9 +105,25 @@ def day(entries: list[dict], on: str | None = None) -> dict:
             "sodium_at_most": any(e["nutrition"].get("sodium_at_most") for e in todays)}
 
 
+# Words that show a sentence is Italian ("segna una pizza", "ho mangiato la pasta"): a watch's Italian voice reading an
+# English answer cannot be understood, so the answer follows the language of what was said. Not "e", "con", "al":
+# Italian dish names sit inside English sentences too ("a plate of cacio e pepe")
+_ITALIAN = {"segna", "ho", "mangiato", "bevuto", "una", "un", "uno", "piatto", "fetta", "bicchiere", "oggi", "pranzo",
+            "cena", "colazione"}
+
+
+def italian(text: str) -> bool:
+    return bool(_ITALIAN & set(text.lower().replace("'", " ").split()))
+
+
 def spoken(entry: dict, today: dict) -> str:
-    """The answer a watch reads aloud."""
+    """The answer a watch reads aloud, in Italian when the person spoke Italian."""
     n, t = entry["nutrition"], today["total"]
+    if italian(entry.get("said", "")):
+        it = lambda v: f"{round(v):,}".replace(",", ".")
+        about = "circa " if entry["estimate"] else ""
+        return (f"{entry['dish']}: {about}{it(n['kcal'])} calorie, {it(n['protein_g'])} grammi di proteine, "
+                f"{it(n['sodium_mg'])} milligrammi di sodio. Oggi finora: {it(t['kcal'])} calorie.")
     about = "about " if entry["estimate"] else ""
     return (f"{entry['dish']}: {about}{round(n['kcal'])} calories, {round(n['protein_g'])} grams of protein, "
             f"{round(n['sodium_mg'])} milligrams of sodium. Today so far: {round(t['kcal'])} calories.")

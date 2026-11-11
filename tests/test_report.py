@@ -94,3 +94,13 @@ def test_an_evening_shortcut_sending_today_only_builds_the_week_under_the_right_
     assert [d["steps"] for d in week][-3:] == [8100, None, 6900]
     assert s.get("steps") == [0, 0, 0, 0, 8100, 0, 6900]                         # the reward: a silent day did not move
     assert "6,900 steps today" in apple_health.spoken(apple_health.apply({"steps": "6900"}, s, today="2026-11-11"))
+
+
+def test_watch_answers_in_the_language_spoken():
+    from carpevigor import diary
+    entry = {"said": "segna una pizza margherita", "dish": "pizza margherita", "estimate": True,
+             "nutrition": {"kcal": 812.4, "protein_g": 33, "sodium_mg": 1640}}
+    today = {"total": {"kcal": 1183.2}}
+    assert diary.spoken(entry, today) == ("pizza margherita: circa 812 calorie, 33 grammi di proteine, "
+                                          "1.640 milligrammi di sodio. Oggi finora: 1.183 calorie.")
+    assert diary.spoken(entry | {"said": "a plate of cacio e pepe"}, today).startswith("pizza margherita: about 812 calories")
