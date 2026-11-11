@@ -34,7 +34,7 @@
   <p class="tiny">{% for d in adapt.days %}{{ d.on[8:10] }}/{{ d.on[5:7] }}: about {{ '{:,}'.format(d.kcal) }} kcal{% if not loop.last %} · {% endif %}{% endfor %}. These are estimates, a third either way, so it is your call.
     If you want, the team rewrites the rest of the week around it: portions sized to your reference, lighter dinners, more vegetables and legumes that keep you full. Never under the safe minimum, and your doctor's number comes first.</p>
   <form method="post" action="/plan/adapt" class="row" style="justify-content:space-between;margin-top:8px">
-    <span class="tiny muted">About three minutes. Meals you already cooked this week stay counted for your reward.</span>
+    <span class="tiny muted">Three to seven minutes: the team writes and checks the recipes again. Meals you already cooked this week stay counted for your reward.</span>
     <button type="submit">Adapt my week →</button></form>
 </section>
 {% endif %}

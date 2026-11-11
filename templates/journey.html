@@ -39,7 +39,7 @@
       <section class="card pad">
         <div class="card-title"><h3>Today · {{ today }}</h3><a class="text-link" href="/week">The week →</a></div>
         {% if meals %}<div class="meal-grid">{% for r in meals %}{{ meal_card(r, cooked, '/journey') }}{% endfor %}</div>
-        {% else %}<p class="muted">No plan yet. <a href="/doctor">Start with what your doctor said</a>; the week takes about three minutes.</p>{% endif %}
+        {% else %}<p class="muted">No plan yet. <a href="/doctor">Start with what your doctor said</a>; the week takes three to seven minutes.</p>{% endif %}
       </section>
       <section class="card pad">
         <div class="card-title"><h3>What I ate today</h3><a class="text-link" href="/diary">Add a meal →</a></div>
