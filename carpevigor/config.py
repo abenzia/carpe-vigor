@@ -29,6 +29,8 @@ PUBLIC_URL = os.environ.get("CARPE_PUBLIC_URL", "").rstrip("/")
 # A public demo for the judges (Render): every page open to anyone, a notice on each page; never set on a personal PC
 HOSTED = os.environ.get("CARPE_HOSTED", "") == "1"
 CURRENCY = os.environ.get("CURRENCY", "USD")
+# The language the watch answers in when what was said does not show it ("pizza margherita"): en | it
+VOICE_LANG = os.environ.get("CARPE_VOICE_LANG", "en")
 
 # The agents. Provider `vertex` = Gemini on Google Vertex AI (the default when GOOGLE_CLOUD_PROJECT is set);
 # `bedrock` = Amazon Nova via Strands Agents (how the engine ran in Carpe Class); `mock` = no model, for tests and

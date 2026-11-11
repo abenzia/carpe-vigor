@@ -116,3 +116,11 @@ def test_the_opening_word_is_not_eaten(monkeypatch):
         except ValueError:
             pass
     assert seen == ["THE PERSON SAYS: una pizza", "THE PERSON SAYS: a pizza"]
+
+
+def test_a_dish_name_alone_takes_the_voice_language(monkeypatch):
+    from carpevigor import config, diary
+    assert not diary.italian("pizza margherita")                     # default: English, for the judges
+    monkeypatch.setattr(config, "VOICE_LANG", "it")
+    assert diary.italian("pizza margherita e una birra") and diary.italian("pizza margherita")
+    assert not diary.italian("a plate of cacio e pepe")              # English words still answer in English

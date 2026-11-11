@@ -15,7 +15,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from . import llm, nutrition
+from . import config, llm, nutrition
 
 PORTIONS = {"small": 0.7, "normal": 1.0, "large": 1.4}   # times a typical portion
 MAX_TEXT = 500    # characters of one sentence
@@ -116,8 +116,15 @@ _ITALIAN = {"segna", "ho", "mangiato", "bevuto", "una", "un", "uno", "piatto", "
             "cena", "colazione"}
 
 
+_ENGLISH = {"log", "a", "an", "of", "and", "with", "the", "i", "had", "ate", "some", "slice", "glass", "cup"}
+
+
 def italian(text: str) -> bool:
-    return bool(_ITALIAN & set(text.lower().replace("'", " ").split()))
+    """Italian words win, then English ones; a dish name alone ("pizza margherita") takes the app's voice language."""
+    words = set(text.lower().replace("'", " ").replace(",", " ").split())
+    if words & _ITALIAN:
+        return True
+    return not (words & _ENGLISH) and config.VOICE_LANG == "it"
 
 
 def spoken(entry: dict, today: dict) -> str:
