@@ -54,13 +54,22 @@ The header of every screen shows budget · spent · released · paid back. Three
   dictated, or sent from an iPhone or Apple Watch shortcut to `POST /api/meal` (with a secret token). A model turns it
   into the raw ingredients of a typical portion; USDA FoodData Central gives the values; the answer comes back as a
   line Siri can read ("cacio e pepe: about 572 calories, 29 grams of protein, 723 milligrams of sodium"). Meals of the
-  plan marked as cooked join the day with their recipe's values. Estimates are labelled as such, there is no calorie
-  target, and the diary never touches the reward.
+  plan marked as cooked join the day with their recipe's values. Or a photo of the plate, from the phone or the
+  computer: Gemini names the foods and judges their grams, USDA gives the values, and the photo is not kept.
+  Estimates are labelled as such, there is no calorie target, and the diary never touches the reward.
 - **A lab report, read for you**: upload a PDF or a photo; Gemini copies the values, units and date as printed (no
   judging, no guessing), plain code checks units (mmol/L to mg/dL, mmol/mol to %) and plausibility, and the person
   ticks and corrects each value before anything is kept. The file is never stored; the form says it goes to Vertex AI.
-- **Apple Health**: an iPhone shortcut sends steps, weight, sleep, resting heart rate and blood pressure to
-  `POST /api/health` (same token as the diary, consent required): the steps become the reward's measured steps.
+- **Apple Health**: an iPhone Shortcut reads Apple Health and sends steps, exercise minutes, weight, sleep, resting
+  heart rate and blood pressure to `POST /api/health` (same token as the diary, consent required). Each value is kept
+  under its date, so it can run every evening with today's numbers; the steps become the reward's measured steps.
+  The setup guide is on the paired phone's page. Declared, not yet verified: the endpoint is covered by tests with
+  values as an Italian iPhone writes them, but the Shortcut has not been run from a real iPhone; the demo month in
+  the video uses sample data.
+- **My report**: today, this week and this month against the goals (7,000 steps, 150 exercise minutes a week), with
+  a pace mark, bar charts and daily rings drawn as SVG on the server, calories eaten as a reference, and this week's
+  reward. After 2 of the last 3 days more than 10% over the calorie reference, it offers (never by itself) to have
+  the team adapt the week; meals already cooked stay counted.
 - **Ask the sources**: a free question, answered only from passages of the public sources, each sentence citing
   its passage. The safety reviewer reads the answer before you do. If the reviewer still blocks it after one
   rewrite, you see the passages and the reason, never the answer.
@@ -111,6 +120,9 @@ an employer inside its welfare plan, an insurer, or a retailer whose basket beco
   week's reward (16.96, 15.9% at score 80/100) paid back with "Close the month" through PayPal's MCP server in about
   8 seconds. Read back from PayPal: authorization VOIDED, capture PARTIALLY_REFUNDED, refund COMPLETED under our
   `invoice_id`.
+- **The run filmed for the demo video** (10 Nov 2026): budget USD 140.00 authorized by the sandbox buyer
+  (authorization 4NP38678F46892931), 105.92 captured for the groceries, the other 34.08 released, the reward of
+  17.99 refunded through PayPal's MCP server (refund 40198090VD119811D).
 - **The 3-day honor period**: PayPal guarantees held funds for 3 days of the 29-day authorization. Before a capture
   past day 3, `week.py` reauthorizes the uncaptured rest (`POST /v2/payments/authorizations/{id}/reauthorize`, a new
   3 days each time) and captures against the new authorization; past day 29 it refuses and asks for a new week.

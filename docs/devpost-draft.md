@@ -49,8 +49,16 @@ against, and a rule a person can read for what goes in the cart.
    captured against that hold, and the rest is released at the end of the week.
 6. **The reward.** Up to 20% of the month's groceries comes back through PayPal for what you did: a healthy basket,
    days you moved, meals you cooked. Never for your weight.
-7. **What I ate.** Pair your phone once with a QR code, say "a plate of cacio e pepe" and the diary counts it with
-   USDA data.
+7. **What I ate.** Pair your phone once with a QR code, then say "a plate of cacio e pepe" to your phone or your
+   watch, or take a photo of the plate: Gemini names the foods and judges the grams, USDA data gives the values.
+   The photo is not kept.
+8. **My report.** Today, this week and this month against the goals (7,000 steps a day, 150 exercise minutes a
+   week), with a pace mark so a Tuesday is not judged against the whole week. Steps and exercise minutes reach the
+   app through an iPhone Shortcut that reads Apple Health (setup guide in the app, endpoint covered by tests). The
+   demo month in the video uses sample data.
+9. **A week that adapts, if you ask.** Two of the last three days over your calorie reference? The report offers to
+   have the team rewrite the week: portions sized to the reference, lighter dinners, more vegetables and legumes,
+   never under the public minimum. Meals already cooked still count for the reward.
 
 ### How we built it
 
@@ -64,10 +72,11 @@ against, and a rule a person can read for what goes in the cart.
   real foods the index returns, and code scales the values.
 - **FastAPI + Jinja**, SQLite, three.js for the body view (MakeHuman CC0 models), Cloudflare Tunnel for the phone.
 
-### A full run, read back from PayPal sandbox
+### A full run on the PayPal sandbox (the one in the video, 10 Nov 2026)
 
-- budget authorized once; USD 106.39 captured against it in orders; the rest voided (status VOIDED);
-- reward of USD 16.96 refunded through the PayPal MCP server in about 8 seconds.
+- budget of USD 140.00 authorized once by the sandbox buyer (authorization 4NP38678F46892931);
+- USD 105.92 captured against it for the groceries; the other USD 34.08 released;
+- reward of USD 17.99 refunded through the PayPal MCP server (refund 40198090VD119811D).
 
 ### Challenges
 
@@ -89,6 +98,8 @@ against, and a rule a person can read for what goes in the cart.
   amounts, not the items.
 - A doctor's portal so the check-up verdict comes from the doctor, not the user.
 - Real grocery stores instead of the demo catalog.
+- The Apple Health shortcut has a guide and tested code behind it, but has not yet been run from a real iPhone; the
+  steps, minutes and meals of the demo month are sample data.
 - Italian everywhere (today the interface is bilingual, the long texts are English).
 
 ## Built with
@@ -104,4 +115,4 @@ three.js, ag-grid, render, cloudflare-tunnel, pydantic, pytest
 - [ ] The repo link once it is public (11 Nov), and the video link.
 - [ ] Brands: the official rules ban third-party marks in the VIDEO; the text names a machine model once, as an example
       of a limit the code checks (nominative use). Remove it if in doubt.
-- [ ] Re-run the sandbox week the day before and update the two numbers above if they change.
+- [x] Sandbox week re-run for the video (10 Nov): numbers above updated to 140.00 / 105.92 / 34.08 / 17.99.
