@@ -221,7 +221,7 @@ def move_view(request: Request):
     plan = _plan_or_start()
     return render(request, "move.html", movement=plan["plan"]["movement"] if plan else [], days=planner.DAYS,
                   coach=((plan or {}).get("report") or {}).get("coach"),
-                  steps=store.get("steps", []), goal=config.STEPS_GOAL,
+                  steps=store.get("steps", []), goal=config.STEPS_GOAL, week_rows=activity.last_week(store),
                   exercises=coach.exercises_in(plan["plan"]["movement"] if plan else []))
 
 
@@ -459,6 +459,7 @@ def phone_page(request: Request, said: str = "", error: str = ""):
     return templates.TemplateResponse(request, "phone.html", {"paired": True, "today": today, "said": said,
                                                                "error": error, "portions": list(diary.PORTIONS),
                                                                "siri_url": f"{config.PUBLIC_URL or str(request.base_url).rstrip('/')}/api/meal?say=1",
+                                                               "health_url": f"{config.PUBLIC_URL or str(request.base_url).rstrip('/')}/api/health",
                                                                "siri_header": f"Bearer {config.API_TOKEN}",
                                                                "version": __version__})
 
@@ -770,6 +771,7 @@ def behaviour() -> reward.WeekBehaviour:
 def reward_view(request: Request, error: str = ""):
     b = behaviour()
     return render(request, "reward.html", behaviour=b, result=reward.score(b), steps=store.get("steps", []),
+                  week_rows=activity.last_week(store),
                   steps_goal=config.STEPS_GOAL, max_rate=config.CASHBACK_MAX, days=planner.DAYS,
                   month=week.month(store), week_closed=bool(this_week("week_closed")), error=error)
 
@@ -778,8 +780,8 @@ def reward_view(request: Request, error: str = ""):
 def steps_submit(steps: str = Form(...), back: str = Form("/reward")):
     """Seven numbers, comma separated: what a watch would send. Simulated in the demo."""
     values = [int(x) for x in steps.replace(";", ",").split(",") if x.strip().isdigit()][:7]
-    store.put("steps", values)
     activity.record(store, {"steps": values})
+    store.put("steps", activity.week_steps(store))
     return RedirectResponse(back if back in ("/reward", "/move") else "/reward", status_code=303)
 
 

@@ -34,8 +34,7 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
   <div class="card pad">
     <div class="eyebrow">Steps from your watch</div>
     {% if steps %}{% from "_charts.html" import rings %}
-    {% set rows = [] %}{% for s in steps %}{% set _ = rows.append({'label': days[loop.index0], 'steps': s}) %}{% endfor %}
-    {{ rings(rows, 'steps', steps_goal) }}
+        {{ rings(week_rows, 'steps', steps_goal) }}
     <p class="tiny"><b>{{ steps|select('ge', steps_goal)|list|length }} of {{ steps|length }} days</b> over {{ '{:,}'.format(steps_goal) }} steps. <a href="/report">Day, week and month →</a></p>
     {% endif %}
     <details class="tiny"><summary>Type steps by hand (demo)</summary>

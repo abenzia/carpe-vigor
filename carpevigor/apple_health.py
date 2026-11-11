@@ -50,7 +50,6 @@ def apply(payload: dict, store, today: str | None = None) -> dict:
     if payload.get("steps") not in (None, ""):
         steps = [s for s in integers(payload["steps"]) if lo <= s <= hi][-7:]
         if steps:
-            store.put("steps", steps)
             kept["steps"] = steps
         else:
             dropped.append("steps")
@@ -63,6 +62,9 @@ def apply(payload: dict, store, today: str | None = None) -> dict:
             dropped.append("exercise_min")
     # each day under its date, for the report (activity.py): the last value sent is today's
     activity.record(store, {k: kept[k] for k in activity.FIELDS if k in kept}, today)
+    if "steps" in kept:
+        # the reward's week comes from the dated days: a shortcut may send today only (each evening) or several days
+        store.put("steps", activity.week_steps(store, today))
     h = dict(store.get("health") or {})
     rows = store.get("numbers", [])
     for key in ("weight_kg", "sleep_hours", "resting_hr", "systolic", "diastolic"):
@@ -98,7 +100,8 @@ def spoken(result: dict) -> str:
     k = result["kept"]
     parts = []
     if "steps" in k:
-        parts.append(f"{len(k['steps'])} days of steps, {k['steps'][-1]:,} today")
+        parts.append(f"{len(k['steps'])} days of steps, {k['steps'][-1]:,} today" if len(k["steps"]) > 1
+                     else f"{k['steps'][0]:,} steps today")
     if "exercise_min" in k:
         parts.append(f"{k['exercise_min'][-1]} exercise minutes today")
     if "weight_kg" in k:

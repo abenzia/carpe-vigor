@@ -27,6 +27,25 @@ def record(store, values: dict[str, list[int]], today: str | None = None) -> Non
     store.put("days", days)
 
 
+DAY_NAMES = ("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+
+def last_week(store, today: str | None = None) -> list[dict]:
+    """The last 7 days ending today, each with its own weekday name and steps (None when nothing came that day)."""
+    end = date.fromisoformat(today) if today else date.today()
+    days = store.get("days") or {}
+    out = []
+    for back in range(6, -1, -1):
+        on = end - timedelta(days=back)
+        out.append({"on": on.isoformat(), "label": DAY_NAMES[on.weekday()], "steps": days.get(on.isoformat(), {}).get("steps")})
+    return out
+
+
+def week_steps(store, today: str | None = None) -> list[int]:
+    """The 7 numbers the reward counts, from the dated days: a day with nothing sent counts as 0 (not moved)."""
+    return [d["steps"] or 0 for d in last_week(store, today)]
+
+
 def _eaten(diary: list[dict]) -> dict[str, float]:
     out: dict[str, float] = {}
     for e in diary:

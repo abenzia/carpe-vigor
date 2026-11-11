@@ -38,7 +38,7 @@
     <button type="submit">Adapt my week →</button></form>
 </section>
 {% endif %}
-{% if not r.days_known %}<div class="flag">No days from your watch yet. Run your Apple Health shortcut (or sync the steps on <a href="/move">Movement</a>) and they appear here.</div>{% endif %}
+{% if not r.days_known %}<div class="flag">No days from your watch yet. Connect Apple Health once: on your iPhone open Carpe Vigor (scan the code on <a href="/diary">What I ate</a>) → <b>Apple Health · every evening</b>, and follow the five steps. Each evening your steps and exercise minutes arrive here on their own.</div>{% endif %}
 
 <nav class="tabs">{% for v, label in [('day', 'Today'), ('week', 'This week'), ('month', '30 days')] %}<a href="/report?view={{ v }}" class="{{ 'on' if r.view == v }}">{{ label }}</a>{% endfor %}</nav>
 

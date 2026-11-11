@@ -25,8 +25,7 @@
       <section class="card pad">
         <p class="section-kicker">Steps from your watch</p>
         {% if steps %}{% from "_charts.html" import rings %}
-        {% set rows = [] %}{% for s in steps %}{% set _ = rows.append({'label': days[loop.index0], 'steps': s}) %}{% endfor %}
-        {{ rings(rows, 'steps', goal) }}
+                {{ rings(week_rows, 'steps', goal) }}
         <p class="tiny"><b>{{ steps|select('ge', goal)|list|length }} of {{ steps|length }} days</b> over {{ '{:,}'.format(goal) }} steps: that is 30% of your weekly reward. <a href="/report">Day, week and month →</a></p>{% endif %}
         <details class="tiny"><summary>Type steps by hand (demo)</summary>
         <form method="post" action="/reward/steps" class="row" style="margin-top:8px"><input type="hidden" name="back" value="/move">

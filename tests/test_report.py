@@ -80,3 +80,17 @@ def test_the_lab_report_can_be_sent_from_the_doctors_page_and_an_error_comes_bac
     r = c.post("/numbers/report", files={"file": ("r.txt", b"x", "text/plain")}, data={"send_ok": "1", "back": "//evil"},
                follow_redirects=False)
     assert r.headers["location"].startswith("/numbers?error=")                  # nowhere else
+
+
+def test_an_evening_shortcut_sending_today_only_builds_the_week_under_the_right_days(tmp_path):
+    from carpevigor import apple_health
+    s = Store(tmp_path / "e.sqlite")
+    s.put("health", {"consent": True})
+    for on, steps in (("2026-11-09", "8.100"), ("2026-11-11", "6.900")):      # Tuesday the 10th: the phone sent nothing
+        r = apple_health.apply({"steps": steps, "exercise_min": "25 min"}, s, today=on)
+        assert apple_health.spoken(r).startswith("Carpe Vigor updated: ")
+    week = activity.last_week(s, today="2026-11-11")
+    assert [d["label"] for d in week][-3:] == ["Mon", "Tue", "Wed"]             # each day its own name, not Mon..Sun
+    assert [d["steps"] for d in week][-3:] == [8100, None, 6900]
+    assert s.get("steps") == [0, 0, 0, 0, 8100, 0, 6900]                         # the reward: a silent day did not move
+    assert "6,900 steps today" in apple_health.spoken(apple_health.apply({"steps": "6900"}, s, today="2026-11-11"))

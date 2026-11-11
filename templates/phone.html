@@ -84,6 +84,21 @@
       <li>Name it <b>Carpe Vigor</b>; ⓘ → <b>Show on Apple Watch</b>.</li>
     </ol>
   </details>
+  <details class="card">
+    <summary><b>Apple Health</b> · steps and exercise minutes, every evening</summary>
+    <p class="muted">Your iPhone and Apple Watch already count your steps and exercise minutes. This shortcut sends today's to Carpe Vigor each evening: nothing to type. First give your consent on <b>Measures</b> (on the computer).</p>
+    <p><b>Address</b></p>
+    <div class="copy"><code id="health-url">{{ health_url }}</code><button type="button" data-copy="health-url">Copy</button></div>
+    <p class="muted">The header value is the same as for Siri, above.</p>
+    <ol class="muted" style="padding-left:18px">
+      <li>Shortcuts → <b>+</b> → add <b>Find Health Samples</b>: type <b>Steps</b>, Start Date <b>is today</b>, Group By <b>Day</b>.</li>
+      <li>Add another <b>Find Health Samples</b>: type <b>Exercise Minutes</b>, Start Date <b>is today</b>, Group By <b>Day</b>.</li>
+      <li>Add <b>Get Contents of URL</b>: paste the address; Method <b>POST</b>; Headers → <code>Authorization</code> = the header value; Request Body <b>JSON</b> with two fields: <code>steps</code> = the first Health Samples, <code>exercise_min</code> = the second.</li>
+      <li>Add <b>Get Dictionary Value</b> “spoken” → <b>Show Notification</b>. Name it <b>Carpe Vigor Health</b> and run it once by hand.</li>
+      <li>Automation → <b>+</b> → <b>Time of Day</b> 21:30, Daily, <b>Run Immediately</b> → Carpe Vigor Health.</li>
+    </ol>
+    <p class="muted">Kept only with your consent; you can delete it on Measures. Weight never counts toward the reward.</p>
+  </details>
   <style>
     .copy{display:flex;gap:8px;align-items:center;margin:6px 0 12px}
     .copy code{flex:1;min-width:0;overflow-wrap:anywhere;font-size:12px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px}
