@@ -276,6 +276,13 @@ async def training_setup(request: Request):
     return RedirectResponse("/training", status_code=303)
 
 
+@app.get("/training/exercises", response_class=HTMLResponse)
+def training_library(request: Request):
+    """Every exercise of the program with its demonstration, ladder by ladder (easiest first), and the warm-up and cool-down."""
+    return render(request, "training_library.html", ladders=training.LADDERS, names=training.PATTERN_NAMES,
+                  warm_up=training.WARM_UP, cool_down=training.COOL_DOWN)
+
+
 @app.get("/training/day/{on}", response_class=HTMLResponse)
 def training_day(request: Request, on: str):
     state, limits = _training()

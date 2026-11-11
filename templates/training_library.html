@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Carpe Vigor — Exercises{% endblock %}
+{% block content %}
+{% from "_exercise_media.html" import show with context %}{% include "_exercise_media.html" %}
+<style>
+  .lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:8px}
+  .lib figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px}
+  .lib figcaption{margin-top:8px} .lib figcaption b{display:block} .lib ol{margin:6px 0 0 18px;padding:0;font-size:13px}
+  .rung{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+</style>
+<section class="section-view">
+<div class="view-head"><div><p class="eyebrow"><a href="/training">← My training</a> · the library</p>
+  <h1 class="view-title">Every exercise, <i>shown.</i></h1>
+  <p class="view-desc" style="max-width:680px">All the movements the program can give you, from the easiest version to the hardest. Your record decides which of them you get, and the program moves you one step at a time.</p></div></div>
+{% for pattern, ladder in ladders.items() %}
+<section class="card pad">
+  <p class="section-kicker">{{ names[pattern] }} · {{ ladder|length }} versions, easiest first</p>
+  <div class="lib">{% for e in ladder %}<figure>{{ show(e.clip, e.name) }}
+    <figcaption><span class="rung">Step {{ loop.index }}</span><b>{{ e.name }}</b><ol>{% for step in e.how %}<li>{{ step }}</li>{% endfor %}</ol></figcaption></figure>{% endfor %}</div>
+</section>
+{% endfor %}
+<section class="card pad">
+  <p class="section-kicker">Warm-up and cool-down</p>
+  <div class="lib">{% for what, much, clip in warm_up + cool_down %}{% if clip %}<figure>{{ show(clip, what) }}<figcaption><b>{{ what }}</b><span class="tiny">{{ much }}</span></figcaption></figure>{% endif %}{% endfor %}</div>
+</section>
+<p class="tiny muted">Videos made with Google Veo, positions drawn with Google Gemini (AI), each checked before it was kept: they show how to move, not how much. Anything your doctor told you comes first.</p>
+</section>
+{% endblock %}

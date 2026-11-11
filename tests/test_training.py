@@ -115,3 +115,11 @@ def test_every_exercise_and_warm_up_move_has_its_clip():
     files = lambda c: media(c)["src"] if isinstance(media(c)["src"], list) else [media(c)["src"]]
     missing = sorted(c for c in clips if not all(Path(f.lstrip("/")).exists() for f in files(c)))
     assert not missing, f"no clip for: {missing}"
+
+
+def test_the_library_shows_every_exercise(tmp_path):
+    import app as webapp
+    webapp.store = Store(tmp_path / "t.sqlite")
+    page = TestClient(webapp.app).get("/training/exercises").text
+    assert all(e.name in page for e in T.all_exercises().values())
+    assert page.count("<video") >= 15
