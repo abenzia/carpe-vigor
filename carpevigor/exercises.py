@@ -178,12 +178,12 @@ COOL_DOWN = [
 
 # Positions held or movements without a start and an end (balance, circles, marching, stretches): Veo could not show
 # them right even from checked first and last frames (11 Nov, 1 of 10), so they get the checked photo of the position
-PHOTOS = {"march_arms", "standing_march", "arm_circles", "hip_circles", "single_leg_stand", "heel_toe_walk",
-          "tandem_stand", "calf_stretch_wall", "chest_doorway"}
+PHOTOS = {"single_leg_stand", "tandem_stand", "calf_stretch_wall", "chest_doorway"}  # held still: the photo is the exercise
 
 
 # Repetitions Veo got wrong twice: the checked start and end positions, shown one after the other
-PAIRS = {"wall_pushup", "knee_pushup", "backpack_row", "wall_w", "calf_raise", "single_calf_raise"}
+PAIRS = {"wall_pushup", "knee_pushup", "backpack_row", "wall_w", "calf_raise", "single_calf_raise",
+         "march_arms", "standing_march", "arm_circles", "hip_circles", "heel_toe_walk"}
 
 
 def media(clip: str) -> dict | None:
