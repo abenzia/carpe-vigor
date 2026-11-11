@@ -1,5 +1,5 @@
 /* A dark studio scoped to the anatomical view. */
-.app.anatomy-active{--line:#ffffff17;--card:#192320;--ink:#eee9de;--shadow:none;background:#111a17;color:#eee9de}
+.app.anatomy-active{--muted:#a7b0a2;--line:#ffffff17;--card:#192320;--ink:#eee9de;--shadow:none;background:#111a17;color:#eee9de}
 body:has(.anatomy-active){background:#111a17}
 .anatomy-active .rail{background:#0b1712;border-right:1px solid #ffffff0c}.anatomy-active .nav :is(button,a).active{background:#26352a;border-color:#b99b612e}.anatomy-active .nav :is(button,a).active .nav-icon{color:#ed9b63;border-color:#bd7e4c}
 .anatomy-active .main{background:radial-gradient(ellipse at 85% 0,#24332a55,transparent 50%),#121b18}.anatomy-active .topbar{background:#121b18ee;border-color:#ffffff12}.anatomy-active .crumb{color:#929f95}
@@ -32,3 +32,7 @@ body:has(.anatomy-active){background:#111a17}
 .body-panel>header{min-height:78px}
 .body-reference-link{display:inline-block;margin:-7px 0 20px;color:#d4b28b;font-size:11px;text-underline-offset:5px}.body-reference-return{color:#d4c09d;font-size:10px;text-underline-offset:4px;flex:none}.body-reference-note{margin:0;padding:10px 18px;border-top:1px solid #ffffff0b;background:#131c17;color:#9ca993;font-size:9px;line-height:1.5}.body-reference-word{font-size:21px!important}.anatomy-reference .body-expanded .body-stage{height:calc(100dvh - 395px);min-height:240px}.anatomy-reference .body-figure-bar small{max-width:560px;line-height:1.5}
 @media(max-width:700px){.body-figure-bar{padding:12px;gap:10px}.body-figure-bar>div>span{font-size:18px}.body-figure-picker button{min-width:62px;padding:7px 12px}.body-expanded .body-stage{height:calc(100dvh - 315px);min-height:260px}.body-panel>header{min-height:75px}}
+/* 11 Nov: readable on the dark page (contrast checked): the kicker and the day buttons */
+.anatomy-active .eyebrow{color:#e0a77a}
+.anatomy-active .day-btn{background:#1c2822;border:1px solid #ffffff2a;color:#e6e0d2}
+.anatomy-active .day-btn.active{background:#d9c9a6;border-color:#d9c9a6;color:#16241b}

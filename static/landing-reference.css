@@ -23,3 +23,6 @@ footer{max-width:1390px;padding:0 4% 25px;margin:0 auto;font:400 12px var(--seri
 @media(max-width:1000px){.hero h1{font-size:clamp(42px,5.2vw,56px)}}
 @media(max-width:900px){.hero{display:flex;flex-direction:column;min-height:0;padding:25px 5% 0;gap:0}.hero-copy{width:100%;max-width:720px;padding:37px 0 28px}.hero h1{font-size:clamp(53px,7vw,66px)}.hero-scene{width:100%;max-width:760px;height:500px;min-height:500px;margin:0 auto}.scene-photo{inset:0 3% 0 3%;border-radius:45% 45% 0 0/22% 22% 0 0}.week-card{top:54px;right:5%;width:290px}.payback{right:3%;bottom:24px}.steps{grid-template-columns:1fr}.steps article{grid-template-columns:150px 1fr;min-height:176px;column-gap:18px}.step-photo{height:158px}.steps h3{font-size:21px}.steps p{font-size:13px}.method{gap:20px}}
 @media(max-width:680px){.hero{padding:39px 6% 0}.hero-copy{padding:0 0 26px}.hero h1{font-size:clamp(46px,11vw,66px)}.hero-scene{height:370px;min-height:370px;max-width:500px}.week-card{top:32px;right:-1%;width:min(260px,70%)}.payback{right:0;bottom:15px}.steps article{grid-template-columns:112px 1fr;min-height:144px;column-gap:13px}.step-photo{height:126px}.steps h3{font-size:19px}.steps p{font-size:12px}}
+
+/* 11 Nov: the small numbers over the three columns, readable on cream (contrast checked) */
+.benefit-no{color:#a8471a !important}

@@ -30,10 +30,10 @@
   <h3>Authorize this week's budget — once</h3>
   <p>PayPal holds the amount; nothing is charged until an order ships. What the agent doesn't spend comes back to you at the end of the week.</p>
   <div class="row">
-    <label for="amount" style="margin:0">Budget ({{ currency }})</label>
+    <label for="amount" style="margin:0;color:#fff;font-weight:600">Budget ({{ currency }})</label>
     <input type="number" id="amount" name="amount" step="1" min="10" value="{{ profile.budget|int }}" style="width:120px">
-    <button type="submit">Authorize with PayPal</button>
-    <span class="tiny muted">{{ 'Simulated: no PayPal account is used.' if money.mode == 'mock' else 'PayPal sandbox: you will approve in the PayPal window.' }}</span>
+    <button type="submit" style="background:var(--orange-strong);border-color:var(--orange-strong);color:#fff">Authorize with PayPal</button>
+    <span class="tiny" style="color:rgba(255,255,255,.8)">{{ 'Simulated: no PayPal account is used.' if money.mode == 'mock' else 'PayPal sandbox: you will approve in the PayPal window.' }}</span>
   </div>
 </form>
 {% endif %}
