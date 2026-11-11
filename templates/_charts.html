@@ -40,3 +40,25 @@
   .chart .g{font:600 16px var(--sans);fill:var(--orange)}
 </style>
 {% endmacro %}
+
+{# One ring a day, as on a watch: it fills toward the goal and turns green when the day counts. rows: [{label, <key>}] #}
+{% macro rings(rows, key, goal, unit='steps') %}
+<div class="rings" role="img" aria-label="{{ unit }} per day against {{ '{:,}'.format(goal) }}">
+  {% for r in rows %}{% set v = r[key] %}{% set k = [1, (v or 0) / goal]|min %}{% set met = v is not none and v >= goal %}
+  <figure class="ring{{ ' met' if met }}" title="{{ r.label }}: {{ '{:,}'.format(v) if v is not none else 'no data' }} {{ unit }}">
+    <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" class="bg"/>
+      <circle cx="40" cy="40" r="32" class="fg" stroke-dasharray="{{ 201.06 * k }} 201.06" transform="rotate(-90 40 40)"/>
+      <text x="40" y="36" class="n">{{ '%.1fk'|format(v / 1000) if v is not none and v >= 1000 else (v if v is not none else '—') }}</text>
+      <text x="40" y="57" class="c">{{ '✓' if met else '' }}</text></svg>
+    <figcaption>{{ r.label }}</figcaption></figure>{% endfor %}
+</div>
+<style>
+  .rings{display:grid;grid-template-columns:repeat({{ rows|length }},1fr);gap:6px;margin:8px 0}
+  .ring{margin:0;text-align:center} .ring svg{width:100%;max-width:120px;display:block;margin:0 auto}
+  .ring .bg{fill:none;stroke:#e9e5da;stroke-width:8} .ring .fg{fill:none;stroke:#c98a5a;stroke-width:8;stroke-linecap:round}
+  .ring .fg{animation:ring-fill 1.4s ease-out both} @keyframes ring-fill{from{stroke-dasharray:0 201.06}}
+  @media (prefers-reduced-motion:reduce){.ring .fg{animation:none}}
+  .ring.met .fg{stroke:#2f7d4f} .ring .n{font:700 16px var(--sans);fill:var(--forest);text-anchor:middle;dominant-baseline:middle}
+  .ring .c{font:700 14px var(--sans);fill:#2f7d4f;text-anchor:middle} .ring figcaption{font-size:13px;font-weight:600;color:var(--muted);margin-top:2px}
+</style>
+{% endmacro %}
