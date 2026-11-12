@@ -1234,3 +1234,8 @@ def test_days_over_the_reference_offer_an_adapted_week_and_cooked_meals_stay_cou
     assert "adapted" not in webapp.store.get("profile")                             # once: the next rebuild is plain
     assert "Adapt my week" not in client.get("/report").text                       # the same days are answered
     assert client.post("/plan/adapt", follow_redirects=False).headers["location"] == "/report"
+
+
+def test_every_page_footer_keeps_the_author_attribution(client):
+    # NOTICE, AGPL section 7(b): copies and modified versions keep it in the footer their pages show
+    assert "© 2026 Alessandro Benzia · AGPL-3.0" in client.get("/doctor").text

@@ -236,4 +236,4 @@ Carpe Vigor helps people stay healthy or get back to health between visits; it d
 
 ## License
 
-AGPL-3.0, full text in `LICENSE`. © 2026 Alessandro Benzia.
+AGPL-3.0, full text in `LICENSE`. © 2026 Alessandro Benzia. `NOTICE` adds one term the AGPL allows (section 7(b)): any copy or modified version keeps the author attribution in the footer its pages show.
