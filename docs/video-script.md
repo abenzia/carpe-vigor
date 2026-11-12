@@ -27,7 +27,8 @@ Opening card, no voice: "Your doctor gave you advice. Who helps you follow it, e
 | 1:40 | PayPal sandbox approval | PayPal holds the budget. Nothing is charged yet. |
 | 1:44 | Money card | Each order is captured against that one authorization: 105 dollars and 92 cents this week. The other 34 are released. The agent cannot spend a cent more. |
 | 1:56 | `/reward` | And healthy habits pay. Eat well, walk or do your training session, cook the plan, and up to twenty percent of your groceries comes back: a discount on your shopping. |
-| 2:06 | Refund card, then the ledger | Paid back through PayPal's MCP server: 17 dollars and 99 cents this month. Never for your weight. |
+| 2:06 | Refund card, then who funds it | Paid back through PayPal's MCP server: 17 dollars and 99 cents, funded by whoever gains when you stay well. |
+| 2:12 | `/ledger` | Every movement of money is in one ledger, each with its PayPal id. |
 | 2:16 | Landing | Carpe Vigor. Your doctor's advice, lived every day, and rewarded. |
 | 2:22 | End card, repository | Open source. Built on PayPal and Google Gemini. |
 

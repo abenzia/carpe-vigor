@@ -32,6 +32,20 @@ against, and a rule a person can read for what goes in the cart.
 - The person pays for their own groceries, as they do today; the agent only stops them buying what the week does not
   need. The reward is meant to be paid by whoever gains when people stay well: an employer's wellness plan, a health
   insurer, or the grocer that keeps the customer. That is our plan, not something we have tested with a payer yet.
+- Each of those payers already exists in the US, which is what the reward is anchored on:
+  - **Grocers:** merchant-funded cash back is how PayPal's own offers work today ("offer availability may be limited
+    depending on merchant funding", [PayPal Help](https://www.paypal.com/uk/cshelp/article/how-do-merchant-offers-work-help959)).
+  - **Employers:** under the HIPAA/ACA wellness rules, a program can reward an activity such as walking, up to 30% of
+    the cost of coverage, with a reasonable alternative for people who cannot do it
+    ([DOL FAQ, part 74](https://www.dol.gov/agencies/ebsa/about-ebsa/our-activities/resource-center/faqs/aca-part-74)).
+    Carpe Vigor stays at 20%, and a home training session counts as much as the steps. We are not lawyers: a real
+    employer program needs its own compliance review.
+  - **Food is medicine:** USDA's Gus Schumacher Nutrition Incentive Program funds produce incentives and produce
+    prescriptions ([NIFA](https://www.nifa.usda.gov/grants/funding-opportunities/gus-schumacher-nutrition-incentive-program-produce-prescription)),
+    and some Medicare Advantage plans give chronically ill members a healthy-food allowance
+    ([ODPHP](https://odphp.health.gov/foodismedicine/federal-resource-hub/medicare-advantage-health-plans)).
+  - PayPal is the rail, not the payer: it holds the budget, captures each order, releases the rest and sends the
+    reward back, each step with an id anyone can check.
 
 ### What it does
 
