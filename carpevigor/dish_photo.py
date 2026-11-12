@@ -12,6 +12,8 @@ from pathlib import Path
 from . import config
 
 FOLDER = Path(__file__).resolve().parent.parent / "static" / "dishes"
+# The demo week's photos (data/demo_plan.json), published with the code: the hosted demo has no image model
+DEMO_FOLDER = Path(__file__).resolve().parent.parent / "static" / "demo-dishes"
 MODEL = "gemini-3.1-flash-image"
 _lock = threading.Lock()
 _drawing = False
@@ -37,7 +39,10 @@ def prompt(recipe: dict) -> str:
 
 def existing(recipe: dict) -> Path | None:
     out = path(recipe)
-    return out if out.exists() else None
+    for file in (out, DEMO_FOLDER / out.name):
+        if file.exists():
+            return file
+    return None
 
 
 def draw_week(recipes: list[dict]) -> None:

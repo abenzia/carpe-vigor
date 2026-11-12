@@ -123,6 +123,19 @@ def test_a_training_session_done_counts_as_a_day_moved_in_the_reward(tmp_path):
 
 
 
+
+def test_five_days_of_steps_and_one_training_session_are_six_days_moved(tmp_path):
+    import app as webapp
+    from datetime import timedelta
+    webapp.store = Store(tmp_path / "s.sqlite")
+    on = lambda back: (date.today() - timedelta(days=back)).isoformat()
+    webapp.store.put("days", {on(b): {"steps": 9000} for b in range(1, 6)} | {on(0): {"steps": 1200}})
+    webapp.store.put("training", {"log": {on(0): {"done": True}, on(3): {"done": True}}})  # day 3 has its steps already
+    b = webapp.behaviour()
+    assert (b.days_with_steps, b.days_trained) == (5, 1)
+    moved = {p["key"]: p for p in __import__("carpevigor.reward", fromlist=["x"]).score(b).parts}["moved"]
+    assert moved["label"].startswith("Moved on 6 of 7 days")
+
 def test_a_closed_week_shows_what_was_closed_not_a_recount(tmp_path):
     import app as webapp
     webapp.store = Store(tmp_path / "c.sqlite")

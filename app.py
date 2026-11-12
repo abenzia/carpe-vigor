@@ -903,9 +903,12 @@ def dish_photo_view(i: int):
 @app.get("/reward", response_class=HTMLResponse)
 def reward_view(request: Request, error: str = ""):
     b = behaviour()
-    closed = this_week("week_closed")  # once closed, the week shows what was closed, not today's recount
-    return render(request, "reward.html", behaviour=b, result=reward.score(b), steps=week_steps(),
-                  week_rows=activity.last_week(store), trained=trained_days(), closed=closed[0] if closed else None,
+    result = reward.score(b)
+    closed = (this_week("week_closed") or [None])[0]  # once closed, the week shows what was closed, not a recount
+    if closed and not closed.get("parts") and abs(result.cashback - closed["earned"]) < 0.005:
+        closed = {**closed, "parts": result.parts}  # closed before the parts were kept: today's are the same week's
+    return render(request, "reward.html", behaviour=b, result=result, steps=week_steps(),
+                  week_rows=activity.last_week(store), trained=trained_days(), closed=closed,
                   steps_goal=config.STEPS_GOAL, max_rate=config.CASHBACK_MAX, days=planner.DAYS,
                   month=week.month(store), week_closed=bool(this_week("week_closed")), error=error)
 

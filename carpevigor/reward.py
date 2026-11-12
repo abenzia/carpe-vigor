@@ -72,7 +72,7 @@ def score(behaviour: WeekBehaviour) -> Reward:
          "share": basket, "weight": WEIGHTS["basket"], "source": "captured by PayPal"},
         {"key": "moved", "label": f"Moved on {days_moved} of 7 days: {b.days_with_steps} with {config.STEPS_GOAL:,} steps or more, "
                                   f"{b.days_trained} with your training session",
-         "share": round(moved, 3), "weight": WEIGHTS["moved"], "source": "from your watch and your training log"},
+         "share": round(moved, 3), "weight": WEIGHTS["moved"], "source": "from your phone's health app and your training log"},
         {"key": "cooked", "label": f"Cooked {b.cooked_meals} of {b.planned_meals} planned meals",
          "share": round(cooked, 3), "weight": WEIGHTS["cooked"], "source": "self-reported"},
     ]

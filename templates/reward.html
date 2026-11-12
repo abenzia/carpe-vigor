@@ -16,7 +16,7 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
                      else {'cashback': result.cashback, 'rate': result.cashback_rate, 'score': result.score, 'spent': behaviour.spent, 'parts': result.parts} %}
     <div class="view-title" style="font-size:44px">{{ currency }} {{ '%.2f'|format(shown.cashback) }}</div>
     <p class="muted">{{ (shown.rate * 100)|round(1) }}% of {{ currency }} {{ '%.2f'|format(shown.spent) }} spent · score {{ (shown.score * 100)|round|int }}/100</p>
-    {% if closed %}<p class="tiny muted">As it was when the week was closed. What you do from now on counts for the next week.</p>{% endif %}
+    {% if closed %}<p class="tiny muted">As it was when the week was closed{% if not shown.parts %} (closed before the breakdown was kept){% endif %}. What you do from now on counts for the next week.</p>{% endif %}
     <table class="tiny" style="margin-top:6px">
       {% for p in shown.parts %}
       <tr><td>{{ p.label }}</td><td class="num">{{ (p.share * 100)|round|int }}%</td><td class="num">× {{ (p.weight * 100)|int }}</td>
@@ -31,11 +31,11 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
     {% if money.authorized and behaviour.spent > 0 %}
       <form method="post" action="/budget/release" style="margin-top:10px"><button type="submit">End the week: release {{ currency }} {{ '%.2f'|format(money.remaining) }} and add {{ currency }} {{ '%.2f'|format(result.cashback) }} to the month</button></form>
     {% elif week_closed %}
-      <p><span class="pill ok">added to this month</span></p>
+      <p><span class="pill ok">{{ 'added to this month' if month.weeks else 'paid back with the month' }}</span></p>
     {% endif %}
   </div>
   <div class="card pad">
-    <div class="eyebrow">Steps from your watch</div>
+    <div class="eyebrow">Steps, last 7 days</div>
     {% if steps %}{% from "_charts.html" import rings %}
         {{ rings(week_rows, 'steps', steps_goal, trained=trained) }}
     <p class="tiny"><b>{{ steps|select('ge', steps_goal)|list|length }} of {{ steps|length }} days</b> over {{ '{:,}'.format(steps_goal) }} steps{% if behaviour.days_trained %}, plus <b>{{ behaviour.days_trained }}</b> with your training session done (⚑){% endif %}. A training session counts as a day moved. <a href="/report">Day, week and month →</a></p>
@@ -62,13 +62,13 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
     <span class="tiny muted">In the product this happens on the last day of the month; in the demo, now.</span></form>
   {% endif %}
   {% else %}
-  <p class="muted">No week closed yet this month.{% if month.last_paid %} Last paid: {{ currency }} {{ '%.2f'|format(month.last_paid.paid) }} paid back on {{ currency }} {{ '%.2f'|format(month.last_paid.spent) }} spent over {{ month.last_paid.weeks }} week{{ 's' if month.last_paid.weeks != 1 }}.{% endif %}</p>
+  <p class="muted">No week waiting to be paid.{% if month.last_paid %} Last paid: {{ currency }} {{ '%.2f'|format(month.last_paid.paid) }} paid back on {{ currency }} {{ '%.2f'|format(month.last_paid.spent) }} spent over {{ month.last_paid.weeks }} week{{ 's' if month.last_paid.weeks != 1 }}.{% endif %}</p>
   {% endif %}
 </div>
 
 <div class="card pad">
   <h3>What is checked, and who pays</h3>
-  <p class="tiny"><b>Checked:</b> the basket is what you paid for through PayPal; steps come from your phone's health platform. <b>Not checked:</b> meals cooked and training sessions done are your word, so they weigh less. Whoever games them still only gets back a share of money really spent on groceries.</p>
+  <p class="tiny"><b>Checked:</b> the basket is what you paid for through PayPal; steps come from the health app on your phone (sample data or typed by hand in this demo). <b>Not checked:</b> meals cooked and training sessions done are your word, so they weigh less. Whoever games them still only gets back a share of money really spent on groceries.</p>
   <p class="tiny"><b>Who pays:</b> in this demo, the platform. In the product, whoever gains when you do your part: your employer inside its wellness plan, your insurer or a food-is-medicine program, the grocer whose basket becomes weekly and loyal (merchant-funded cash back, as PayPal offers already work). PayPal moves the money; it does not fund the reward.</p>
 </div>
 </section>

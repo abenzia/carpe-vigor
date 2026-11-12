@@ -407,7 +407,10 @@ def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(cli
 
 
 
-def test_a_dish_without_its_photo_keeps_its_drawn_tile(client):
+def test_a_dish_without_its_photo_keeps_its_drawn_tile(client, tmp_path, monkeypatch):
+    from carpevigor import dish_photo
+    monkeypatch.setattr(dish_photo, "FOLDER", tmp_path / "drawn")      # not the photos drawn on this PC
+    monkeypatch.setattr(dish_photo, "DEMO_FOLDER", tmp_path / "demo")
     client.post("/doctor", data={"doctor_said": "Eat less salt, walk more", "device": "Oven and stovetop", "budget": "140"},
                 follow_redirects=False)
     page = _built_week(client).text
@@ -415,6 +418,12 @@ def test_a_dish_without_its_photo_keeps_its_drawn_tile(client):
     assert client.get("/dish/0.jpg").status_code == 404     # no image model in the tests: the tile stays
     assert client.get("/dish/99.jpg").status_code == 404
     assert "not a real plate" in client.get("/recipes/0").text
+    # the demo week's photo, published with the code, is served without any image model
+    first = client.get("/api/state").json()["plan"]["plan"]["recipes"][0]
+    (tmp_path / "demo").mkdir()
+    (tmp_path / "demo" / dish_photo.path(first).name).write_bytes(b"JPEG demo")
+    shown = client.get("/dish/0.jpg")
+    assert shown.status_code == 200 and shown.headers["content-type"] == "image/jpeg"
 
 def test_a_cooked_meal_of_the_plan_goes_in_and_out_of_the_diary(client):
     client.post("/doctor", data={"doctor_said": "Eat less salt, walk more", "device": "Thermomix / Bimby TM7", "budget": "140"},
