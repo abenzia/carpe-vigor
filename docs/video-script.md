@@ -26,7 +26,7 @@ Opening card, no voice: "Your doctor gave you advice. Who helps you follow it, e
 | 1:26 | `/home`, then `/cart` | Then the shopping. The agent buys only what the recipes need, minus what you have at home, inside a budget you authorize once with PayPal. Plain code picks the cart: the AI writes the words, never spends the money. |
 | 1:40 | PayPal sandbox approval | PayPal holds the budget. Nothing is charged yet. |
 | 1:44 | Money card | Each order is captured against that one authorization: 105 dollars and 92 cents this week. The other 34 are released. The agent cannot spend a cent more. |
-| 1:56 | `/reward` | And healthy habits pay. Eat well, move, cook the plan, and up to twenty percent of your groceries comes back: a discount on your shopping. |
+| 1:56 | `/reward` | And healthy habits pay. Eat well, walk or do your training session, cook the plan, and up to twenty percent of your groceries comes back: a discount on your shopping. |
 | 2:06 | Refund card, then the ledger | Paid back through PayPal's MCP server: 17 dollars and 99 cents this month. Never for your weight. |
 | 2:16 | Landing | Carpe Vigor. Your doctor's advice, lived every day, and rewarded. |
 | 2:22 | End card, repository | Open source. Built on PayPal and Google Gemini. |

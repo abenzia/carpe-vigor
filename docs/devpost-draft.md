@@ -48,7 +48,7 @@ against, and a rule a person can read for what goes in the cart.
 5. **PayPal, once.** You authorize the week's grocery budget once. The money is held, not charged. Each order is
    captured against that hold, and the rest is released at the end of the week.
 6. **The reward.** Up to 20% of the month's groceries comes back through PayPal for what you did: a healthy basket,
-   days you moved, meals you cooked. Never for your weight.
+   days you moved (by steps, or by doing the day's training session), meals you cooked. Never for your weight.
 7. **What I ate.** Pair your phone once with a QR code, then say "a plate of cacio e pepe" to your phone or your
    watch, or take a photo of the plate: Gemini names the foods and judges the grams, USDA data gives the values.
    The photo is not kept.

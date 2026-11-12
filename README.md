@@ -90,7 +90,7 @@ The header of every screen shows budget · spent · released · paid back. Three
 | Part | Weight | Comes from | Checked by |
 |---|---|---|---|
 | The basket | 50% | the orders PayPal actually captured, split by the items the agent put in them | **amounts captured by PayPal**; the split is the agent's cart (PayPal does not see the items) |
-| Moving | 30% | days over the step goal (7,000 by default) | from your watch or phone (typed in the demo) |
+| Moving | 30% | days over the step goal (7,000 by default), or with the day's session of your training program done | steps: from your watch or phone (typed in the demo); sessions: **self-reported** |
 | Cooking | 20% | meals ticked as cooked | **self-reported**, so it weighs least |
 | Check-up bonus | +5% / +2.5% / 0 | your doctor's verdict on the goals they set: met / improving / not yet | your doctor |
 

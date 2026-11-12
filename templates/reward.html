@@ -34,8 +34,8 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
   <div class="card pad">
     <div class="eyebrow">Steps from your watch</div>
     {% if steps %}{% from "_charts.html" import rings %}
-        {{ rings(week_rows, 'steps', steps_goal) }}
-    <p class="tiny"><b>{{ steps|select('ge', steps_goal)|list|length }} of {{ steps|length }} days</b> over {{ '{:,}'.format(steps_goal) }} steps{% if behaviour.days_trained %}, plus <b>{{ behaviour.days_trained }}</b> with your training session done{% endif %}. A training session counts as a day moved. <a href="/report">Day, week and month →</a></p>
+        {{ rings(week_rows, 'steps', steps_goal, trained=trained) }}
+    <p class="tiny"><b>{{ steps|select('ge', steps_goal)|list|length }} of {{ steps|length }} days</b> over {{ '{:,}'.format(steps_goal) }} steps{% if behaviour.days_trained %}, plus <b>{{ behaviour.days_trained }}</b> with your training session done (⚑){% endif %}. A training session counts as a day moved. <a href="/report">Day, week and month →</a></p>
     {% endif %}
     <details class="tiny"><summary>Type steps by hand (demo)</summary>
     <p class="tiny muted">In the demo, type seven days of steps as a watch would send them (from the phone's health app in the product, where steps typed by hand are left out). Goal: {{ '{:,}'.format(steps_goal) }} a day.</p>
