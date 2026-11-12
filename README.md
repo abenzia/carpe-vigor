@@ -8,6 +8,11 @@ you spent back to you.
 
 Entry for the **PayPal AI Hackathon** (Devpost, November 2026).
 
+- **Demo video (3 min):** https://youtu.be/n3ZTyEIiEUM
+- **Live demo, no login:** https://carpevigor.benzia.org (AI and PayPal simulated; it opens on an example person with
+  invented data, so every screen has something to show)
+- **Devpost:** https://devpost.com/software/carpe-vigor-care-that-pays-you-back
+
 ## The loop
 
 1. **My doctor said**: in your own words, for example "high blood pressure, less salt, lose a few pounds, walk
