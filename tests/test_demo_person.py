@@ -43,3 +43,14 @@ def test_the_simulated_reader_reads_only_the_invented_report():
     assert draft["test_date"] == "2026-10-20"
     assert {r["measure"]: r["value"] for r in draft["rows"]}["ldl"] == 138 and all(r["ok"] for r in draft["rows"])
     assert report.read(b"%PDF-1.4 another report", "application/pdf")["rows"] == []
+
+
+def test_a_photo_address_names_its_dish(tmp_path):
+    """Caches keep a photo for a day: an address by position alone showed the previous week's dish."""
+    import app as webapp
+    from carpevigor import dish_photo
+    webapp.store = Store(tmp_path / "p.sqlite")
+    demo_person.load(webapp.store)
+    first = webapp.store.get("plan")["plan"]["recipes"][0]
+    page = TestClient(webapp.app).get("/recipes").text
+    assert f'/dish/0.jpg?k={dish_photo.path(first).name}"' in page

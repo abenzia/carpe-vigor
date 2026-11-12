@@ -26,7 +26,7 @@ from fastapi.templating import Jinja2Templates
 
 from carpevigor import (__version__, ask, cart_agent, checkup, config, diary, guidelines, kitchen, nutrition, planner, profile,
                         rag, reward, sources, ui, week)
-from carpevigor import activity, apple_health, coach, demo_person, health, phone, report, training
+from carpevigor import activity, apple_health, coach, demo_person, dish_photo, health, phone, report, training
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -40,6 +40,9 @@ templates.env.globals["css_stamp"] = int((Path(__file__).parent / "static" / "ap
 # A recipe step as a recipe card prints it: what to do, the machine setting in bold, what follows
 templates.env.filters["step_parts"] = kitchen.step_parts
 templates.env.filters["schema_recipe"] = kitchen.schema_recipe
+# The photo address carries the dish it shows: the i-th dish changes with the plan, and Cloudflare and browsers keep
+# a photo for a day, so an address by position alone showed last week's dish (seen on the public demo, 12 Nov)
+templates.env.filters["dish_key"] = lambda r: dish_photo.path(r).name
 store = Store()
 catalog = Catalog.load()
 # The public demo opens on the example person, so every screen has something to show without the AI

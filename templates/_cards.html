@@ -9,7 +9,7 @@
 
 {# The dish's photo over its drawn tile: if no photo comes (no image model, quota), the tile stays. #}
 {% macro dish(r) -%}
-{{ tile(r.kind) }}<img class="dish-photo" src="/dish/{{ r.i }}.jpg" alt="" loading="lazy" onerror="this.remove()">
+{{ tile(r.kind) }}<img class="dish-photo" src="/dish/{{ r.i }}.jpg?k={{ r|dish_key }}" alt="" loading="lazy" onerror="this.remove()">
 {%- endmacro %}
 
 {% macro meal_card(r, cooked, back='/week') -%}
