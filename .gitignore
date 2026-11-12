@@ -19,3 +19,5 @@ static/models/anatomy/
 # Demo video files (narration, recordings): made locally, not published
 video/
 PIANO.md
+# Dish photos drawn by the image model for the local plan
+static/dishes/

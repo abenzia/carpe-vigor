@@ -24,7 +24,7 @@
       {{ meter('Steps' if g.name == 'Today' else 'Days moved', '', g.steps, g.steps_goal, '#163b2a', g.steps_unit, True, g.steps_pace) }}
       {{ meter('Exercise minutes', '', g.minutes, g.minutes_goal, '#2f7d4f', 'minutes', True, g.minutes_pace) }}
     </div>{% endfor %}</div>
-  <p class="tiny muted">{{ '{:,}'.format(r.steps_goal) }} steps make a day count as moved (30% of your reward); 150 exercise minutes a week is the US guideline for adults. The orange mark is where you should be by today: a Tuesday is not judged against the whole week.</p>
+  <p class="tiny muted">{{ '{:,}'.format(r.steps_goal) }} steps, or the day's session of <a href="/training">My training</a> done, make a day count as moved (30% of your reward); 150 exercise minutes a week is the US guideline for adults. The orange mark is where you should be by today: a Tuesday is not judged against the whole week.</p>
 </section>
 
 {% if adapt %}

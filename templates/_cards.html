@@ -7,9 +7,14 @@
 {% if n %}<div class="nutri"><span>{{ n.kcal|round|int }} kcal</span><span>protein {{ n.protein_g|round|int }} g</span>{% if full %}<span>fiber {{ n.fiber_g|round|int }} g</span><span>sat. fat {{ n.sat_fat_g|round|int }} g</span>{% endif %}<span class="sodium">sodium {{ '≤ ' if n.sodium_at_most }}{{ n.sodium_mg|round|int }} mg</span></div>{% endif %}
 {%- endmacro %}
 
+{# The dish's photo over its drawn tile: if no photo comes (no image model, quota), the tile stays. #}
+{% macro dish(r) -%}
+{{ tile(r.kind) }}<img class="dish-photo" src="/dish/{{ r.i }}.jpg" alt="" loading="lazy" onerror="this.remove()">
+{%- endmacro %}
+
 {% macro meal_card(r, cooked, back='/week') -%}
 <article class="meal-card">
-  <a class="meal-image" href="/recipes/{{ r.i }}" style="display:block">{{ tile(r.kind) }}</a>
+  <a class="meal-image" href="/recipes/{{ r.i }}" style="display:block">{{ dish(r) }}</a>
   <div class="meal-info">
     <p class="section-kicker">{{ r.day }} · {{ r.meal }}{% if r.from_leftovers %} · from {{ r.from_leftovers }}{% endif %}</p>
     <h4><a href="/recipes/{{ r.i }}" style="text-decoration:none">{{ r.title }}</a></h4>

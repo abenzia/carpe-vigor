@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_cards.html" import tile, nutri %}
+{% from "_cards.html" import dish, tile, nutri %}
 {% block title %}Carpe Vigor — {{ r.title }}{% endblock %}
 {# the same recipe for apps that import from a link (schema.org): tojson escapes <, > and & inside the script #}
 {% block head %}<script type="application/ld+json">{{ r|schema_recipe|tojson }}</script>{% endblock %}
@@ -25,7 +25,8 @@
       {% if r.tips %}<p class="section-kicker" style="margin-top:12px">Tips</p>{% for tip in r.tips %}<p class="tiny">{{ tip }}</p>{% endfor %}{% endif %}
     </div>
     <div class="stack">
-      <div class="card" style="overflow:hidden">{{ tile(r.kind) }}</div>
+      <div class="card dish-frame">{{ dish(r) }}</div>
+      <p class="tiny muted" style="margin:-8px 0 0">Photo: an illustration of the recipe drawn by the image model, not a real plate.</p>
       <section class="card pad">
         <p class="section-kicker">Why it fits</p>
         {% for field in ['why', 'evidence'] %}{% if field in (r.removed or []) %}<p class="{{ field }} muted tiny">Removed by the review board.</p>{% elif r[field] %}<p class="{{ field }}">{{ r[field] }}</p>{% endif %}{% endfor %}

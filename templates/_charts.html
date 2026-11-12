@@ -22,17 +22,20 @@
    but never says "kept". #}
 {% macro meter(label, source, v, goal, color, unit, is_goal=True, pace=None) %}
 <div class="meter"><div class="meter-head"><span class="section-kicker">{{ label }}{% if source %} · {{ source }}{% endif %}</span>
-  <b>{{ '{:,}'.format(v) if v is not none else '—' }}</b><small> / {{ '{:,}'.format(goal) if goal else '—' }} {{ unit }}</small>
-  {% if is_goal and v is not none and goal %}{% if v >= goal %}<span class="pill ok">goal kept{% if v > goal %} · +{{ '{:,}'.format(v - goal) }}{% endif %}</span>
-  {% else %}<span class="pill {{ 'ok' if pace is not none and v >= pace else 'warn' }}">{{ '{:,}'.format(goal - v) }} to go{% if pace is not none %} · {{ 'on pace' if v >= pace else 'behind pace' }}{% endif %}</span>{% endif %}{% endif %}</div>
+  <span class="meter-v"><b>{{ '{:,}'.format(v) if v is not none else '—' }}</b><small> / {{ '{:,}'.format(goal) if goal else '—' }} {{ unit }}</small></span>
+  <span class="meter-sub">{% if is_goal and v is not none and goal %}{% if v >= goal %}<span class="pill ok">goal kept{% if v > goal %} · +{{ '{:,}'.format(v - goal) }}{% endif %}</span>
+  {% else %}<span class="pill {{ 'ok' if pace is not none and v >= pace else 'warn' }}">{{ '{:,}'.format(goal - v) }} to go{% if pace is not none %} · {{ 'on pace' if v >= pace else 'behind pace' }}{% endif %}</span>{% endif %}{% endif %}</span></div>
   <div class="track"><span style="width:{{ [100, 100 * (v or 0) / goal]|min if goal else 0 }}%;background:{{ color }}"></span>
     {% if pace is not none and goal %}<i style="left:{{ [100, 100 * pace / goal]|min }}%" title="where you should be by today"></i>{% endif %}</div></div>
 {% endmacro %}
 
 {% macro style() %}
 <style>
-  .meter{margin:6px 0 16px} .meter-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-  .meter-head .section-kicker{flex:1;min-width:180px;margin:0} .meter-head b{font:400 28px var(--serif);color:var(--forest)}
+  /* label left, number right, the pill on its own line (kept even when empty) so side-by-side meters line up */
+  .meter{margin:6px 0 16px} .meter-head{display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:8px}
+  .meter-head .section-kicker{margin:0} .meter-v{white-space:nowrap;text-align:right}
+  .meter-head b{font:400 28px var(--serif);color:var(--forest)}
+  .meter-sub{grid-column:1/-1;min-height:30px;display:flex;align-items:center}
   .track{position:relative;height:14px;border-radius:99px;background:#e9e5da;overflow:hidden;margin-top:6px}
   .track span{display:block;height:100%;border-radius:99px} .track i{position:absolute;top:0;bottom:0;width:3px;background:var(--orange)}
   .chart{width:100%;height:auto;display:block}

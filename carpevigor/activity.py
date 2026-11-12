@@ -81,20 +81,23 @@ def goals(store, today: str | None = None) -> list[dict]:
     with where the person should be by today ("pace") so a Tuesday is not judged against a whole week."""
     end = date.fromisoformat(today) if today else date.today()
     days = store.get("days") or {}
+    trained = (store.get("training") or {}).get("log", {})  # as in the reward: a session done also makes a day moved
     week_start = end - timedelta(days=end.weekday())
     month_days = calendar.monthrange(end.year, end.month)[1]
     out = []
     for name, start, length in (("Today", end, 1), ("This week", week_start, 7), ("This month", end.replace(day=1), month_days)):
         elapsed = (end - start).days + 1
-        seen = [days.get((start + timedelta(days=i)).isoformat(), {}) for i in range(elapsed)]
+        dates = [(start + timedelta(days=i)).isoformat() for i in range(elapsed)]
+        seen = [days.get(on, {}) for on in dates]
         minutes_goal = round(coach.MIN_MINUTES * length / 7)
         if length == 1:
             out.append({"name": name, "steps": seen[0].get("steps"), "steps_goal": config.STEPS_GOAL, "steps_pace": None,
                         "steps_unit": "steps", "minutes": seen[0].get("exercise_min"), "minutes_goal": minutes_goal,
                         "minutes_pace": None})
             continue
-        out.append({"name": name, "steps": sum(1 for d in seen if (d.get("steps") or 0) >= config.STEPS_GOAL),
-                    "steps_goal": length, "steps_pace": elapsed, "steps_unit": f"days over {config.STEPS_GOAL:,} steps",
+        moved = sum(1 for on, d in zip(dates, seen)
+                    if (d.get("steps") or 0) >= config.STEPS_GOAL or trained.get(on, {}).get("done"))
+        out.append({"name": name, "steps": moved, "steps_goal": length, "steps_pace": elapsed, "steps_unit": "days",
                     "minutes": sum(d.get("exercise_min") or 0 for d in seen), "minutes_goal": minutes_goal,
                     "minutes_pace": round(coach.MIN_MINUTES * elapsed / 7)})
     return out

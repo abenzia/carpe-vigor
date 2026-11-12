@@ -16,10 +16,11 @@ import json
 import secrets
 import threading
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from urllib.parse import quote, urlparse
 
 from fastapi import FastAPI, File, Form, Request, UploadFile
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, PlainTextResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -35,6 +36,7 @@ app = FastAPI(title="Carpe Vigor", version=__version__)
 app.mount("/static", StaticFiles(directory=str(config.ROOT / "static")), name="static")
 templates = Jinja2Templates(directory=str(config.ROOT / "templates"))
 templates.env.globals["exercise_media"] = training.exercises_media  # a clip name -> its video or its photo
+templates.env.globals["css_stamp"] = int((Path(__file__).parent / "static" / "app" / "app.css").stat().st_mtime)  # a new stylesheet is a new URL: no stale cache
 # A recipe step as a recipe card prints it: what to do, the machine setting in bold, what follows
 templates.env.filters["step_parts"] = kitchen.step_parts
 templates.env.filters["schema_recipe"] = kitchen.schema_recipe
@@ -213,7 +215,7 @@ def recipe_view(request: Request, i: int):
     if not plan or not 0 <= i < len(plan["plan"]["recipes"]):
         return RedirectResponse("/recipes")
     r = plan["plan"]["recipes"][i]
-    return render(request, "recipe.html", r={**r, "kind": planner.dish_kind(r)}, i=i, cooked=set(plan.get("cooked", [])),
+    return render(request, "recipe.html", r={**r, "i": i, "kind": planner.dish_kind(r)}, i=i, cooked=set(plan.get("cooked", [])),
                   device=(store.get("profile") or {}).get("device", ""))
 
 
@@ -873,6 +875,22 @@ def behaviour() -> reward.WeekBehaviour:
         days_trained=len(trained_days()),
         healthy_spend=round(sum(o.get("healthy", 0.0) for o in orders), 2),
         unhealthy_spend=round(sum(o.get("unhealthy", 0.0) for o in orders), 2))
+
+
+@app.get("/dish/{i}.jpg")
+def dish_photo_view(i: int):
+    """The photo of the week's i-th dish. Not drawn yet: 404 (the card keeps its drawn tile) and the week's missing
+    photos start drawing in the background, so they are there on the next visit."""
+    plan = store.get("plan")
+    recipes = plan["plan"]["recipes"] if plan else []
+    if not 0 <= i < len(recipes):
+        return PlainTextResponse("no such dish", status_code=404)
+    from carpevigor import dish_photo
+    file = dish_photo.existing(recipes[i])
+    if not file:
+        dish_photo.draw_week(recipes)
+        return PlainTextResponse("photo not drawn yet", status_code=404)
+    return FileResponse(file, media_type=dish_photo.media_type(file), headers={"Cache-Control": "max-age=86400"})
 
 
 @app.get("/reward", response_class=HTMLResponse)

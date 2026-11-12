@@ -406,6 +406,16 @@ def test_what_i_ate_is_counted_from_a_sentence_and_the_watch_needs_the_token(cli
     assert len(client.get("/api/state").json()["diary"]) == 3   # the watch twice (once through the tunnel), the form once
 
 
+
+def test_a_dish_without_its_photo_keeps_its_drawn_tile(client):
+    client.post("/doctor", data={"doctor_said": "Eat less salt, walk more", "device": "Oven and stovetop", "budget": "140"},
+                follow_redirects=False)
+    page = _built_week(client).text
+    assert 'class="dish-photo" src="/dish/' in page and 'onerror="this.remove()"' in page and "dish-tile" in page
+    assert client.get("/dish/0.jpg").status_code == 404     # no image model in the tests: the tile stays
+    assert client.get("/dish/99.jpg").status_code == 404
+    assert "not a real plate" in client.get("/recipes/0").text
+
 def test_a_cooked_meal_of_the_plan_goes_in_and_out_of_the_diary(client):
     client.post("/doctor", data={"doctor_said": "Eat less salt, walk more", "device": "Thermomix / Bimby TM7", "budget": "140"},
                 follow_redirects=False)

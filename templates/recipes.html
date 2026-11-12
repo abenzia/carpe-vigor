@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_cards.html" import tile, nutri %}
+{% from "_cards.html" import dish, tile, nutri %}
 {% block title %}Carpe Vigor — {{ t('recipes') }}{% endblock %}
 {% block content %}
 <section class="section-view">
@@ -18,7 +18,7 @@
   <div class="recipe-grid">
     {% for r in cards %}
     <article class="recipe-card">
-      <a href="/recipes/{{ r.i }}" style="display:block;text-decoration:none">{{ tile(r.kind) }}</a>
+      <a class="dish-frame" href="/recipes/{{ r.i }}" style="text-decoration:none">{{ dish(r) }}</a>
       <div class="recipe-body">
         <p class="section-kicker">{{ r.day }} · {{ r.meal }}{% if r.from_leftovers %} · leftovers{% endif %}</p>
         <h3><a href="/recipes/{{ r.i }}" style="text-decoration:none">{{ r.title }}</a></h3>
