@@ -100,6 +100,28 @@ def test_the_pages_walk_from_questions_to_a_logged_session(tmp_path, monkeypatch
     assert webapp.store.get("training")["log"][today]["rpe"] == 6
 
 
+
+def test_a_training_session_done_counts_as_a_day_moved_in_the_reward(tmp_path):
+    import app as webapp
+    from datetime import timedelta
+    from carpevigor import reward
+    webapp.store = Store(tmp_path / "r.sqlite")
+    today = date.today()
+    on = lambda back: (today - timedelta(days=back)).isoformat()
+    # steps: two days over the goal (one of them also trained), the rest short
+    webapp.store.put("days", {on(6): {"steps": 9000}, on(5): {"steps": 8000}, on(4): {"steps": 2000}})
+    webapp.store.put("training", {"log": {on(5): {"done": True}, on(4): {"done": True},
+                                          on(2): {"done": True}, on(1): {"done": False}}})
+    webapp.store.put("steps", [9000, 8000, 2000, 0, 0, 0, 0])
+    b = webapp.behaviour()
+    # a session on a day already over the goal is not counted twice; a session marked not done does not count
+    assert (b.days_with_steps, b.days_trained) == (2, 2)
+    moved = {p["key"]: p for p in reward.score(b).parts}["moved"]
+    assert moved["share"] == round(4 / 7, 3) and "2 with your training session" in moved["label"]
+    page = TestClient(webapp.app).get("/reward").text
+    assert "with your training session done" in page and "A training session counts as a day moved" in page
+
+
 def test_bmi_comes_from_height_and_weight_when_not_stored():
     L = T.limits({"height_cm": 165, "weight_kg": 90}, [], None, {}, False)
     assert L.low_impact and any("BMI 33.1" in r["why"] for r in L.reasons)

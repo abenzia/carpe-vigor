@@ -35,6 +35,7 @@ class WeekBehaviour:
     spent: float                # grocery spend captured this week
     healthy_spend: float = 0.0  # of which on healthy food (catalog.kind)
     unhealthy_spend: float = 0.0  # of which on junk, or on the "don't rebuy" list
+    days_trained: int = 0       # days under STEPS_GOAL but with the training program's session done
 
 
 @dataclass
@@ -60,7 +61,8 @@ def basket_quality(healthy: float, unhealthy: float, spent: float) -> float:
 def score(behaviour: WeekBehaviour) -> Reward:
     b = behaviour
     basket = basket_quality(b.healthy_spend, b.unhealthy_spend, b.spent)
-    moved = min(b.days_with_steps, 7) / 7
+    days_moved = min(b.days_with_steps + b.days_trained, 7)
+    moved = days_moved / 7
     cooked = b.cooked_meals / b.planned_meals if b.planned_meals else 0.0
     total = round(WEIGHTS["basket"] * basket + WEIGHTS["moved"] * moved + WEIGHTS["cooked"] * cooked, 3)
     healthy_pct = round(100 * b.healthy_spend / b.spent) if b.spent else 0
@@ -68,8 +70,9 @@ def score(behaviour: WeekBehaviour) -> Reward:
     parts = [
         {"key": "basket", "label": f"Basket: {healthy_pct}% healthy food, {junk_pct}% sweets, snacks and cured meat",
          "share": basket, "weight": WEIGHTS["basket"], "source": "captured by PayPal"},
-        {"key": "moved", "label": f"Moved on {b.days_with_steps} of 7 days ({config.STEPS_GOAL:,} steps or more)",
-         "share": round(moved, 3), "weight": WEIGHTS["moved"], "source": "from your watch"},
+        {"key": "moved", "label": f"Moved on {days_moved} of 7 days: {b.days_with_steps} with {config.STEPS_GOAL:,} steps or more, "
+                                  f"{b.days_trained} with your training session",
+         "share": round(moved, 3), "weight": WEIGHTS["moved"], "source": "from your watch and your training log"},
         {"key": "cooked", "label": f"Cooked {b.cooked_meals} of {b.planned_meals} planned meals",
          "share": round(cooked, 3), "weight": WEIGHTS["cooked"], "source": "self-reported"},
     ]

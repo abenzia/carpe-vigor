@@ -857,12 +857,16 @@ def this_week(kind: str) -> list[dict]:
 def behaviour() -> reward.WeekBehaviour:
     plan = store.get("plan") or {"plan": {"recipes": []}, "cooked": []}
     steps = store.get("steps", [])  # 7 daily step counts, from a watch or simulated
+    # a day counts as moved with enough steps, or with the training program's session done that day
+    trained = (store.get("training") or {}).get("log", {})
+    short_days = [d["on"] for d in activity.last_week(store) if (d["steps"] or 0) < config.STEPS_GOAL]
     money = week.status(store)
     orders = this_week("order")
     return reward.WeekBehaviour(
         planned_meals=len(plan["plan"]["recipes"]),
         cooked_meals=min(len(plan["plan"]["recipes"]), len(plan.get("cooked", [])) + plan.get("cooked_before", 0)),
         days_with_steps=sum(1 for s in steps if s >= config.STEPS_GOAL), spent=money["spent"],
+        days_trained=sum(1 for on in short_days if trained.get(on, {}).get("done")),
         healthy_spend=round(sum(o.get("healthy", 0.0) for o in orders), 2),
         unhealthy_spend=round(sum(o.get("unhealthy", 0.0) for o in orders), 2))
 
