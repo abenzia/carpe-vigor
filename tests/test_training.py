@@ -112,7 +112,7 @@ def test_a_training_session_done_counts_as_a_day_moved_in_the_reward(tmp_path):
     webapp.store.put("days", {on(6): {"steps": 9000}, on(5): {"steps": 8000}, on(4): {"steps": 2000}})
     webapp.store.put("training", {"log": {on(5): {"done": True}, on(4): {"done": True},
                                           on(2): {"done": True}, on(1): {"done": False}}})
-    webapp.store.put("steps", [9000, 8000, 2000, 0, 0, 0, 0])
+    webapp.store.put("steps", [9000, 9000, 9000, 9000, 9000, 9000, 9000])  # a stale stored copy: never read for counts
     b = webapp.behaviour()
     # a session on a day already over the goal is not counted twice; a session marked not done does not count
     assert (b.days_with_steps, b.days_trained) == (2, 2)
@@ -121,6 +121,18 @@ def test_a_training_session_done_counts_as_a_day_moved_in_the_reward(tmp_path):
     page = TestClient(webapp.app).get("/reward").text
     assert "with your training session done" in page and "A training session counts as a day moved" in page
 
+
+
+def test_a_closed_week_shows_what_was_closed_not_a_recount(tmp_path):
+    import app as webapp
+    webapp.store = Store(tmp_path / "c.sqlite")
+    webapp.store.log("authorized", {"amount": 100.0})
+    webapp.store.log("week_closed", {"authorization_id": "A", "spent": 101.45, "earned": 18.02, "rate": 0.1776,
+                                     "score": 0.888, "parts": [{"key": "moved", "label": "Moved on 6 of 7 days",
+                                                                "share": 0.857, "weight": 0.3, "source": "x"}]})
+    webapp.store.put("training", {"log": {date.today().isoformat(): {"done": True}}})   # a session after closing
+    page = TestClient(webapp.app).get("/reward").text
+    assert "USD 18.02" in page and "Moved on 6 of 7 days" in page and "counts for the next week" in page
 
 def test_bmi_comes_from_height_and_weight_when_not_stored():
     L = T.limits({"height_cm": 165, "weight_kg": 90}, [], None, {}, False)

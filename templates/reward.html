@@ -12,10 +12,13 @@ Half of it is your basket, which PayPal sees: every dollar on vegetables, legume
 <div class="stack two">
   <div class="card pad">
     <div class="eyebrow">This week{% if week_closed %} · closed{% endif %}</div>
-    <div class="view-title" style="font-size:44px">{{ currency }} {{ '%.2f'|format(result.cashback) }}</div>
-    <p class="muted">{{ (result.cashback_rate * 100)|round(1) }}% of {{ currency }} {{ '%.2f'|format(behaviour.spent) }} spent · score {{ (result.score * 100)|round|int }}/100</p>
+    {% set shown = {'cashback': closed.earned, 'rate': closed.rate, 'score': closed.score, 'spent': closed.spent, 'parts': closed.parts or []} if closed
+                     else {'cashback': result.cashback, 'rate': result.cashback_rate, 'score': result.score, 'spent': behaviour.spent, 'parts': result.parts} %}
+    <div class="view-title" style="font-size:44px">{{ currency }} {{ '%.2f'|format(shown.cashback) }}</div>
+    <p class="muted">{{ (shown.rate * 100)|round(1) }}% of {{ currency }} {{ '%.2f'|format(shown.spent) }} spent · score {{ (shown.score * 100)|round|int }}/100</p>
+    {% if closed %}<p class="tiny muted">As it was when the week was closed. What you do from now on counts for the next week.</p>{% endif %}
     <table class="tiny" style="margin-top:6px">
-      {% for p in result.parts %}
+      {% for p in shown.parts %}
       <tr><td>{{ p.label }}</td><td class="num">{{ (p.share * 100)|round|int }}%</td><td class="num">× {{ (p.weight * 100)|int }}</td>
           <td><span class="pill {{ 'ok' if p.source == 'captured by PayPal' else ('warn' if p.source == 'self-reported' else '') }}">{{ p.source }}</span></td></tr>
       {% endfor %}

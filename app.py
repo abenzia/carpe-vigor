@@ -102,7 +102,7 @@ def journey(request: Request):
     today = planner.DAYS[datetime.now().weekday()]
     meals = [{"i": i, "kind": planner.dish_kind(r), **r} for i, r in enumerate(plan["plan"]["recipes"]) if r["day"] == today] if plan else []
     return render(request, "journey.html", today=today, meals=meals, cooked=set((plan or {}).get("cooked", [])),
-                  diary_today=diary.day(store.get("diary", [])), steps=store.get("steps", []),
+                  diary_today=diary.day(store.get("diary", [])), steps=week_steps(), trained=trained_days(),
                   month=week.month(store), checkups=store.get("checkups", []), reading=health.read(store.get("health") or {}))
 
 
@@ -154,7 +154,7 @@ def _build_week(prof: dict):
             guidance.goals = guidance.goals + [adapted["goal"]]
         made, report, used = planner.make(guidance, prof["device"], prof.get("people", 1), progress,
                                           energy=health.for_planner(store.get("health") or {}),
-                                          activity=(store.get("health") or {}).get("activity"), steps=store.get("steps", []))
+                                          activity=(store.get("health") or {}).get("activity"), steps=week_steps())
         plan = {"plan": made.model_dump(), "report": report, "sources": used, "cooked": [],
                 "focus": [f"{v['label']}: {v['status']}" for v in focus], "numbers": guidelines.for_week(guidance.topics)}
         if adapted:
@@ -224,7 +224,7 @@ def move_view(request: Request):
     plan = _plan_or_start()
     return render(request, "move.html", movement=plan["plan"]["movement"] if plan else [], days=planner.DAYS,
                   coach=((plan or {}).get("report") or {}).get("coach"),
-                  steps=store.get("steps", []), goal=config.STEPS_GOAL, week_rows=activity.last_week(store),
+                  steps=week_steps(), goal=config.STEPS_GOAL, week_rows=activity.last_week(store),
                   exercises=coach.exercises_in(plan["plan"]["movement"] if plan else []))
 
 
@@ -250,7 +250,7 @@ def training_view(request: Request, on: str = ""):
         return render(request, "training.html", state=None, questions=training.QUESTIONS, health=store.get("health") or {},
                       doctor_said=(store.get("profile") or {}).get("doctor_said", ""),
                       off=checkup.topics(store.get("numbers", [])))
-    days = [] if limits.stop else training.week(state, store.get("health") or {}, store.get("steps", []), limits, day)
+    days = [] if limits.stop else training.week(state, store.get("health") or {}, week_steps(), limits, day)
     today = next((d for d in days if d["on"] == datetime.now().date().isoformat()), None)
     return render(request, "training.html", state=state, limits=limits, days=days, today=today, on=day,
                   summary=training.summary(days, limits) if days else None, calendar=training.month(state, day),
@@ -272,7 +272,7 @@ async def training_setup(request: Request):
              "doctor": doctor, "doctor_said": said, "start": old.get("start") or datetime.now().date().isoformat(),
              "log": old.get("log", {})}
     limits = training.limits(store.get("health") or {}, store.get("numbers", []), doctor, answers, state["setup"]["cleared"])
-    state["level"] = training.level(store.get("health") or {}, store.get("steps", []), limits)
+    state["level"] = training.level(store.get("health") or {}, week_steps(), limits)
     store.put("training", state)
     store.log("training", {"days": days, "minutes": minutes})  # the answers stay in the store, not in the log
     return RedirectResponse("/training", status_code=303)
@@ -294,7 +294,7 @@ def training_day(request: Request, on: str):
         when = datetime.fromisoformat(on).date()
     except ValueError:
         return RedirectResponse("/training", status_code=303)
-    days = training.week(state, store.get("health") or {}, store.get("steps", []), limits, when)
+    days = training.week(state, store.get("health") or {}, week_steps(), limits, when)
     session = next(d for d in days if d["on"] == when.isoformat())
     return render(request, "training_day.html", s=session, limits=limits, logged=state.get("log", {}).get(on),
                   sources=training.SOURCES)
@@ -856,6 +856,13 @@ def this_week(kind: str) -> list[dict]:
     return out
 
 
+def week_steps() -> list[int]:
+    """The last 7 dated days' steps (0 where nothing came), or [] before any day has arrived. Every count of days moved
+    reads this one list: a stored copy of it once lagged a day behind the training log and counted 7 of 7 for 6."""
+    rows = activity.last_week(store)
+    return [r["steps"] or 0 for r in rows] if any(r["steps"] is not None for r in rows) else []
+
+
 def trained_days() -> list[str]:
     """The last 7 days under the step goal that count as moved anyway: the training program's session was done."""
     log = (store.get("training") or {}).get("log", {})
@@ -865,7 +872,7 @@ def trained_days() -> list[str]:
 
 def behaviour() -> reward.WeekBehaviour:
     plan = store.get("plan") or {"plan": {"recipes": []}, "cooked": []}
-    steps = store.get("steps", [])  # 7 daily step counts, from a watch or simulated
+    steps = week_steps()
     money = week.status(store)
     orders = this_week("order")
     return reward.WeekBehaviour(
@@ -896,8 +903,9 @@ def dish_photo_view(i: int):
 @app.get("/reward", response_class=HTMLResponse)
 def reward_view(request: Request, error: str = ""):
     b = behaviour()
-    return render(request, "reward.html", behaviour=b, result=reward.score(b), steps=store.get("steps", []),
-                  week_rows=activity.last_week(store), trained=trained_days(),
+    closed = this_week("week_closed")  # once closed, the week shows what was closed, not today's recount
+    return render(request, "reward.html", behaviour=b, result=reward.score(b), steps=week_steps(),
+                  week_rows=activity.last_week(store), trained=trained_days(), closed=closed[0] if closed else None,
                   steps_goal=config.STEPS_GOAL, max_rate=config.CASHBACK_MAX, days=planner.DAYS,
                   month=week.month(store), week_closed=bool(this_week("week_closed")), error=error)
 

@@ -138,12 +138,12 @@ def close_week(store: Store, result: reward.Reward) -> dict:
         raise paypal.PayPalError("This week is already closed.")
     spent = round(sum(c["amount"] for c in store.get("captures", [])), 2)
     entry = {"authorization_id": auth.get("authorization_id"), "spent": spent, "earned": result.cashback,
-             "rate": result.cashback_rate, "score": result.score, "reasons": result.reasons,
+             "rate": result.cashback_rate, "score": result.score, "reasons": result.reasons, "parts": result.parts,
              "captures": [{"capture_id": c["capture_id"], "amount": c["amount"], "refunded": c.get("refunded", 0.0),
                            "order_id": auth.get("order_id")} for c in store.get("captures", [])]}
     m["weeks"].append(entry)
     store.put("month", m)
-    store.log("week_closed", {k: entry[k] for k in ("authorization_id", "spent", "earned", "rate", "score")})
+    store.log("week_closed", {k: entry[k] for k in ("authorization_id", "spent", "earned", "rate", "score", "parts")})
     return entry
 
 

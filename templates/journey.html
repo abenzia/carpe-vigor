@@ -50,7 +50,7 @@
           <div class="stat"><small>Fiber</small><b>{{ tt.fiber_g|round|int }} g</b><span>&nbsp;</span></div>
           <div class="stat"><small>Sodium</small><b>{{ '≤ ' if diary_today.sodium_at_most }}{{ tt.sodium_mg|round|int }}</b><span>mg · WHO: under 2,000 a day</span></div>
         </div>
-        <p class="notice">Say it to your watch: “Hey Siri, Carpe Vigor — a plate of cacio e pepe”. Counted with USDA FoodData Central; no calorie target unless your doctor set one.</p>
+        <p class="notice">Say it to your phone, or to your watch once the shortcut is on it: “Carpe Vigor — a plate of cacio e pepe”. Counted with USDA FoodData Central; no calorie target unless your doctor set one.</p>
       </section>
     </div>
     <div class="stack">
@@ -62,7 +62,7 @@
       </section>
       <section class="card pad">
         <div class="card-title"><h3>Moving</h3><a class="text-link" href="/move">Movement →</a></div>
-        {% if steps %}{% set good = steps|select('ge', 7000)|list %}<p><b>{{ good|length }} of {{ steps|length }}</b> days over 7,000 steps this week.</p>{% else %}<p class="muted">No steps yet: sync them from your watch on the Movement page.</p>{% endif %}
+        {% if steps %}{% set good = steps|select('ge', 7000)|list %}<p><b>{{ good|length + trained|length }} of {{ steps|length }}</b> days moved in the last 7 ({{ good|length }} over 7,000 steps{% if trained %}, {{ trained|length }} with your training session{% endif %}).</p>{% else %}<p class="muted">No steps yet: sync them from your watch on the Movement page.</p>{% endif %}
       </section>
       <section class="card pad">
         <div class="card-title"><h3>The team</h3><a class="text-link" href="/team">See their work →</a></div>

@@ -15,6 +15,8 @@ FOLDER = Path(__file__).resolve().parent.parent / "static" / "dishes"
 MODEL = "gemini-3.1-flash-image"
 _lock = threading.Lock()
 _drawing = False
+_failed_at = 0.0  # a run that drew nothing (model off, no credentials): wait before trying again
+COOL_DOWN = 600
 
 
 def path(recipe: dict) -> Path:
@@ -45,14 +47,14 @@ def draw_week(recipes: list[dict]) -> None:
     if config.LLM_PROVIDER != "vertex":
         return
     with _lock:
-        if _drawing:
+        if _drawing or time.time() - _failed_at < COOL_DOWN:
             return
         _drawing = True
     threading.Thread(target=_draw_all, args=([r for r in recipes if not existing(r)],), daemon=True).start()
 
 
 def _draw_all(todo: list[dict]) -> None:
-    global _drawing
+    global _drawing, _failed_at
     try:
         for recipe in todo:
             for attempt in range(5):
@@ -64,6 +66,8 @@ def _draw_all(todo: list[dict]) -> None:
                         print(f"dish photo for {recipe['title']!r} not drawn: {str(error)[:200]}")
                         break
                     time.sleep(20 * (attempt + 1))  # the per-minute quota: wait and try again
+        if todo and not any(existing(r) for r in todo):
+            _failed_at = time.time()  # otherwise every page view would ask the model again, and fail again
     finally:
         with _lock:
             _drawing = False

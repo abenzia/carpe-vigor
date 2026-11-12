@@ -21,3 +21,6 @@ video/
 PIANO.md
 # Dish photos drawn by the image model for the local plan
 static/dishes/
+# Local notes and an unused stylesheet on Ale's PC, never published
+Daily/
+static/forest-app.css
