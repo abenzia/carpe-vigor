@@ -468,3 +468,14 @@ a.planner-groceries{display:block}
 a.planner-item:focus-visible,a.planner-groceries:focus-visible,a.planner-reward:focus-visible,a.benefit-card:focus-visible{outline:2px solid #f78946;outline-offset:4px;border-radius:5px}
 a.planner-item:hover h3,a.planner-groceries:hover .grocery-summary b{color:#f5b17e}
 a.benefit-card:hover h3{color:#a7592c}
+
+/* Phones: the card rows had four columns (photo, title, details, arrow) and the title ran into the details;
+   here the details drop under the title, beside the photo */
+@media (max-width: 620px) {
+  .planner-item { grid-template-columns: 72px minmax(0, 1fr) 10px; column-gap: 12px; row-gap: 6px; padding: 10px 0; }
+  .planner-item > img, .planner-item > .workout-thumb { grid-column: 1; grid-row: 1 / span 2; align-self: start; width: 72px; height: 64px; }
+  .planner-item-copy { grid-column: 2; grid-row: 1; }
+  .planner-item h3 { font-size: 16px; }
+  .planner-meta { grid-column: 2; grid-row: 2; display: flex; flex-wrap: wrap; gap: 4px 12px; padding-left: 0; border-left: 0; }
+  .planner-item .item-arrow { grid-column: 3; grid-row: 1 / span 2; }
+}

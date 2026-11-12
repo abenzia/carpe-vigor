@@ -25,7 +25,7 @@ the remainder released, the reward paid back. {% if money.mode == 'sandbox' %}Ea
     columnDefs: [
       {field: 'at', headerName: 'When (UTC)', flex: 1.1, minWidth: 110, wrapText: true, autoHeight: true, cellClass: 'wrap'},
       {field: 'what', headerName: 'What', flex: 1.3, minWidth: 130, filter: true, wrapText: true, autoHeight: true, cellClass: 'wrap'},
-      {field: 'amount', headerName: 'Amount', type: 'rightAligned', valueFormatter: fmt, flex: 1, minWidth: 100},
+      {field: 'amount', headerName: 'Amount', type: 'rightAligned', valueFormatter: fmt, flex: 1, minWidth: 115},
       {field: 'effect', headerName: 'Effect', flex: 1.2, minWidth: 130, filter: true,
        cellRenderer: p => p.value ? `<span class="pill ${tone[p.value] || ''}">${p.value}</span>` : ''},
       {field: 'paypal_id', headerName: 'PayPal id', flex: 1.5, minWidth: 150, cellClass: 'mono', wrapText: true, autoHeight: true},
