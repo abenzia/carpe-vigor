@@ -31,9 +31,9 @@
 
 {% macro style() %}
 <style>
-  /* label left, number right, the pill on its own line (kept even when empty) so side-by-side meters line up */
-  .meter{margin:6px 0 16px} .meter-head{display:grid;grid-template-columns:1fr auto;align-items:baseline;column-gap:8px}
-  .meter-head .section-kicker{margin:0} .meter-v{white-space:nowrap;text-align:right}
+  /* three rows, the same in every meter: label, number, pill (kept even when empty), so side-by-side meters line up */
+  .meter{margin:6px 0 16px} .meter-head{display:grid;grid-template-columns:1fr}
+  .meter-head .section-kicker{margin:0} .meter-v{white-space:nowrap}
   .meter-head b{font:400 28px var(--serif);color:var(--forest)}
   .meter-sub{grid-column:1/-1;min-height:30px;display:flex;align-items:center}
   .track{position:relative;height:14px;border-radius:99px;background:#e9e5da;overflow:hidden;margin-top:6px}
