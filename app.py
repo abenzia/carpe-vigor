@@ -26,7 +26,7 @@ from fastapi.templating import Jinja2Templates
 
 from carpevigor import (__version__, ask, cart_agent, checkup, config, diary, guidelines, kitchen, nutrition, planner, profile,
                         rag, reward, sources, ui, week)
-from carpevigor import activity, apple_health, coach, health, phone, report, training
+from carpevigor import activity, apple_health, coach, demo_person, health, phone, report, training
 from carpevigor.catalog import Catalog
 from carpevigor.pantry import Pantry
 from carpevigor.paypal import PayPalError
@@ -42,6 +42,9 @@ templates.env.filters["step_parts"] = kitchen.step_parts
 templates.env.filters["schema_recipe"] = kitchen.schema_recipe
 store = Store()
 catalog = Catalog.load()
+# The public demo opens on the example person, so every screen has something to show without the AI
+if config.HOSTED and store.get("profile") is None and not store.events():
+    demo_person.load(store)
 
 
 # The only ways in for a phone shortcut (no Origin, maybe through the tunnel); each checks the token itself
@@ -937,6 +940,15 @@ def month_settle():
 def reset():
     store.reset()
     return RedirectResponse("/doctor", status_code=303)
+
+
+@app.post("/demo/example")
+def demo_example():
+    """Public demo only: back to the example person (on a real install this would wipe the person's own data)."""
+    if not config.HOSTED:
+        return PlainTextResponse("Only on the public demo.", status_code=404)
+    demo_person.load(store)
+    return RedirectResponse("/journey", status_code=303)
 
 
 @app.get("/ledger", response_class=HTMLResponse)

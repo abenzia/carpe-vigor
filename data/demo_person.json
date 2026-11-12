@@ -1,0 +1,4399 @@
+{
+ "recorded_on": "2026-11-12",
+ "kv": {
+  "authorization": {
+   "order_id": "24R48148W21803918",
+   "authorization_id": "4NP38678F46892931",
+   "amount": 140.0,
+   "currency": "USD",
+   "voided": true,
+   "released": 34.08,
+   "authorized_at": "2026-11-10T20:07:28.025211+00:00",
+   "held_at": "2026-11-10T20:07:28.025211+00:00"
+  },
+  "captures": [
+   {
+    "capture_id": "2163420521732552Y",
+    "amount": 105.92,
+    "note": "Carpe Vigor order: 26 items from Demo Market",
+    "refunded": 0.0
+   }
+  ],
+  "cart": {
+   "lines": [
+    {
+     "sku": "SEA-VIN-500",
+     "quantity": 1,
+     "reason": "15 ml for Sliced Chicken and Quinoa Salad, Warm Cannellini Bean and Roasted Pepper Bruschetta",
+     "swapped_from": "",
+     "extra": false,
+     "amount": 2.79
+    },
+    {
+     "sku": "FAT-NUTS-200",
+     "quantity": 1,
+     "reason": "15 g for Roast Chicken and Brown Rice Grain Bowl",
+     "swapped_from": "",
+     "extra": false,
+     "amount": 4.49
+    },
+    {
+     "sku": "GRA-WWPASTA-500",
+     "quantity": 1,
+     "reason": "75 g for Air-Fried Vegetable and Ricotta Whole-Wheat Pasta",
+     "swapped_from": "",
+     "extra": false,
+     "amount": 1.79
+    }
+   ],
+   "subtotal": 9.07,
+   "delivery_fee": 4.99,
+   "total": 14.06,
+   "skipped": [],
+   "needed": 14.06,
+   "over_budget": false
+  },
+  "days": {
+   "2026-11-11": {
+    "steps": 11200,
+    "exercise_min": 27
+   },
+   "2026-11-10": {
+    "steps": 4800,
+    "exercise_min": 36
+   },
+   "2026-11-09": {
+    "steps": 7300,
+    "exercise_min": 36
+   },
+   "2026-11-08": {
+    "steps": 6400,
+    "exercise_min": 43
+   },
+   "2026-11-07": {
+    "steps": 6100,
+    "exercise_min": 39
+   },
+   "2026-11-06": {
+    "steps": 8200,
+    "exercise_min": 36
+   },
+   "2026-11-05": {
+    "steps": 7585,
+    "exercise_min": 36
+   },
+   "2026-11-04": {
+    "steps": 8957,
+    "exercise_min": 19
+   },
+   "2026-11-03": {
+    "steps": 8080,
+    "exercise_min": 28
+   },
+   "2026-11-02": {
+    "steps": 8397,
+    "exercise_min": 31
+   },
+   "2026-11-01": {
+    "steps": 7251,
+    "exercise_min": 21
+   },
+   "2026-10-31": {
+    "steps": 6563,
+    "exercise_min": 25
+   },
+   "2026-10-30": {
+    "steps": 5312,
+    "exercise_min": 23
+   },
+   "2026-10-29": {
+    "steps": 5241,
+    "exercise_min": 10
+   },
+   "2026-10-28": {
+    "steps": 7948,
+    "exercise_min": 32
+   },
+   "2026-10-27": {
+    "steps": 7818,
+    "exercise_min": 22
+   },
+   "2026-10-26": {
+    "steps": 8131,
+    "exercise_min": 11
+   },
+   "2026-10-25": {
+    "steps": 4714,
+    "exercise_min": 23
+   },
+   "2026-10-24": {
+    "steps": 6980,
+    "exercise_min": 21
+   },
+   "2026-10-23": {
+    "steps": 7113,
+    "exercise_min": 13
+   },
+   "2026-10-22": {
+    "steps": 6783,
+    "exercise_min": 26
+   },
+   "2026-10-21": {
+    "steps": 7667,
+    "exercise_min": 13
+   },
+   "2026-10-20": {
+    "steps": 6731,
+    "exercise_min": 9
+   },
+   "2026-10-19": {
+    "steps": 7485,
+    "exercise_min": 12
+   },
+   "2026-10-18": {
+    "steps": 5622,
+    "exercise_min": 16
+   },
+   "2026-10-17": {
+    "steps": 4550,
+    "exercise_min": 18
+   },
+   "2026-10-16": {
+    "steps": 5210,
+    "exercise_min": 11
+   },
+   "2026-10-15": {
+    "steps": 5186,
+    "exercise_min": 9
+   },
+   "2026-10-14": {
+    "steps": 6004,
+    "exercise_min": 5
+   },
+   "2026-10-13": {
+    "steps": 4867,
+    "exercise_min": 5
+   },
+   "2026-11-12": {
+    "steps": 7600
+   }
+  },
+  "diary": [
+   {
+    "at": "2026-10-13T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 303
+    }
+   },
+   {
+    "at": "2026-10-13T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 794
+    }
+   },
+   {
+    "at": "2026-10-13T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 694
+    }
+   },
+   {
+    "at": "2026-10-14T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 298
+    }
+   },
+   {
+    "at": "2026-10-14T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 568
+    }
+   },
+   {
+    "at": "2026-10-14T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 645
+    }
+   },
+   {
+    "at": "2026-10-15T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 243
+    }
+   },
+   {
+    "at": "2026-10-15T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 875
+    }
+   },
+   {
+    "at": "2026-10-15T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 496
+    }
+   },
+   {
+    "at": "2026-10-16T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 365
+    }
+   },
+   {
+    "at": "2026-10-16T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 749
+    }
+   },
+   {
+    "at": "2026-10-16T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 982
+    }
+   },
+   {
+    "at": "2026-10-17T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 351
+    }
+   },
+   {
+    "at": "2026-10-17T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 492
+    }
+   },
+   {
+    "at": "2026-10-17T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 427
+    }
+   },
+   {
+    "at": "2026-10-18T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 389
+    }
+   },
+   {
+    "at": "2026-10-18T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 632
+    }
+   },
+   {
+    "at": "2026-10-18T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 623
+    }
+   },
+   {
+    "at": "2026-10-19T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 345
+    }
+   },
+   {
+    "at": "2026-10-19T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 852
+    }
+   },
+   {
+    "at": "2026-10-19T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 802
+    }
+   },
+   {
+    "at": "2026-10-20T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 367
+    }
+   },
+   {
+    "at": "2026-10-20T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 772
+    }
+   },
+   {
+    "at": "2026-10-20T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 1003
+    }
+   },
+   {
+    "at": "2026-10-21T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 236
+    }
+   },
+   {
+    "at": "2026-10-21T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 782
+    }
+   },
+   {
+    "at": "2026-10-21T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 857
+    }
+   },
+   {
+    "at": "2026-10-22T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 362
+    }
+   },
+   {
+    "at": "2026-10-22T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 874
+    }
+   },
+   {
+    "at": "2026-10-22T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 914
+    }
+   },
+   {
+    "at": "2026-10-23T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 381
+    }
+   },
+   {
+    "at": "2026-10-23T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 483
+    }
+   },
+   {
+    "at": "2026-10-23T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 691
+    }
+   },
+   {
+    "at": "2026-10-24T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 391
+    }
+   },
+   {
+    "at": "2026-10-24T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 503
+    }
+   },
+   {
+    "at": "2026-10-24T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 754
+    }
+   },
+   {
+    "at": "2026-10-25T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 363
+    }
+   },
+   {
+    "at": "2026-10-25T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 563
+    }
+   },
+   {
+    "at": "2026-10-25T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 1005
+    }
+   },
+   {
+    "at": "2026-10-26T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 369
+    }
+   },
+   {
+    "at": "2026-10-26T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 702
+    }
+   },
+   {
+    "at": "2026-10-26T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 825
+    }
+   },
+   {
+    "at": "2026-10-27T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 290
+    }
+   },
+   {
+    "at": "2026-10-27T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 734
+    }
+   },
+   {
+    "at": "2026-10-27T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 940
+    }
+   },
+   {
+    "at": "2026-10-28T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 332
+    }
+   },
+   {
+    "at": "2026-10-28T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 670
+    }
+   },
+   {
+    "at": "2026-10-28T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 926
+    }
+   },
+   {
+    "at": "2026-10-29T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 418
+    }
+   },
+   {
+    "at": "2026-10-29T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 614
+    }
+   },
+   {
+    "at": "2026-10-29T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 913
+    }
+   },
+   {
+    "at": "2026-10-30T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 322
+    }
+   },
+   {
+    "at": "2026-10-30T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 667
+    }
+   },
+   {
+    "at": "2026-10-30T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 587
+    }
+   },
+   {
+    "at": "2026-10-31T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 414
+    }
+   },
+   {
+    "at": "2026-10-31T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 702
+    }
+   },
+   {
+    "at": "2026-10-31T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 738
+    }
+   },
+   {
+    "at": "2026-11-01T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 254
+    }
+   },
+   {
+    "at": "2026-11-01T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 597
+    }
+   },
+   {
+    "at": "2026-11-01T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 956
+    }
+   },
+   {
+    "at": "2026-11-02T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 398
+    }
+   },
+   {
+    "at": "2026-11-02T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 626
+    }
+   },
+   {
+    "at": "2026-11-02T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 868
+    }
+   },
+   {
+    "at": "2026-11-03T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 339
+    }
+   },
+   {
+    "at": "2026-11-03T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 823
+    }
+   },
+   {
+    "at": "2026-11-03T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 828
+    }
+   },
+   {
+    "at": "2026-11-04T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 319
+    }
+   },
+   {
+    "at": "2026-11-04T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 738
+    }
+   },
+   {
+    "at": "2026-11-04T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 861
+    }
+   },
+   {
+    "at": "2026-11-05T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 330
+    }
+   },
+   {
+    "at": "2026-11-05T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 753
+    }
+   },
+   {
+    "at": "2026-11-05T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 860
+    }
+   },
+   {
+    "at": "2026-11-06T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 451
+    }
+   },
+   {
+    "at": "2026-11-06T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 812
+    }
+   },
+   {
+    "at": "2026-11-06T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 859
+    }
+   },
+   {
+    "at": "2026-11-07T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 308
+    }
+   },
+   {
+    "at": "2026-11-07T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 759
+    }
+   },
+   {
+    "at": "2026-11-07T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 720
+    }
+   },
+   {
+    "at": "2026-11-08T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 310
+    }
+   },
+   {
+    "at": "2026-11-08T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 718
+    }
+   },
+   {
+    "at": "2026-11-08T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 909
+    }
+   },
+   {
+    "at": "2026-11-09T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 176
+    }
+   },
+   {
+    "at": "2026-11-09T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 766
+    }
+   },
+   {
+    "at": "2026-11-09T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 1037
+    }
+   },
+   {
+    "at": "2026-11-10T08:00",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 354
+    }
+   },
+   {
+    "at": "2026-11-10T13:10",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 585
+    }
+   },
+   {
+    "at": "2026-11-10T20:30",
+    "said": "",
+    "dish": "seeded meal",
+    "portion": "normal",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 814
+    }
+   },
+   {
+    "at": "2026-11-11T09:31+01:00",
+    "said": "",
+    "dish": "Grilled salmon with brown rice and steamed broccoli",
+    "portion": "normal",
+    "assumed": "Standard dinner plate (approx. 26 cm); dry brown rice weight estimating cooked volume shown",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 702.3,
+     "protein_g": 45.2,
+     "fat_g": 31.7,
+     "sat_fat_g": 6.7,
+     "carbs_g": 58.9,
+     "fiber_g": 5.9,
+     "sugars_g": 2.8,
+     "sodium_mg": 154.5,
+     "counted": [
+      "180 g salmon fillet → Fish, salmon, Atlantic, farmed, raw",
+      "65 g brown rice → Rice, brown, long-grain, raw (Includes foods for USDA's Food Distribution Program)",
+      "120 g broccoli → Broccoli, raw",
+      "5 g olive oil → Oil, olive, salad or cooking",
+      "15 g lemon → Lemons, raw, without peel",
+      "250 g water → Water, bottled, generic"
+     ],
+     "left_out": [],
+     "sodium_at_most": false,
+     "source": "USDA FoodData Central (SR Legacy)"
+    },
+    "from_photo": true
+   },
+   {
+    "at": "2026-11-08T21:00",
+    "said": "",
+    "dish": "dinner out",
+    "portion": "large",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 1319
+    }
+   },
+   {
+    "at": "2026-11-10T21:00",
+    "said": "",
+    "dish": "dinner out",
+    "portion": "large",
+    "assumed": "",
+    "estimate": true,
+    "nutrition": {
+     "kcal": 1432
+    }
+   }
+  ],
+  "extras": [],
+  "health": {
+   "consent": true,
+   "height_cm": 172,
+   "weight_kg": 84,
+   "age": 56,
+   "sex": "male",
+   "activity": "light"
+  },
+  "month": {
+   "weeks": [],
+   "bonuses": [],
+   "last_paid": {
+    "weeks": 1,
+    "spent": 105.92,
+    "paid": 17.99,
+    "unpaid": 0.0
+   }
+  },
+  "numbers": [
+   {
+    "key": "systolic",
+    "value": 142,
+    "date": "2026-10-20",
+    "target": 130
+   },
+   {
+    "key": "diastolic",
+    "value": 88,
+    "date": "2026-10-20",
+    "target": 85
+   },
+   {
+    "key": "ldl",
+    "value": 138,
+    "date": "2026-10-20",
+    "target": 115
+   },
+   {
+    "key": "glucose",
+    "value": 104,
+    "date": "2026-10-20",
+    "target": 100
+   }
+  ],
+  "pantry": [
+   {
+    "sku": "DAI-BUTTER-250",
+    "name": "Butter",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "DAI-RIC-250",
+    "name": "Ricotta",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "DAI-MILK-1L",
+    "name": "Semi-skimmed milk",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "LEG-CHICK-400",
+    "name": "Chickpeas, no salt added",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "FAT-EVOO-500",
+    "name": "Extra-virgin olive oil",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "SEA-HERBS",
+    "name": "Mixed dried herbs, salt-free",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "SEA-PEPPER",
+    "name": "Black pepper",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "VEG-SPIN-300",
+    "name": "Baby spinach",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "VEG-TOM-500",
+    "name": "Cherry tomatoes",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "VEG-LEMON",
+    "name": "Lemons",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "PRO-CHICK-600",
+    "name": "Chicken breast",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "VEG-CARR-1K",
+    "name": "Carrots",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "VEG-ZUCC-500",
+    "name": "Zucchini",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "VEG-GARLIC",
+    "name": "Garlic",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "LEG-BEAN-400",
+    "name": "Cannellini beans, no salt added",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "PRO-SALM-400",
+    "name": "Salmon fillets",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "VEG-BROC-500",
+    "name": "Broccoli",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "GRA-WWBREAD",
+    "name": "Whole-grain bread",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "FAT-AVO",
+    "name": "Avocados",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "PRO-TOFU-400",
+    "name": "Firm tofu",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "VEG-PEPP-500",
+    "name": "Bell peppers",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "VEG-ONION-1K",
+    "name": "Yellow onions",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "GRA-QUIN-500",
+    "name": "Quinoa",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "SEA-STOCK-LS",
+    "name": "Vegetable stock, low sodium",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "PRO-COD-400",
+    "name": "Cod fillets",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "PRO-TURK-500",
+    "name": "Turkey breast slices, low sodium",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "LEG-LENT-500",
+    "name": "Dried lentils",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "PRO-EGGS-12",
+    "name": "Eggs",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   },
+   {
+    "sku": "GRA-BROWN-1K",
+    "name": "Brown rice",
+    "have": true,
+    "dont_rebuy": false,
+    "swap_sku": null,
+    "swap_why": ""
+   }
+  ],
+  "plan": {
+   "plan": {
+    "title": "One-Week Low-Sodium Air Fryer Meal Plan",
+    "summary": "This week emphasizes heart-healthy meals rich in legumes, fresh vegetables, and whole grains prepared with an air fryer without any added salt. Portions are balanced to keep you satisfied with fiber and lean proteins while lighter evening meals support your daily energy goals.",
+    "recipes": [
+     {
+      "day": "Mon",
+      "meal": "lunch",
+      "title": "Air-Fried Chickpea and Vegetable Bowl",
+      "servings": 1,
+      "leftovers_for": "",
+      "from_leftovers": "",
+      "prep_minutes": 10,
+      "total_minutes": 25,
+      "difficulty": "easy",
+      "accessories": [],
+      "ingredients": [
+       {
+        "amount": "240 g",
+        "name": "Chickpeas, no salt added",
+        "grams": 240.0,
+        "note": "rinsed and drained"
+       },
+       {
+        "amount": "150 g",
+        "name": "zucchini",
+        "grams": 150.0,
+        "note": "cut into 1.5 cm chunks"
+       },
+       {
+        "amount": "150 g",
+        "name": "bell peppers",
+        "grams": 150.0,
+        "note": "seeded and diced into 2 cm pieces"
+       },
+       {
+        "amount": "1 tbsp",
+        "name": "extra-virgin olive oil",
+        "grams": 14.0,
+        "note": ""
+       },
+       {
+        "amount": "1 tsp",
+        "name": "mixed dried herbs, salt-free",
+        "grams": 2.0,
+        "note": ""
+       },
+       {
+        "amount": "1/2 tsp",
+        "name": "black pepper",
+        "grams": 1.0,
+        "note": "freshly ground"
+       },
+       {
+        "amount": "60 g",
+        "name": "baby spinach",
+        "grams": 60.0,
+        "note": "washed and dried"
+       },
+       {
+        "amount": "1/2",
+        "name": "lemons",
+        "grams": 25.0,
+        "note": "juiced"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Chickpeas, no salt added",
+        "amount": 240.0,
+        "unit": "g"
+       },
+       {
+        "name": "Zucchini",
+        "amount": 150.0,
+        "unit": "g"
+       },
+       {
+        "name": "Bell peppers",
+        "amount": 150.0,
+        "unit": "g"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 15.0,
+        "unit": "ml"
+       },
+       {
+        "name": "Mixed dried herbs, salt-free",
+        "amount": 2.0,
+        "unit": "g"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 1.0,
+        "unit": "g"
+       },
+       {
+        "name": "Baby spinach",
+        "amount": 60.0,
+        "unit": "g"
+       },
+       {
+        "name": "Lemons",
+        "amount": 1.0,
+        "unit": "piece"
+       }
+      ],
+      "steps": [
+       {
+        "text": "In a large mixing bowl, combine 240 g of drained no-salt-added chickpeas, 150 g of diced zucchini, and 150 g of diced bell peppers with 14 g of extra-virgin olive oil, 1 tsp of salt-free mixed dried herbs, and 1/2 tsp of black pepper until thoroughly coated.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Transfer the seasoned chickpea and vegetable mixture into the air fryer basket in an even layer and cook at 190°C for 8 minutes.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Pull out the air fryer basket, shake thoroughly to redistribute the vegetables and chickpeas, and return to cook at 190°C for an additional 7 minutes until tender and lightly crisped.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Arrange 60 g of fresh baby spinach on a serving plate, spoon the warm air-fried chickpea and vegetable mixture over the top, and finish with the juice of half a lemon.",
+        "setting": null,
+        "then": ""
+       }
+      ],
+      "tips": [
+       "Pat the chickpeas dry with a kitchen towel before tossing in oil to help them brown evenly in the basket."
+      ],
+      "why": "This dish contains no-salt-added chickpeas, zucchini, bell peppers, baby spinach, and salt-free herbs without any added salt.",
+      "evidence": "Adults should aim to consume at least 25 grams of naturally-occurring dietary fiber each day [WHO — Healthy diet (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 414.0,
+       "protein_g": 17.0,
+       "fat_g": 19.8,
+       "sat_fat_g": 2.7,
+       "carbs_g": 49.1,
+       "fiber_g": 16.9,
+       "sugars_g": 14.4,
+       "sodium_mg": 381.7,
+       "counted": [
+        "240 g Chickpeas, no salt added → Chickpeas (garbanzo beans, bengal gram), mature seeds, canned, solids and liquids, low sodium",
+        "150 g zucchini → Squash, summer, zucchini, includes skin, raw",
+        "150 g bell peppers → Peppers, sweet, green, raw",
+        "14 g extra-virgin olive oil → Oil, olive, salad or cooking",
+        "1 g black pepper → Spices, pepper, black",
+        "60 g baby spinach → Spinach, raw",
+        "25 g lemons → Lemons, raw, without peel"
+       ],
+       "left_out": [
+        "mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Mon",
+      "meal": "dinner",
+      "title": "Lemon Herb Air-Fried Salmon with Roasted Vegetables",
+      "servings": 2,
+      "leftovers_for": "Tue lunch",
+      "from_leftovers": "",
+      "prep_minutes": 10,
+      "total_minutes": 22,
+      "difficulty": "easy",
+      "accessories": [],
+      "ingredients": [
+       {
+        "amount": "2",
+        "name": "salmon fillets",
+        "grams": 280.0,
+        "note": "skin-on or skinless, about 140 g each"
+       },
+       {
+        "amount": "250 g",
+        "name": "carrots",
+        "grams": 250.0,
+        "note": "peeled and sliced into 1 cm rounds"
+       },
+       {
+        "amount": "300 g",
+        "name": "zucchini",
+        "grams": 300.0,
+        "note": "sliced into 1 cm rounds"
+       },
+       {
+        "amount": "1.5 tbsp",
+        "name": "extra-virgin olive oil",
+        "grams": 20.0,
+        "note": ""
+       },
+       {
+        "amount": "1 tsp",
+        "name": "mixed dried herbs, salt-free",
+        "grams": 2.0,
+        "note": ""
+       },
+       {
+        "amount": "1/2 tsp",
+        "name": "black pepper",
+        "grams": 2.0,
+        "note": "ground"
+       },
+       {
+        "amount": "1",
+        "name": "lemons",
+        "grams": 50.0,
+        "note": "zested and halved"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Salmon fillets",
+        "amount": 280.0,
+        "unit": "g"
+       },
+       {
+        "name": "Carrots",
+        "amount": 250.0,
+        "unit": "g"
+       },
+       {
+        "name": "Zucchini",
+        "amount": 300.0,
+        "unit": "g"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 20.0,
+        "unit": "ml"
+       },
+       {
+        "name": "Mixed dried herbs, salt-free",
+        "amount": 2.0,
+        "unit": "g"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 2.0,
+        "unit": "g"
+       },
+       {
+        "name": "Lemons",
+        "amount": 1.0,
+        "unit": "piece"
+       }
+      ],
+      "steps": [
+       {
+        "text": "In a bowl, toss 250 g of sliced carrots and 300 g of sliced zucchini with 20 g of extra-virgin olive oil, 1 tsp of salt-free mixed dried herbs, and 1/4 tsp of black pepper.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Season 2 salmon fillets on both sides with the remaining 1/4 tsp of black pepper and the grated zest of 1 lemon.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Place the salmon fillets in the center of the air fryer basket and arrange the seasoned carrot and zucchini slices around the fish in a single layer, then cook at 180°C for 6 minutes.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Carefully turn the vegetables and salmon fillets halfway through cooking, then resume air-frying at 180°C for another 6 minutes until the salmon flakes with a fork and the vegetables are tender.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Squeeze half of the lemon over the cooked salmon fillets and vegetables; serve 1 salmon fillet with half of the vegetables immediately, and transfer the remaining 1 salmon fillet and vegetables into an airtight container to refrigerate once cooled.",
+        "setting": null,
+        "then": ""
+       }
+      ],
+      "tips": [
+       "Cut the carrot rounds slightly thinner than the zucchini so both vegetables become tender at the same time."
+      ],
+      "why": "This meal contains salmon fillets, carrots, and zucchini seasoned with lemon, black pepper, and herbs with no added salt.",
+      "evidence": "For adults, the World Health Organization recommends consuming less than 2,000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 466.1,
+       "protein_g": 31.9,
+       "fat_g": 29.7,
+       "sat_fat_g": 5.8,
+       "carbs_g": 19.6,
+       "fiber_g": 6.0,
+       "sugars_g": 10.3,
+       "sodium_mg": 181.7,
+       "counted": [
+        "280 g salmon fillets → Fish, salmon, Atlantic, farmed, raw",
+        "250 g carrots → Carrots, raw",
+        "300 g zucchini → Squash, summer, zucchini, includes skin, raw",
+        "20 g extra-virgin olive oil → Oil, olive, salad or cooking",
+        "2 g black pepper → Spices, pepper, black",
+        "50 g lemons → Lemons, raw, without peel"
+       ],
+       "left_out": [
+        "mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Tue",
+      "meal": "lunch",
+      "title": "Chilled Salmon and Cannellini Bean Salad",
+      "servings": 1,
+      "leftovers_for": "",
+      "from_leftovers": "Mon dinner",
+      "prep_minutes": 10,
+      "total_minutes": 10,
+      "difficulty": "easy",
+      "accessories": [],
+      "ingredients": [
+       {
+        "amount": "1 fillet",
+        "name": "Salmon fillets",
+        "grams": 130.0,
+        "note": "cooked, chilled and flaked (from Mon dinner)"
+       },
+       {
+        "amount": "200 g",
+        "name": "roasted carrots and zucchini",
+        "grams": 200.0,
+        "note": "cooked and chilled (from Mon dinner)"
+       },
+       {
+        "amount": "240 g",
+        "name": "Cannellini beans, no salt added",
+        "grams": 240.0,
+        "note": "rinsed and drained"
+       },
+       {
+        "amount": "60 g",
+        "name": "Baby spinach",
+        "grams": 60.0,
+        "note": "washed and dried"
+       },
+       {
+        "amount": "1 tbsp",
+        "name": "Lemons",
+        "grams": 15.0,
+        "note": "freshly squeezed juice"
+       },
+       {
+        "amount": "1 tbsp",
+        "name": "Extra-virgin olive oil",
+        "grams": 14.0,
+        "note": ""
+       },
+       {
+        "amount": "1 pinch",
+        "name": "Black pepper",
+        "grams": 0.5,
+        "note": "freshly ground"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Cannellini beans, no salt added",
+        "amount": 240.0,
+        "unit": "g"
+       },
+       {
+        "name": "Baby spinach",
+        "amount": 60.0,
+        "unit": "g"
+       },
+       {
+        "name": "Lemons",
+        "amount": 1.0,
+        "unit": "piece"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 14.0,
+        "unit": "g"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 1.0,
+        "unit": "g"
+       }
+      ],
+      "steps": [
+       {
+        "text": "Drain 240 g no-salt-added cannellini beans in a colander and rinse thoroughly under cool running water.",
+        "setting": null,
+        "then": "Shake off excess water and transfer to a large mixing bowl."
+       },
+       {
+        "text": "Add 60 g fresh baby spinach and 200 g chilled leftover roasted carrots and zucchini to the mixing bowl.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Gently flake 1 leftover chilled roasted salmon fillet into bite-sized pieces and place into the salad bowl.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "In a small cup, whisk together 15 g lemon juice, 14 g extra-virgin olive oil, and 0.5 g black pepper, then pour over the salad and toss gently to coat before serving.",
+        "setting": null,
+        "then": ""
+       }
+      ],
+      "tips": [
+       "Keep the salmon and vegetables refrigerated until just before mixing to maintain a crisp, chilled salad texture."
+      ],
+      "why": "This salad combines fish, no-salt-added beans, and vegetables with no added salt, seasoned with fresh lemon juice and black pepper.",
+      "evidence": "WHO recommends an intake of less than 2,000 mg of sodium per day for adults, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 466.1,
+       "protein_g": 31.9,
+       "fat_g": 29.7,
+       "sat_fat_g": 5.8,
+       "carbs_g": 19.6,
+       "fiber_g": 6.0,
+       "sugars_g": 10.3,
+       "sodium_mg": 181.7,
+       "counted": [
+        "280 g salmon fillets → Fish, salmon, Atlantic, farmed, raw",
+        "250 g carrots → Carrots, raw",
+        "300 g zucchini → Squash, summer, zucchini, includes skin, raw",
+        "20 g extra-virgin olive oil → Oil, olive, salad or cooking",
+        "2 g black pepper → Spices, pepper, black",
+        "50 g lemons → Lemons, raw, without peel"
+       ],
+       "left_out": [
+        "mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Tue",
+      "meal": "dinner",
+      "title": "Air-Crisped Chicken Breast with Broccoli and Carrots",
+      "servings": 2,
+      "leftovers_for": "Wed lunch",
+      "from_leftovers": "",
+      "prep_minutes": 15,
+      "total_minutes": 25,
+      "difficulty": "easy",
+      "accessories": [],
+      "ingredients": [
+       {
+        "amount": "2",
+        "name": "Chicken breast",
+        "grams": 450.0,
+        "note": "boneless, skinless"
+       },
+       {
+        "amount": "400 g",
+        "name": "Broccoli",
+        "grams": 400.0,
+        "note": "cut into bite-sized florets"
+       },
+       {
+        "amount": "350 g",
+        "name": "Carrots",
+        "grams": 350.0,
+        "note": "peeled and cut into batons"
+       },
+       {
+        "amount": "2 cloves",
+        "name": "Garlic",
+        "grams": 6.0,
+        "note": "minced"
+       },
+       {
+        "amount": "2 tbsp",
+        "name": "Extra-virgin olive oil",
+        "grams": 27.0,
+        "note": "divided"
+       },
+       {
+        "amount": "2 tsp",
+        "name": "Mixed dried herbs, salt-free",
+        "grams": 4.0,
+        "note": "divided"
+       },
+       {
+        "amount": "0.5 tsp",
+        "name": "Black pepper",
+        "grams": 1.0,
+        "note": "freshly ground, divided"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Chicken breast",
+        "amount": 450.0,
+        "unit": "g"
+       },
+       {
+        "name": "Broccoli",
+        "amount": 400.0,
+        "unit": "g"
+       },
+       {
+        "name": "Carrots",
+        "amount": 350.0,
+        "unit": "g"
+       },
+       {
+        "name": "Garlic",
+        "amount": 2.0,
+        "unit": "piece"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 27.0,
+        "unit": "g"
+       },
+       {
+        "name": "Mixed dried herbs, salt-free",
+        "amount": 4.0,
+        "unit": "g"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 1.0,
+        "unit": "g"
+       }
+      ],
+      "steps": [
+       {
+        "text": "Pat 450 g chicken breasts dry with paper towels, then rub evenly with 6 g minced garlic, 13 g extra-virgin olive oil, 2 g mixed dried herbs, and 0.5 g black pepper.",
+        "setting": null,
+        "then": "Set aside on a plate."
+       },
+       {
+        "text": "In a large bowl, combine 400 g broccoli florets and 350 g carrot batons with the remaining 14 g extra-virgin olive oil, 2 g mixed dried herbs, and 0.5 g black pepper, tossing until evenly coated.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Preheat the air fryer to 190°C. Place the seasoned chicken breasts in the air fryer basket in a single layer and cook at 190°C for 10 minutes, turning halfway.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Add the tossed broccoli florets and carrot batons around the chicken in the air fryer basket and cook at 190°C for 8 minutes, shaking the basket halfway, until the chicken is thoroughly cooked and vegetables are tender.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Plate 1 cooked chicken breast along with half of the roasted broccoli and carrots to serve.",
+        "setting": null,
+        "then": "Transfer the remaining 1 chicken breast and roasted vegetables to an airtight container, let cool completely, and store in the refrigerator."
+       }
+      ],
+      "tips": [
+       "Cut the carrots into thin batons so they soften in the same cooking time as the broccoli florets."
+      ],
+      "why": "This meal provides lean chicken breast and generous portions of broccoli and carrots prepared in the air fryer with garlic, dried herbs, and olive oil with no added salt.",
+      "evidence": "Everyone older than 10 years of age should aim for at least 400 grams of fruits and vegetables per day [WHO — Healthy diet (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 534.8,
+       "protein_g": 58.1,
+       "fat_g": 20.6,
+       "sat_fat_g": 3.4,
+       "carbs_g": 31.4,
+       "fiber_g": 10.3,
+       "sugars_g": 11.7,
+       "sodium_mg": 288.9,
+       "counted": [
+        "450 g Chicken breast → Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw",
+        "400 g Broccoli → Broccoli, raw",
+        "350 g Carrots → Carrots, raw",
+        "6 g Garlic → Garlic, raw",
+        "27 g Extra-virgin olive oil → Oil, olive, salad or cooking",
+        "1 g Black pepper → Spices, pepper, black"
+       ],
+       "left_out": [
+        "Mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Wed",
+      "meal": "lunch",
+      "title": "Sliced Chicken and Quinoa Salad",
+      "servings": 1,
+      "leftovers_for": "",
+      "from_leftovers": "Tue dinner",
+      "prep_minutes": 10,
+      "total_minutes": 25,
+      "difficulty": "easy",
+      "accessories": [],
+      "ingredients": [
+       {
+        "amount": "150 g",
+        "name": "cooked chicken breast",
+        "grams": 150.0,
+        "note": "leftover from Tuesday dinner, sliced cold"
+       },
+       {
+        "amount": "70 g",
+        "name": "quinoa",
+        "grams": 70.0,
+        "note": "rinsed thoroughly"
+       },
+       {
+        "amount": "150 ml",
+        "name": "water",
+        "grams": 0.0,
+        "note": "for boiling quinoa"
+       },
+       {
+        "amount": "60 g",
+        "name": "baby spinach",
+        "grams": 60.0,
+        "note": "washed and dried"
+       },
+       {
+        "amount": "100 g",
+        "name": "cherry tomatoes",
+        "grams": 100.0,
+        "note": "halved"
+       },
+       {
+        "amount": "10 ml",
+        "name": "extra-virgin olive oil",
+        "grams": 9.0,
+        "note": ""
+       },
+       {
+        "amount": "10 ml",
+        "name": "apple cider vinegar",
+        "grams": 10.0,
+        "note": ""
+       },
+       {
+        "amount": "1 pinch",
+        "name": "black pepper",
+        "grams": 0.5,
+        "note": "freshly cracked"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Quinoa",
+        "amount": 70.0,
+        "unit": "g"
+       },
+       {
+        "name": "Baby spinach",
+        "amount": 60.0,
+        "unit": "g"
+       },
+       {
+        "name": "Cherry tomatoes",
+        "amount": 100.0,
+        "unit": "g"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 10.0,
+        "unit": "ml"
+       },
+       {
+        "name": "Apple cider vinegar",
+        "amount": 10.0,
+        "unit": "ml"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 1.0,
+        "unit": "g"
+       }
+      ],
+      "steps": [
+       {
+        "text": "Rinse 70 g of quinoa in a fine-mesh sieve under cold running water, then transfer to a small saucepan on the stovetop with 150 ml of water and bring to a boil over medium-high heat.",
+        "setting": null,
+        "then": "Cover the saucepan tightly and reduce heat to low."
+       },
+       {
+        "text": "Simmer the quinoa on low heat for 15 minutes until the water is completely absorbed, then remove from the heat and let rest covered for 5 minutes.",
+        "setting": null,
+        "then": "Fluff gently with a fork and transfer to a shallow bowl to cool."
+       },
+       {
+        "text": "Combine 60 g of fresh baby spinach and 100 g of halved cherry tomatoes in a large salad bowl.",
+        "setting": null,
+        "then": "Add the cooled cooked quinoa to the bowl."
+       },
+       {
+        "text": "Arrange 150 g of cold sliced leftover cooked chicken breast on top of the quinoa and vegetable mixture.",
+        "setting": null,
+        "then": "Drizzle with 10 ml of extra-virgin olive oil and 10 ml of apple cider vinegar."
+       },
+       {
+        "text": "Season with a pinch of freshly cracked black pepper and toss gently to coat evenly before serving.",
+        "setting": null,
+        "then": "Serve immediately."
+       }
+      ],
+      "tips": [
+       "Rinsing quinoa before simmering removes naturally occurring saponins that can cause bitterness.",
+       "Spread the cooked quinoa on a plate to cool it quickly before tossing with the fresh spinach."
+      ],
+      "why": "This meal provides unrefined whole grains from quinoa, leafy greens and cherry tomatoes, lean protein from leftover chicken, and uses apple cider vinegar and cracked pepper instead of added salt.",
+      "evidence": "Everyone older than 10 years of age should aim for a daily intake of at least 25 grams of naturally-occurring dietary fibre as found in foods [WHO — Healthy diet (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 534.8,
+       "protein_g": 58.1,
+       "fat_g": 20.6,
+       "sat_fat_g": 3.4,
+       "carbs_g": 31.4,
+       "fiber_g": 10.3,
+       "sugars_g": 11.7,
+       "sodium_mg": 288.9,
+       "counted": [
+        "450 g Chicken breast → Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw",
+        "400 g Broccoli → Broccoli, raw",
+        "350 g Carrots → Carrots, raw",
+        "6 g Garlic → Garlic, raw",
+        "27 g Extra-virgin olive oil → Oil, olive, salad or cooking",
+        "1 g Black pepper → Spices, pepper, black"
+       ],
+       "left_out": [
+        "Mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Wed",
+      "meal": "dinner",
+      "title": "Crispy Air-Fried Tofu and Chickpea Medley",
+      "servings": 2,
+      "leftovers_for": "Thu lunch",
+      "from_leftovers": "",
+      "prep_minutes": 10,
+      "total_minutes": 26,
+      "difficulty": "easy",
+      "accessories": [],
+      "ingredients": [
+       {
+        "amount": "400 g",
+        "name": "firm tofu",
+        "grams": 400.0,
+        "note": "pressed dry, cut into 2 cm cubes"
+       },
+       {
+        "amount": "400 g",
+        "name": "chickpeas, no salt added",
+        "grams": 400.0,
+        "note": "rinsed, drained, and patted thoroughly dry"
+       },
+       {
+        "amount": "20 ml",
+        "name": "extra-virgin olive oil",
+        "grams": 18.0,
+        "note": ""
+       },
+       {
+        "amount": "1 tbsp",
+        "name": "mixed dried herbs, salt-free",
+        "grams": 4.0,
+        "note": ""
+       },
+       {
+        "amount": "2 cloves",
+        "name": "garlic",
+        "grams": 6.0,
+        "note": "finely minced"
+       },
+       {
+        "amount": "1/2 tsp",
+        "name": "black pepper",
+        "grams": 1.0,
+        "note": "ground"
+       },
+       {
+        "amount": "1",
+        "name": "lemon",
+        "grams": 50.0,
+        "note": "halved, for juicing"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Firm tofu",
+        "amount": 400.0,
+        "unit": "g"
+       },
+       {
+        "name": "Chickpeas, no salt added",
+        "amount": 400.0,
+        "unit": "g"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 20.0,
+        "unit": "ml"
+       },
+       {
+        "name": "Mixed dried herbs, salt-free",
+        "amount": 4.0,
+        "unit": "g"
+       },
+       {
+        "name": "Garlic",
+        "amount": 6.0,
+        "unit": "g"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 1.0,
+        "unit": "g"
+       },
+       {
+        "name": "Lemons",
+        "amount": 1.0,
+        "unit": "piece"
+       }
+      ],
+      "steps": [
+       {
+        "text": "Pat 400 g of firm tofu dry with clean paper towels to remove surface moisture, then slice into 2 cm bite-sized cubes.",
+        "setting": null,
+        "then": "Place the cubed tofu into a large mixing bowl."
+       },
+       {
+        "text": "Add 400 g of drained, dried no-salt-added chickpeas, 2 finely minced garlic cloves, 1 tbsp of salt-free mixed dried herbs, 1/2 tsp of black pepper, and 20 ml of extra-virgin olive oil to the bowl.",
+        "setting": null,
+        "then": "Gently toss the mixture until the tofu cubes and chickpeas are evenly coated with herbs and oil."
+       },
+       {
+        "text": "Spread the seasoned tofu and chickpea mixture into the air fryer basket in a single, even layer.",
+        "setting": null,
+        "then": "Insert the basket into the air fryer."
+       },
+       {
+        "text": "Cook in the air fryer at 200°C for 16 minutes, pausing at the 8-minute mark to shake the basket vigorously so all sides crisp evenly.",
+        "setting": null,
+        "then": "Check that the edges are golden and crisp when cooking finishes."
+       },
+       {
+        "text": "Transfer the hot medley to a serving platter, squeeze the juice of 1 lemon over the top, and divide into two equal portions.",
+        "setting": null,
+        "then": "Serve 1 portion immediately, and transfer the remaining portion to an airtight container to refrigerate once cooled."
+       }
+      ],
+      "tips": [
+       "Thoroughly drying both the tofu cubes and chickpeas ensures they crisp instead of steaming in the air fryer.",
+       "Store the reserved second portion in a covered container in the refrigerator."
+      ],
+      "why": "This dish centers on plant-based protein and legumes from firm tofu and no-salt-added chickpeas, seasoned purely with aromatic garlic, salt-free dried herbs, and fresh lemon juice without any added salt.",
+      "evidence": "For adults, WHO recommends less than 2000 mg/day of sodium (equivalent to less than 5 g/day salt), or just under a teaspoon [WHO — Sodium reduction (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 556.5,
+       "protein_g": 44.9,
+       "fat_g": 30.4,
+       "sat_fat_g": 4.2,
+       "carbs_g": 36.2,
+       "fiber_g": 14.3,
+       "sugars_g": 5.8,
+       "sodium_mg": 293.3,
+       "counted": [
+        "400 g firm tofu → Tofu, raw, firm, prepared with calcium sulfate",
+        "400 g chickpeas, no salt added → Chickpeas (garbanzo beans, bengal gram), mature seeds, canned, solids and liquids, low sodium",
+        "18 g extra-virgin olive oil → Oil, olive, salad or cooking",
+        "6 g garlic → Garlic, raw",
+        "1 g black pepper → Spices, pepper, black",
+        "50 g lemon → Lemons, raw, without peel"
+       ],
+       "left_out": [
+        "mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Thu",
+      "meal": "lunch",
+      "title": "Warm Tofu and Chickpea Spinach Plate",
+      "servings": 1,
+      "leftovers_for": "",
+      "from_leftovers": "Wed dinner",
+      "prep_minutes": 5,
+      "total_minutes": 10,
+      "difficulty": "easy",
+      "accessories": [
+       "baking paper"
+      ],
+      "ingredients": [
+       {
+        "amount": "250 g",
+        "name": "leftover crispy spiced tofu and chickpeas",
+        "grams": 250.0,
+        "note": "from Wednesday dinner"
+       },
+       {
+        "amount": "60 g",
+        "name": "baby spinach",
+        "grams": 60.0,
+        "note": "washed and dried"
+       },
+       {
+        "amount": "1/2",
+        "name": "avocado",
+        "grams": 75.0,
+        "note": "peeled, pitted, and sliced"
+       },
+       {
+        "amount": "2 slices",
+        "name": "whole-grain bread",
+        "grams": 70.0,
+        "note": "toasted"
+       },
+       {
+        "amount": "1/2",
+        "name": "lemon",
+        "grams": 30.0,
+        "note": "halved, for juice"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Baby spinach",
+        "amount": 60.0,
+        "unit": "g"
+       },
+       {
+        "name": "Avocados",
+        "amount": 0.5,
+        "unit": "piece"
+       },
+       {
+        "name": "Whole-grain bread",
+        "amount": 70.0,
+        "unit": "g"
+       },
+       {
+        "name": "Lemons",
+        "amount": 0.5,
+        "unit": "piece"
+       }
+      ],
+      "steps": [
+       {
+        "text": "Place the leftover spiced tofu and chickpeas into the air fryer basket lined with baking paper, reheat",
+        "setting": {
+         "time": "4 min",
+         "temperature": "170°C",
+         "reverse": false,
+         "speed": "1",
+         "mode": ""
+        },
+        "then": "Shake the basket gently halfway through heating."
+       },
+       {
+        "text": "Toast the whole-grain bread slices and slice the avocado.",
+        "setting": null,
+        "then": "Set aside on a cutting board."
+       },
+       {
+        "text": "Arrange the fresh baby spinach across a wide plate, top with the reheated tofu and chickpeas, arrange the avocado slices alongside, and squeeze the fresh lemon juice over the top.",
+        "setting": null,
+        "then": "Serve immediately with the toasted whole-grain bread."
+       }
+      ],
+      "tips": [
+       "A piece of baking paper under the tofu and chickpeas prevents small pieces from falling through the air fryer basket grate.",
+       "Eat the spinach fresh and crisp beneath the warm reheated legumes."
+      ],
+      "why": "This meal provides dietary fiber and plant protein from whole-grain bread, tofu, chickpeas, and fresh baby spinach with no added salt.",
+      "evidence": "Everyone older than 10 years of age should aim for a daily intake of at least 25 grams of naturally-occurring dietary fibre as found in foods [WHO — Healthy diet (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 556.5,
+       "protein_g": 44.9,
+       "fat_g": 30.4,
+       "sat_fat_g": 4.2,
+       "carbs_g": 36.2,
+       "fiber_g": 14.3,
+       "sugars_g": 5.8,
+       "sodium_mg": 293.3,
+       "counted": [
+        "400 g firm tofu → Tofu, raw, firm, prepared with calcium sulfate",
+        "400 g chickpeas, no salt added → Chickpeas (garbanzo beans, bengal gram), mature seeds, canned, solids and liquids, low sodium",
+        "18 g extra-virgin olive oil → Oil, olive, salad or cooking",
+        "6 g garlic → Garlic, raw",
+        "1 g black pepper → Spices, pepper, black",
+        "50 g lemon → Lemons, raw, without peel"
+       ],
+       "left_out": [
+        "mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Thu",
+      "meal": "dinner",
+      "title": "Herb-Crusted Cod with Roasted Zucchini and Tomatoes",
+      "servings": 1,
+      "leftovers_for": "",
+      "from_leftovers": "",
+      "prep_minutes": 10,
+      "total_minutes": 20,
+      "difficulty": "easy",
+      "accessories": [
+       "baking paper"
+      ],
+      "ingredients": [
+       {
+        "amount": "180 g",
+        "name": "cod fillet",
+        "grams": 180.0,
+        "note": "patted dry with kitchen paper"
+       },
+       {
+        "amount": "150 g",
+        "name": "zucchini",
+        "grams": 150.0,
+        "note": "cut into 1 cm thick rounds"
+       },
+       {
+        "amount": "120 g",
+        "name": "cherry tomatoes",
+        "grams": 120.0,
+        "note": "halved"
+       },
+       {
+        "amount": "1 tsp",
+        "name": "extra-virgin olive oil",
+        "grams": 4.5,
+        "note": ""
+       },
+       {
+        "amount": "1 tsp",
+        "name": "mixed dried herbs, salt-free",
+        "grams": 2.0,
+        "note": ""
+       },
+       {
+        "amount": "1/4 tsp",
+        "name": "black pepper",
+        "grams": 0.5,
+        "note": "freshly cracked"
+       },
+       {
+        "amount": "1/2",
+        "name": "lemon",
+        "grams": 30.0,
+        "note": "cut into wedges"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Cod fillets",
+        "amount": 180.0,
+        "unit": "g"
+       },
+       {
+        "name": "Zucchini",
+        "amount": 150.0,
+        "unit": "g"
+       },
+       {
+        "name": "Cherry tomatoes",
+        "amount": 120.0,
+        "unit": "g"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 4.5,
+        "unit": "ml"
+       },
+       {
+        "name": "Mixed dried herbs, salt-free",
+        "amount": 2.0,
+        "unit": "g"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 0.5,
+        "unit": "g"
+       },
+       {
+        "name": "Lemons",
+        "amount": 0.5,
+        "unit": "piece"
+       }
+      ],
+      "steps": [
+       {
+        "text": "Place the zucchini rounds and cherry tomato halves in a bowl, add the extra-virgin olive oil, half the salt-free mixed dried herbs, and half the black pepper, and toss well to coat.",
+        "setting": null,
+        "then": "Transfer the vegetables to one side of the air fryer basket."
+       },
+       {
+        "text": "Rub the cod fillet with the remaining salt-free mixed dried herbs and black pepper, then place it in the air fryer basket next to the vegetables, air fry",
+        "setting": {
+         "time": "10 min",
+         "temperature": "180°C",
+         "reverse": false,
+         "speed": "1",
+         "mode": ""
+        },
+        "then": "Turn the cod fillet gently and shake the vegetables halfway through cooking."
+       },
+       {
+        "text": "Transfer the cooked cod fillet and roasted vegetables carefully to a serving plate.",
+        "setting": null,
+        "then": "Garnish with lemon wedges and serve warm."
+       }
+      ],
+      "tips": [
+       "Line the basket with perforated baking paper to make cleanup easy while allowing airflow around the fish.",
+       "Check that the cod flakes easily with a fork at the 10-minute mark."
+      ],
+      "why": "This dinner includes lean fish from cod fillet, over 250 g of vegetables from zucchini and cherry tomatoes, and uses herbs and lemon instead of added salt.",
+      "evidence": "Everyone older than 10 years of age should aim for at least 400 grams of fruits and vegetables per day [WHO — Healthy diet (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 244.4,
+       "protein_g": 35.3,
+       "fat_g": 6.5,
+       "sat_fat_g": 1.0,
+       "carbs_g": 12.4,
+       "fiber_g": 3.9,
+       "sugars_g": 7.7,
+       "sodium_mg": 116.0,
+       "counted": [
+        "180 g cod fillet → Fish, cod, Atlantic, raw",
+        "150 g zucchini → Squash, summer, zucchini, includes skin, raw",
+        "120 g cherry tomatoes → Tomatoes, red, ripe, raw, year round average",
+        "4.5 g extra-virgin olive oil → Oil, olive, salad or cooking",
+        "0.5 g black pepper → Spices, pepper, black",
+        "30 g lemon → Lemons, raw, without peel"
+       ],
+       "left_out": [
+        "mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Fri",
+      "meal": "lunch",
+      "title": "Warm Cannellini Bean and Roasted Pepper Bruschetta",
+      "servings": 1,
+      "leftovers_for": "",
+      "from_leftovers": "",
+      "prep_minutes": 10,
+      "total_minutes": 15,
+      "difficulty": "easy",
+      "accessories": [],
+      "ingredients": [
+       {
+        "amount": "1",
+        "name": "bell pepper",
+        "grams": 150.0,
+        "note": "seeded and sliced into thin strips"
+       },
+       {
+        "amount": "150 g",
+        "name": "cannellini beans, no salt added",
+        "grams": 150.0,
+        "note": "rinsed and drained"
+       },
+       {
+        "amount": "1 clove",
+        "name": "garlic",
+        "grams": 3.0,
+        "note": "finely minced"
+       },
+       {
+        "amount": "1 tsp",
+        "name": "extra-virgin olive oil",
+        "grams": 4.5,
+        "note": "divided"
+       },
+       {
+        "amount": "1 tsp",
+        "name": "apple cider vinegar",
+        "grams": 5.0,
+        "note": ""
+       },
+       {
+        "amount": "2 slices",
+        "name": "whole-grain bread",
+        "grams": 60.0,
+        "note": ""
+       },
+       {
+        "amount": "1 pinch",
+        "name": "black pepper",
+        "grams": 0.5,
+        "note": "ground"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Bell peppers",
+        "amount": 1.0,
+        "unit": "piece"
+       },
+       {
+        "name": "Cannellini beans, no salt added",
+        "amount": 150.0,
+        "unit": "g"
+       },
+       {
+        "name": "Garlic",
+        "amount": 3.0,
+        "unit": "g"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 5.0,
+        "unit": "ml"
+       },
+       {
+        "name": "Apple cider vinegar",
+        "amount": 5.0,
+        "unit": "ml"
+       },
+       {
+        "name": "Whole-grain bread",
+        "amount": 60.0,
+        "unit": "g"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 1.0,
+        "unit": "g"
+       }
+      ],
+      "steps": [
+       {
+        "text": "Place the sliced bell peppers in a bowl, toss with 2 g of the extra-virgin olive oil, and transfer to the air fryer basket.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Cook the peppers in the air fryer at 190°C for 10 minutes, shaking the basket halfway through.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "In a mixing bowl, combine the drained cannellini beans, minced garlic, apple cider vinegar, remaining extra-virgin olive oil, and black pepper, then fold in the warm roasted peppers.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Place the whole-grain bread slices into the air fryer basket and toast at 180°C for 3 minutes until lightly crisped.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Spoon the warm cannellini bean and roasted pepper mixture generously over the toasted bread and serve immediately.",
+        "setting": null,
+        "then": ""
+       }
+      ],
+      "tips": [
+       "Rinse the no-salt-added beans thoroughly under running water and drain well to avoid sogginess."
+      ],
+      "why": "This meal includes bell peppers, no-salt-added cannellini beans, and whole-grain bread prepared without added salt.",
+      "evidence": "Adults should consume at least 25 g of naturally-occurring dietary fibre per day from foods such as whole grains, pulses, and vegetables [WHO — Healthy diet (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 406.6,
+       "protein_g": 20.4,
+       "fat_g": 7.8,
+       "sat_fat_g": 1.4,
+       "carbs_g": 66.1,
+       "fiber_g": 14.4,
+       "sugars_g": 7.9,
+       "sodium_mg": 744.1,
+       "counted": [
+        "150 g bell pepper → Peppers, sweet, green, raw",
+        "150 g cannellini beans, no salt added → Beans, white, mature seeds, canned (regular version: its sodium is counted)",
+        "3 g garlic → Garlic, raw",
+        "4.5 g extra-virgin olive oil → Oil, olive, salad or cooking",
+        "5 g apple cider vinegar → Vinegar, cider",
+        "60 g whole-grain bread → Bread, multi-grain (includes whole-grain)",
+        "0.5 g black pepper → Spices, pepper, black"
+       ],
+       "left_out": [],
+       "sodium_at_most": true,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Fri",
+      "meal": "dinner",
+      "title": "Spiced Air-Fried Chicken with Roasted Carrots and Broccoli",
+      "servings": 2,
+      "leftovers_for": "Sat lunch",
+      "from_leftovers": "",
+      "prep_minutes": 15,
+      "total_minutes": 25,
+      "difficulty": "easy",
+      "accessories": [],
+      "ingredients": [
+       {
+        "amount": "2",
+        "name": "chicken breast",
+        "grams": 300.0,
+        "note": "boneless, skinless fillets"
+       },
+       {
+        "amount": "200 g",
+        "name": "carrots",
+        "grams": 200.0,
+        "note": "peeled and sliced into 1 cm rounds"
+       },
+       {
+        "amount": "200 g",
+        "name": "broccoli",
+        "grams": 200.0,
+        "note": "cut into bite-sized florets"
+       },
+       {
+        "amount": "2 cloves",
+        "name": "garlic",
+        "grams": 6.0,
+        "note": "finely minced"
+       },
+       {
+        "amount": "1 tsp",
+        "name": "mixed dried herbs, salt-free",
+        "grams": 2.0,
+        "note": ""
+       },
+       {
+        "amount": "1/2 tsp",
+        "name": "black pepper",
+        "grams": 1.0,
+        "note": "ground"
+       },
+       {
+        "amount": "2 tsp",
+        "name": "extra-virgin olive oil",
+        "grams": 9.0,
+        "note": "divided"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Chicken breast",
+        "amount": 300.0,
+        "unit": "g"
+       },
+       {
+        "name": "Carrots",
+        "amount": 200.0,
+        "unit": "g"
+       },
+       {
+        "name": "Broccoli",
+        "amount": 200.0,
+        "unit": "g"
+       },
+       {
+        "name": "Garlic",
+        "amount": 6.0,
+        "unit": "g"
+       },
+       {
+        "name": "Mixed dried herbs, salt-free",
+        "amount": 2.0,
+        "unit": "g"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 1.0,
+        "unit": "g"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 10.0,
+        "unit": "ml"
+       }
+      ],
+      "steps": [
+       {
+        "text": "Rub the chicken breasts evenly with the minced garlic, salt-free mixed dried herbs, half of the black pepper, and 1 tsp of extra-virgin olive oil.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Toss the sliced carrots and broccoli florets in a bowl with the remaining 1 tsp of extra-virgin olive oil and the remaining black pepper.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Place the seasoned chicken breasts in the air fryer basket and cook at 190°C for 10 minutes.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Turn the chicken breasts over, add the carrots and broccoli florets around them, and cook at 190°C for 8 minutes until the vegetables are tender and the chicken is thoroughly cooked.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Plate 1 chicken breast with half of the roasted carrots and broccoli to serve immediately, and transfer the remaining 1 chicken breast and roasted vegetables to an airtight container to refrigerate once cooled.",
+        "setting": null,
+        "then": ""
+       }
+      ],
+      "tips": [
+       "Let the extra chicken and roasted vegetables cool completely before chilling in an airtight container."
+      ],
+      "why": "This dish features lean chicken breast, carrots, and broccoli roasted with herbs and garlic without added salt.",
+      "evidence": "For adults, WHO recommends less than 2000 mg/day of sodium, equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 300.5,
+       "protein_g": 37.7,
+       "fat_g": 9.1,
+       "sat_fat_g": 1.6,
+       "carbs_g": 17.5,
+       "fiber_g": 5.6,
+       "sugars_g": 6.5,
+       "sodium_mg": 170.2,
+       "counted": [
+        "300 g chicken breast → Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw",
+        "200 g carrots → Carrots, raw",
+        "200 g broccoli → Broccoli, raw",
+        "6 g garlic → Garlic, raw",
+        "1 g black pepper → Spices, pepper, black",
+        "9 g extra-virgin olive oil → Oil, olive, salad or cooking"
+       ],
+       "left_out": [
+        "mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Sat",
+      "meal": "lunch",
+      "title": "Roast Chicken and Brown Rice Grain Bowl",
+      "servings": 1,
+      "leftovers_for": "",
+      "from_leftovers": "Fri dinner",
+      "prep_minutes": 10,
+      "total_minutes": 35,
+      "difficulty": "easy",
+      "accessories": [
+       "air fryer basket",
+       "spatula"
+      ],
+      "ingredients": [
+       {
+        "amount": "150 g",
+        "name": "cooked chicken breast and roasted vegetables",
+        "grams": 150.0,
+        "note": "diced, leftover from Friday dinner"
+       },
+       {
+        "amount": "60 g",
+        "name": "Brown rice",
+        "grams": 60.0,
+        "note": "dry"
+       },
+       {
+        "amount": "150 g",
+        "name": "water",
+        "grams": 0.0,
+        "note": "for boiling rice"
+       },
+       {
+        "amount": "15 g",
+        "name": "Walnuts, unsalted",
+        "grams": 15.0,
+        "note": "roughly chopped"
+       },
+       {
+        "amount": "1/2",
+        "name": "Lemons",
+        "grams": 25.0,
+        "note": "juiced"
+       },
+       {
+        "amount": "1 pinch",
+        "name": "Black pepper",
+        "grams": 0.5,
+        "note": "freshly ground"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Brown rice",
+        "amount": 60.0,
+        "unit": "g"
+       },
+       {
+        "name": "Walnuts, unsalted",
+        "amount": 15.0,
+        "unit": "g"
+       },
+       {
+        "name": "Lemons",
+        "amount": 1.0,
+        "unit": "piece"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 1.0,
+        "unit": "g"
+       }
+      ],
+      "steps": [
+       {
+        "text": "Place the brown rice and water in a small pot on the stovetop, bring to a boil, cover, and simmer on low heat for 25 minutes until tender.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Place the leftover diced chicken breast, carrots, and broccoli into the air fryer basket and reheat at 160°C for 4 minutes, shaking halfway.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Transfer the cooked brown rice to a serving bowl, top with the warmed chicken and vegetables, and scatter the chopped walnuts over the top.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Squeeze fresh lemon juice over the bowl and season with freshly ground black pepper to serve.",
+        "setting": null,
+        "then": ""
+       }
+      ],
+      "tips": [
+       "Toast the walnuts lightly in a dry pan for extra aroma before topping the bowl."
+      ],
+      "why": "This meal includes whole-grain brown rice, leftover roasted vegetables, and lean poultry prepared without any added salt.",
+      "evidence": "Adults should aim for at least 400 grams of fruits and vegetables and at least 25 grams of naturally occurring dietary fiber per day [WHO — Healthy diet (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 300.5,
+       "protein_g": 37.7,
+       "fat_g": 9.1,
+       "sat_fat_g": 1.6,
+       "carbs_g": 17.5,
+       "fiber_g": 5.6,
+       "sugars_g": 6.5,
+       "sodium_mg": 170.2,
+       "counted": [
+        "300 g chicken breast → Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw",
+        "200 g carrots → Carrots, raw",
+        "200 g broccoli → Broccoli, raw",
+        "6 g garlic → Garlic, raw",
+        "1 g black pepper → Spices, pepper, black",
+        "9 g extra-virgin olive oil → Oil, olive, salad or cooking"
+       ],
+       "left_out": [
+        "mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Sat",
+      "meal": "dinner",
+      "title": "Air-Fried Salmon with Roasted Bell Peppers and Onions",
+      "servings": 1,
+      "leftovers_for": "",
+      "from_leftovers": "",
+      "prep_minutes": 10,
+      "total_minutes": 22,
+      "difficulty": "easy",
+      "accessories": [
+       "air fryer basket"
+      ],
+      "ingredients": [
+       {
+        "amount": "150 g",
+        "name": "Salmon fillets",
+        "grams": 150.0,
+        "note": "skinless fillet"
+       },
+       {
+        "amount": "150 g",
+        "name": "Bell peppers",
+        "grams": 150.0,
+        "note": "sliced into thick strips"
+       },
+       {
+        "amount": "60 g",
+        "name": "Yellow onions",
+        "grams": 60.0,
+        "note": "cut into wedges"
+       },
+       {
+        "amount": "1 tsp",
+        "name": "Extra-virgin olive oil",
+        "grams": 4.5,
+        "note": ""
+       },
+       {
+        "amount": "1 tsp",
+        "name": "Mixed dried herbs, salt-free",
+        "grams": 1.0,
+        "note": ""
+       },
+       {
+        "amount": "1/4 tsp",
+        "name": "Black pepper",
+        "grams": 0.5,
+        "note": ""
+       },
+       {
+        "amount": "1/2",
+        "name": "Lemons",
+        "grams": 25.0,
+        "note": "cut into wedges"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Salmon fillets",
+        "amount": 150.0,
+        "unit": "g"
+       },
+       {
+        "name": "Bell peppers",
+        "amount": 150.0,
+        "unit": "g"
+       },
+       {
+        "name": "Yellow onions",
+        "amount": 60.0,
+        "unit": "g"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 5.0,
+        "unit": "ml"
+       },
+       {
+        "name": "Mixed dried herbs, salt-free",
+        "amount": 1.0,
+        "unit": "g"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 1.0,
+        "unit": "g"
+       },
+       {
+        "name": "Lemons",
+        "amount": 1.0,
+        "unit": "piece"
+       }
+      ],
+      "steps": [
+       {
+        "text": "Toss the sliced bell peppers and yellow onions in a bowl with the extra-virgin olive oil and half of the mixed dried herbs.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Season the salmon fillet evenly on both sides with the remaining mixed dried herbs and the black pepper.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Arrange the seasoned salmon fillet and vegetable slices in a single layer in the air fryer basket and air fry at 180°C for 12 minutes, turning the vegetables halfway.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Plate the salmon alongside the roasted bell peppers and onions, and serve immediately with fresh lemon wedges.",
+        "setting": null,
+        "then": ""
+       }
+      ],
+      "tips": [
+       "Squeeze the lemon wedges generously over the salmon to add brightness without salt."
+      ],
+      "why": "This dish combines fish and vegetables seasoned with salt-free herbs and lemon rather than added salt.",
+      "evidence": "Adults should consume less than 2,000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 414.3,
+       "protein_g": 32.9,
+       "fat_g": 25.0,
+       "sat_fat_g": 5.3,
+       "carbs_g": 15.2,
+       "fiber_g": 4.4,
+       "sugars_g": 6.8,
+       "sodium_mg": 96.1,
+       "counted": [
+        "150 g Salmon fillets → Fish, salmon, Atlantic, farmed, raw",
+        "150 g Bell peppers → Peppers, sweet, green, raw",
+        "60 g Yellow onions → Onions, raw",
+        "4.5 g Extra-virgin olive oil → Oil, olive, salad or cooking",
+        "0.5 g Black pepper → Spices, pepper, black",
+        "25 g Lemons → Lemons, raw, without peel"
+       ],
+       "left_out": [
+        "Mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Sun",
+      "meal": "lunch",
+      "title": "Air-Fried Vegetable and Ricotta Whole-Wheat Pasta",
+      "servings": 1,
+      "leftovers_for": "",
+      "from_leftovers": "",
+      "prep_minutes": 10,
+      "total_minutes": 20,
+      "difficulty": "easy",
+      "accessories": [
+       "spatula"
+      ],
+      "ingredients": [
+       {
+        "amount": "75 g",
+        "name": "whole-wheat pasta",
+        "grams": 75.0,
+        "note": "dry"
+       },
+       {
+        "amount": "150 g",
+        "name": "zucchini",
+        "grams": 150.0,
+        "note": "sliced into half-moons"
+       },
+       {
+        "amount": "60 g",
+        "name": "yellow onions",
+        "grams": 60.0,
+        "note": "chopped"
+       },
+       {
+        "amount": "100 g",
+        "name": "cherry tomatoes",
+        "grams": 100.0,
+        "note": "whole"
+       },
+       {
+        "amount": "10 g",
+        "name": "extra-virgin olive oil",
+        "grams": 10.0,
+        "note": ""
+       },
+       {
+        "amount": "2 g",
+        "name": "mixed dried herbs, salt-free",
+        "grams": 2.0,
+        "note": ""
+       },
+       {
+        "amount": "40 g",
+        "name": "ricotta",
+        "grams": 40.0,
+        "note": ""
+       },
+       {
+        "amount": "1 g",
+        "name": "black pepper",
+        "grams": 1.0,
+        "note": "freshly cracked"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Whole-wheat pasta",
+        "amount": 75.0,
+        "unit": "g"
+       },
+       {
+        "name": "Zucchini",
+        "amount": 150.0,
+        "unit": "g"
+       },
+       {
+        "name": "Yellow onions",
+        "amount": 60.0,
+        "unit": "g"
+       },
+       {
+        "name": "Cherry tomatoes",
+        "amount": 100.0,
+        "unit": "g"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 10.0,
+        "unit": "g"
+       },
+       {
+        "name": "Mixed dried herbs, salt-free",
+        "amount": 2.0,
+        "unit": "g"
+       },
+       {
+        "name": "Ricotta",
+        "amount": 40.0,
+        "unit": "g"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 1.0,
+        "unit": "g"
+       }
+      ],
+      "steps": [
+       {
+        "text": "On the stovetop, bring a pot of water to a boil, add 75 g whole-wheat pasta, cook for 10 minutes until tender, and drain.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "In a bowl, toss 150 g sliced zucchini, 60 g chopped yellow onions, and 100 g cherry tomatoes with 10 g extra-virgin olive oil and 2 g salt-free mixed dried herbs.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Transfer the seasoned vegetables to the air fryer basket and roast at 195°C for 12 minutes, shaking the basket halfway through.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Combine the drained warm pasta and roasted vegetables in a serving bowl, gently fold in 40 g ricotta using a spatula, and season with 1 g black pepper.",
+        "setting": null,
+        "then": ""
+       }
+      ],
+      "tips": [
+       "Reserve a splash of hot pasta cooking water if a looser sauce consistency is preferred."
+      ],
+      "why": "No added salt: roasted zucchini, onions, and cherry tomatoes seasoned with dried herbs and paired with whole-wheat pasta.",
+      "evidence": "For adults, WHO recommends consuming less than 2000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 482.4,
+       "protein_g": 16.9,
+       "fat_g": 17.0,
+       "sat_fat_g": 4.5,
+       "carbs_g": 72.7,
+       "fiber_g": 10.9,
+       "sugars_g": 11.1,
+       "sodium_mg": 68.3,
+       "counted": [
+        "75 g whole-wheat pasta → Pasta, whole-wheat, dry (Includes foods for USDA's Food Distribution Program)",
+        "150 g zucchini → Squash, summer, zucchini, includes skin, raw",
+        "60 g yellow onions → Onions, raw",
+        "100 g cherry tomatoes → Tomatoes, red, ripe, raw, year round average",
+        "10 g extra-virgin olive oil → Oil, olive, salad or cooking",
+        "40 g ricotta → Cheese, ricotta, whole milk",
+        "1 g black pepper → Spices, pepper, black"
+       ],
+       "left_out": [
+        "mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": false,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     },
+     {
+      "day": "Sun",
+      "meal": "dinner",
+      "title": "Crispy Tofu and Cannellini Bean Skillet Bowl",
+      "servings": 1,
+      "leftovers_for": "",
+      "from_leftovers": "",
+      "prep_minutes": 10,
+      "total_minutes": 30,
+      "difficulty": "easy",
+      "accessories": [
+       "spatula"
+      ],
+      "ingredients": [
+       {
+        "amount": "60 g",
+        "name": "brown rice",
+        "grams": 60.0,
+        "note": "dry"
+       },
+       {
+        "amount": "150 g",
+        "name": "firm tofu",
+        "grams": 150.0,
+        "note": "pressed and cut into 2 cm cubes"
+       },
+       {
+        "amount": "130 g",
+        "name": "cannellini beans, no salt added",
+        "grams": 130.0,
+        "note": "rinsed and drained"
+       },
+       {
+        "amount": "60 g",
+        "name": "baby spinach",
+        "grams": 60.0,
+        "note": "fresh leaves"
+       },
+       {
+        "amount": "3 g",
+        "name": "garlic",
+        "grams": 3.0,
+        "note": "1 clove, minced"
+       },
+       {
+        "amount": "10 g",
+        "name": "extra-virgin olive oil",
+        "grams": 10.0,
+        "note": "divided"
+       },
+       {
+        "amount": "2 g",
+        "name": "mixed dried herbs, salt-free",
+        "grams": 2.0,
+        "note": ""
+       },
+       {
+        "amount": "1 g",
+        "name": "black pepper",
+        "grams": 1.0,
+        "note": "freshly ground"
+       }
+      ],
+      "buy": [
+       {
+        "name": "Brown rice",
+        "amount": 60.0,
+        "unit": "g"
+       },
+       {
+        "name": "Firm tofu",
+        "amount": 150.0,
+        "unit": "g"
+       },
+       {
+        "name": "Cannellini beans, no salt added",
+        "amount": 130.0,
+        "unit": "g"
+       },
+       {
+        "name": "Baby spinach",
+        "amount": 60.0,
+        "unit": "g"
+       },
+       {
+        "name": "Garlic",
+        "amount": 3.0,
+        "unit": "g"
+       },
+       {
+        "name": "Extra-virgin olive oil",
+        "amount": 10.0,
+        "unit": "g"
+       },
+       {
+        "name": "Mixed dried herbs, salt-free",
+        "amount": 2.0,
+        "unit": "g"
+       },
+       {
+        "name": "Black pepper",
+        "amount": 1.0,
+        "unit": "g"
+       }
+      ],
+      "steps": [
+       {
+        "text": "On the stovetop, bring a small saucepan with 150 ml water and 60 g brown rice to a boil, reduce the heat to low, cover, and simmer for 25 minutes until the water is absorbed.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "In a bowl, toss 150 g cubed firm tofu with 5 g extra-virgin olive oil and 2 g salt-free mixed dried herbs.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Place the tofu cubes in the air fryer basket in a single layer and cook at 200°C for 15 minutes, shaking the basket halfway through until golden and crisp.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "In a skillet on the stovetop, heat the remaining 5 g extra-virgin olive oil and 3 g minced garlic over medium heat, add 60 g baby spinach and 130 g drained cannellini beans, and stir with a spatula for 2 minutes until the spinach wilts.",
+        "setting": null,
+        "then": ""
+       },
+       {
+        "text": "Spoon the cooked brown rice into a bowl, arrange the warm spinach and beans alongside, top with the crispy air-fried tofu, and finish with 1 g black pepper.",
+        "setting": null,
+        "then": ""
+       }
+      ],
+      "tips": [
+       "Patting the tofu dry with a clean paper towel before seasoning yields the crispiest result in the air fryer."
+      ],
+      "why": "No added salt: crispy firm tofu and no-salt-added cannellini beans served with fresh baby spinach and fiber-rich brown rice.",
+      "evidence": "WHO recommends that adults consume at least 400 grams of fruits and vegetables per day [WHO — Healthy diet (fact sheet)].",
+      "removed": [],
+      "kitchen_flags": [],
+      "nutrition": {
+       "kcal": 693.6,
+       "protein_g": 41.9,
+       "fat_g": 25.7,
+       "sat_fat_g": 3.8,
+       "carbs_g": 81.3,
+       "fiber_g": 13.5,
+       "sugars_g": 1.1,
+       "sodium_mg": 514.3,
+       "counted": [
+        "60 g brown rice → Rice, brown, long-grain, raw (Includes foods for USDA's Food Distribution Program)",
+        "150 g firm tofu → Tofu, raw, firm, prepared with calcium sulfate",
+        "130 g cannellini beans, no salt added → Beans, white, mature seeds, canned (regular version: its sodium is counted)",
+        "60 g baby spinach → Spinach, raw",
+        "3 g garlic → Garlic, raw",
+        "10 g extra-virgin olive oil → Oil, olive, salad or cooking",
+        "1 g black pepper → Spices, pepper, black"
+       ],
+       "left_out": [
+        "mixed dried herbs, salt-free"
+       ],
+       "sodium_at_most": true,
+       "source": "USDA FoodData Central (SR Legacy)"
+      }
+     }
+    ],
+    "movement": [
+     "Mon: 35-minute brisk walk around the neighborhood, then 2 sets of 10 bodyweight squats",
+     "Tue: 30-minute brisk walk at a steady, purposeful pace",
+     "Wed: 35-minute brisk walk outdoors, followed by 2 sets of 10 wall push-ups and chair stands",
+     "Thu: 30-minute brisk walk at a comfortable cadence",
+     "Fri: 20-minute easy-paced recovery stroll and gentle leg stretches",
+     "Sat: 40-minute brisk walk through a local park, then 2 sets of 12 calf raises and glute bridges",
+     "Sun: 30-minute brisk walk to finish out the week"
+    ]
+   },
+   "report": {
+    "reviewed_at": "2026-11-11 09:01 UTC",
+    "seconds": 105.5,
+    "provider": "vertex",
+    "quorum": 2,
+    "statements": [
+     "This dish contains no-salt-added chickpeas, zucchini, bell peppers, baby spinach, and salt-free herbs without any added salt.",
+     "Adults should aim to consume at least 25 grams of naturally-occurring dietary fiber each day [WHO — Healthy diet (fact sheet)].",
+     "This meal contains salmon fillets, carrots, and zucchini seasoned with lemon, black pepper, and herbs with no added salt.",
+     "For adults, the World Health Organization recommends consuming less than 2,000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+     "This salad combines fish, no-salt-added beans, and vegetables with no added salt, seasoned with fresh lemon juice and black pepper.",
+     "WHO recommends an intake of less than 2,000 mg of sodium per day for adults, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+     "This meal provides lean chicken breast and generous portions of broccoli and carrots prepared in the air fryer with garlic, dried herbs, and olive oil with no added salt.",
+     "Adults should aim for at least 400 grams of fruits and vegetables per day to help ensure adequate intake of dietary fiber and essential nutrients [WHO — Healthy diet (fact sheet)].",
+     "This meal provides unrefined whole grains from quinoa, leafy greens and cherry tomatoes, lean protein from leftover chicken, and uses apple cider vinegar and cracked pepper instead of added salt.",
+     "Everyone older than 10 years of age should aim for a daily intake of at least 25 grams of naturally-occurring dietary fibre as found in foods [WHO — Healthy diet (fact sheet)].",
+     "This dish centers on plant-based protein and legumes from firm tofu and no-salt-added chickpeas, seasoned purely with aromatic garlic, salt-free dried herbs, and fresh lemon juice without any added salt.",
+     "For adults, WHO recommends less than 2000 mg/day of sodium (equivalent to less than 5 g/day salt), or just under a teaspoon [WHO — Sodium reduction (fact sheet)].",
+     "This meal provides dietary fiber and plant protein from whole-grain bread, tofu, chickpeas, and fresh baby spinach with no added salt.",
+     "Everyone older than 10 years of age should aim for a daily intake of at least 25 grams of naturally-occurring dietary fibre as found in foods [WHO — Healthy diet (fact sheet)].",
+     "This dinner includes lean fish from cod fillet, over 250 g of vegetables from zucchini and cherry tomatoes, and uses herbs and lemon instead of added salt.",
+     "Everyone older than 10 years of age should aim for at least 400 grams of fruits and vegetables per day [WHO — Healthy diet (fact sheet)].",
+     "This meal includes bell peppers, no-salt-added cannellini beans, and whole-grain bread prepared without added salt.",
+     "Adults should consume at least 25 g of naturally-occurring dietary fibre per day from foods such as whole grains, pulses, and vegetables [WHO — Healthy diet (fact sheet)].",
+     "This dish features lean chicken breast, carrots, and broccoli roasted with herbs and garlic without added salt.",
+     "For adults, WHO recommends less than 2000 mg/day of sodium, equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+     "This meal includes whole-grain brown rice, leftover roasted vegetables, and lean poultry prepared without any added salt.",
+     "Adults should aim for at least 400 grams of fruits and vegetables and at least 25 grams of naturally occurring dietary fiber per day [WHO — Healthy diet (fact sheet)].",
+     "This dish combines fish and vegetables seasoned with salt-free herbs and lemon rather than added salt.",
+     "Adults should consume less than 2,000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+     "No added salt: roasted zucchini, onions, and cherry tomatoes seasoned with dried herbs and paired with whole-wheat pasta.",
+     "For adults, WHO recommends consuming less than 2000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+     "No added salt: crispy firm tofu and no-salt-added cannellini beans served with fresh baby spinach and fiber-rich brown rice.",
+     "WHO recommends that adults consume at least 400 grams of fruits and vegetables per day [WHO — Healthy diet (fact sheet)]."
+    ],
+    "approved": true,
+    "fact_jury": "ruled",
+    "corrections": [
+     {
+      "n": 4,
+      "says": "Adults should aim for at least 400 grams of fruits and vegetables per day to help ensure adequate intake of dietary fiber and essential nutrients [WHO — Healthy diet (fact sheet)].",
+      "should_be": "Remove it, or say only what the source says",
+      "why": "The source does not say this.",
+      "raised_by": [
+       "gemini-4-argon",
+       "gemini-3.8-flash",
+       "gemini-3.5-flash-lite"
+      ],
+      "votes": "3 of 3 fact jurors"
+     }
+    ],
+    "set_aside": [
+     {
+      "n": 1,
+      "says": "Adults should aim to consume at least 25 grams of naturally-occurring dietary fiber each day [WHO — Healthy diet (fact sheet)].",
+      "should_be": "Remove it, or say only what the source says",
+      "why": "The source does not say this.",
+      "raised_by": [
+       "gemini-3.5-flash-lite"
+      ],
+      "votes": "1 of 3 fact jurors"
+     },
+     {
+      "n": 9,
+      "says": "Adults should consume at least 25 g of naturally-occurring dietary fibre per day from foods such as whole grains, pulses, and vegetables [WHO — Healthy diet (fact sheet)].",
+      "should_be": "Remove it, or say only what the source says",
+      "why": "The source does not say this.",
+      "raised_by": [
+       "gemini-3.5-flash-lite"
+      ],
+      "votes": "1 of 3 fact jurors"
+     },
+     {
+      "n": 11,
+      "says": "Adults should aim for at least 400 grams of fruits and vegetables and at least 25 grams of naturally occurring dietary fiber per day [WHO — Healthy diet (fact sheet)].",
+      "should_be": "Remove it, or say only what the source says",
+      "why": "The source does not say this.",
+      "raised_by": [
+       "gemini-3.5-flash-lite"
+      ],
+      "votes": "1 of 3 fact jurors"
+     },
+     {
+      "n": 12,
+      "says": "Adults should consume less than 2,000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+      "should_be": "Remove it, or say only what the source says",
+      "why": "The source does not say this.",
+      "raised_by": [
+       "gemini-3.5-flash-lite"
+      ],
+      "votes": "1 of 3 fact jurors"
+     },
+     {
+      "n": 14,
+      "says": "WHO recommends that adults consume at least 400 grams of fruits and vegetables per day [WHO — Healthy diet (fact sheet)].",
+      "should_be": "Remove it, or say only what the source says",
+      "why": "The source does not say this.",
+      "raised_by": [
+       "gemini-3.5-flash-lite"
+      ],
+      "votes": "1 of 3 fact jurors"
+     }
+    ],
+    "reviewers": [
+     {
+      "id": "facts1",
+      "name": "Fact juror",
+      "maker": "gemini-4-argon",
+      "question": "Does the source say this?",
+      "absent": false,
+      "approved": false,
+      "checks": [
+       "Ruled on 14 of 14 statements",
+       "13 match the source, 1 are not covered by it",
+       "0 contradict the source"
+      ],
+      "corrections": [
+       {
+        "n": 4,
+        "says": "Adults should aim for at least 400 grams of fruits and vegetables per day to help ensure adequate intake of dietary fiber and essential nutrients [WHO — Healthy diet (fact sheet)].",
+        "should_be": "Remove it, or say only what the source says",
+        "why": "The source does not say this."
+       }
+      ]
+     },
+     {
+      "id": "facts2",
+      "name": "Fact juror",
+      "maker": "gemini-3.8-flash",
+      "question": "Does the source say this?",
+      "absent": false,
+      "approved": false,
+      "checks": [
+       "Ruled on 14 of 14 statements",
+       "13 match the source, 1 are not covered by it",
+       "0 contradict the source"
+      ],
+      "corrections": [
+       {
+        "n": 4,
+        "says": "Adults should aim for at least 400 grams of fruits and vegetables per day to help ensure adequate intake of dietary fiber and essential nutrients [WHO — Healthy diet (fact sheet)].",
+        "should_be": "Remove it, or say only what the source says",
+        "why": "The source does not say this."
+       }
+      ]
+     },
+     {
+      "id": "facts3",
+      "name": "Fact juror",
+      "maker": "gemini-3.5-flash-lite",
+      "question": "Does the source say this?",
+      "absent": false,
+      "approved": false,
+      "checks": [
+       "Ruled on 14 of 14 statements",
+       "8 match the source, 6 are not covered by it",
+       "0 contradict the source"
+      ],
+      "corrections": [
+       {
+        "n": 1,
+        "says": "Adults should aim to consume at least 25 grams of naturally-occurring dietary fiber each day [WHO — Healthy diet (fact sheet)].",
+        "should_be": "Remove it, or say only what the source says",
+        "why": "The source does not say this."
+       },
+       {
+        "n": 4,
+        "says": "Adults should aim for at least 400 grams of fruits and vegetables per day to help ensure adequate intake of dietary fiber and essential nutrients [WHO — Healthy diet (fact sheet)].",
+        "should_be": "Remove it, or say only what the source says",
+        "why": "The source does not say this."
+       },
+       {
+        "n": 9,
+        "says": "Adults should consume at least 25 g of naturally-occurring dietary fibre per day from foods such as whole grains, pulses, and vegetables [WHO — Healthy diet (fact sheet)].",
+        "should_be": "Remove it, or say only what the source says",
+        "why": "The source does not say this."
+       },
+       {
+        "n": 11,
+        "says": "Adults should aim for at least 400 grams of fruits and vegetables and at least 25 grams of naturally occurring dietary fiber per day [WHO — Healthy diet (fact sheet)].",
+        "should_be": "Remove it, or say only what the source says",
+        "why": "The source does not say this."
+       },
+       {
+        "n": 12,
+        "says": "Adults should consume less than 2,000 mg of sodium per day, which is equivalent to less than 5 g of salt [WHO — Sodium reduction (fact sheet)].",
+        "should_be": "Remove it, or say only what the source says",
+        "why": "The source does not say this."
+       },
+       {
+        "n": 14,
+        "says": "WHO recommends that adults consume at least 400 grams of fruits and vegetables per day [WHO — Healthy diet (fact sheet)].",
+        "should_be": "Remove it, or say only what the source says",
+        "why": "The source does not say this."
+       }
+      ]
+     },
+     {
+      "id": "safety",
+      "name": "Safety reviewer",
+      "question": "Is anything here a diagnosis, a therapy or a promise?",
+      "maker": "gemini-4-argon",
+      "absent": false,
+      "approved": true,
+      "checks": [
+       "I checked for any named or implied medical diagnoses for the person and found none.",
+       "I checked for recommendations to start, change, or stop medicines, supplements, or treatments and found only general food descriptions.",
+       "I checked for personal medical predictions or advice discouraging doctor visits and confirmed that all guidance relies on general public health recommendations from the WHO."
+      ],
+      "corrections": []
+     },
+     {
+      "id": "clarity",
+      "name": "Clarity reviewer",
+      "question": "Would a person understand it at a glance?",
+      "maker": "gemini-4-argon",
+      "absent": false,
+      "approved": true,
+      "checks": [
+       "I checked the vocabulary and found plain food and health terms with no unexplained clinical jargon.",
+       "I checked all numerical values and verified that every figure includes clear units like grams, milligrams, or teaspoons.",
+       "I checked sentence structure and found each statement conveys a single, easy-to-follow idea on first reading."
+      ],
+      "corrections": []
+     }
+    ],
+    "retrieval": {
+     "mode": "retrieved",
+     "model": "gemini-embedding-2",
+     "passages": 7,
+     "chars": 5954,
+     "per_claim": 3
+    },
+    "revision": {
+     "rewritten": 1,
+     "removed": 0,
+     "approved": true,
+     "seconds": 37.4,
+     "reviewers": [
+      {
+       "id": "facts1",
+       "name": "Fact juror",
+       "maker": "gemini-4-argon",
+       "question": "Does the source say this?",
+       "absent": false,
+       "approved": true,
+       "checks": [
+        "Ruled on 1 of 1 statements",
+        "1 match the source, 0 are not covered by it",
+        "0 contradict the source"
+       ],
+       "corrections": []
+      },
+      {
+       "id": "facts2",
+       "name": "Fact juror",
+       "maker": "gemini-3.8-flash",
+       "question": "Does the source say this?",
+       "absent": false,
+       "approved": true,
+       "checks": [
+        "Ruled on 1 of 1 statements",
+        "1 match the source, 0 are not covered by it",
+        "0 contradict the source"
+       ],
+       "corrections": []
+      },
+      {
+       "id": "facts3",
+       "name": "Fact juror",
+       "maker": "gemini-3.5-flash-lite",
+       "question": "Does the source say this?",
+       "absent": false,
+       "approved": true,
+       "checks": [
+        "Ruled on 1 of 1 statements",
+        "1 match the source, 0 are not covered by it",
+        "0 contradict the source"
+       ],
+       "corrections": []
+      },
+      {
+       "id": "safety",
+       "name": "Safety reviewer",
+       "question": "Is anything here a diagnosis, a therapy or a promise?",
+       "maker": "gemini-4-argon",
+       "absent": false,
+       "approved": true,
+       "checks": [
+        "I checked for any statements naming or implying a personal diagnosis and found none.",
+        "I verified that the text does not recommend, change, or stop any medicine, supplement, or treatment.",
+        "I checked for personal value predictions or advice discouraging seeing a doctor and found only general dietary guidance from a public source."
+       ],
+       "corrections": []
+      },
+      {
+       "id": "clarity",
+       "name": "Clarity reviewer",
+       "question": "Would a person understand it at a glance?",
+       "maker": "gemini-4-argon",
+       "absent": false,
+       "approved": true,
+       "checks": [
+        "I checked the vocabulary and found only plain, everyday words without unexplained medical jargon.",
+        "I checked the sentence structure and found a single, direct idea that is easy to understand on the first reading.",
+        "I checked the numbers in the text and confirmed that both age and weight are clearly paired with their units."
+       ],
+       "corrections": []
+      }
+     ]
+    },
+    "kitchen": {
+     "device": "Air fryer",
+     "people": 1,
+     "found": 4,
+     "recipes_fixed": 4,
+     "still": 0
+    },
+    "coach": {
+     "minutes": 200,
+     "strength_days": 3,
+     "problems": [],
+     "within": true,
+     "fixed": false
+    }
+   },
+   "sources": [
+    {
+     "id": "who-sodium",
+     "name": "WHO — Sodium reduction (fact sheet)",
+     "url": "https://www.who.int/news-room/fact-sheets/detail/sodium-reduction",
+     "topic": "blood_pressure",
+     "fetched": true
+    },
+    {
+     "id": "medlineplus-hbp",
+     "name": "MedlinePlus — High blood pressure: lifestyle changes",
+     "url": "https://medlineplus.gov/ency/article/007484.htm",
+     "topic": "blood_pressure",
+     "fetched": true
+    },
+    {
+     "id": "nhs-hbp",
+     "name": "NHS — High blood pressure: prevention",
+     "url": "https://www.nhs.uk/conditions/high-blood-pressure-hypertension/prevention/",
+     "topic": "blood_pressure",
+     "fetched": true
+    },
+    {
+     "id": "aha-sodium",
+     "name": "American Heart Association — How much sodium should I eat per day?",
+     "url": "https://www.heart.org/en/healthy-living/healthy-eating/eat-smart/sodium/how-much-sodium-should-i-eat-per-day",
+     "topic": "blood_pressure",
+     "fetched": true
+    },
+    {
+     "id": "who-activity",
+     "name": "WHO — Physical activity (fact sheet)",
+     "url": "https://www.who.int/news-room/fact-sheets/detail/physical-activity",
+     "topic": "activity",
+     "fetched": true
+    },
+    {
+     "id": "hhs-pag-top10",
+     "name": "US Dept. of Health and Human Services — Physical Activity Guidelines: top 10 things to know",
+     "url": "https://odphp.health.gov/our-work/nutrition-physical-activity/physical-activity-guidelines/current-guidelines/top-10-things-know",
+     "topic": "activity",
+     "fetched": true
+    },
+    {
+     "id": "aha-le8",
+     "name": "American Heart Association — Life's Essential 8 (Circulation, 2022)",
+     "url": "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001078",
+     "fetch": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=10503546&tool=carpevigor",
+     "keep": [
+      "UPDATED DEFINITIONS",
+      "SLEEP HEALTH"
+     ],
+     "topic": "activity",
+     "fetched": true
+    },
+    {
+     "id": "who-diet",
+     "name": "WHO — Healthy diet (fact sheet)",
+     "url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet",
+     "topic": "weight",
+     "fetched": true
+    },
+    {
+     "id": "medlineplus-weight",
+     "name": "MedlinePlus — Weight control",
+     "url": "https://medlineplus.gov/weightcontrol.html",
+     "topic": "weight",
+     "fetched": true
+    },
+    {
+     "id": "aha-diet",
+     "name": "American Heart Association — Diet and lifestyle recommendations",
+     "url": "https://www.heart.org/en/healthy-living/healthy-eating/eat-smart/nutrition-basics/aha-diet-and-lifestyle-recommendations",
+     "topic": "weight",
+     "fetched": true
+    },
+    {
+     "id": "medlineplus-fiber",
+     "name": "MedlinePlus — Dietary fiber",
+     "url": "https://medlineplus.gov/dietaryfiber.html",
+     "topic": "fiber",
+     "fetched": true
+    }
+   ],
+   "cooked": [],
+   "focus": [],
+   "numbers": [
+    {
+     "key": "sodium",
+     "topic": "blood_pressure",
+     "says": "Under 2,000 mg of sodium a day (less than 5 g of salt)",
+     "source": "who-sodium",
+     "quote": "less than 2000 mg/day sodium (equivalent to < 5 g/day salt",
+     "src": {
+      "id": "who-sodium",
+      "name": "WHO — Sodium reduction (fact sheet)",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/sodium-reduction"
+     },
+     "checked": true
+    },
+    {
+     "key": "sodium",
+     "topic": "blood_pressure",
+     "says": "No more than 2,300 mg of sodium a day (about 1 teaspoon of salt)",
+     "source": "medlineplus-chol",
+     "quote": "no more than 2,300 milligrams (about 1 teaspoon of salt) a day",
+     "src": {
+      "id": "medlineplus-chol",
+      "name": "MedlinePlus — How to lower cholesterol with diet",
+      "url": "https://medlineplus.gov/howtolowercholesterolwithdiet.html"
+     },
+     "checked": true
+    },
+    {
+     "key": "fruit_veg",
+     "topic": null,
+     "says": "At least 400 g of fruit and vegetables a day",
+     "source": "who-diet",
+     "quote": "at least 400 grams of fruits and vegetables per day",
+     "src": {
+      "id": "who-diet",
+      "name": "WHO — Healthy diet (fact sheet)",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+     },
+     "checked": true
+    },
+    {
+     "key": "fiber",
+     "topic": "fiber",
+     "says": "At least 25 g of fiber a day",
+     "source": "who-diet",
+     "quote": "at least 25 grams of naturally-occurring dietary fibre",
+     "src": {
+      "id": "who-diet",
+      "name": "WHO — Healthy diet (fact sheet)",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/healthy-diet"
+     },
+     "checked": true
+    },
+    {
+     "key": "aerobic",
+     "topic": null,
+     "says": "150 to 300 minutes of moderate activity a week, like brisk walking",
+     "source": "hhs-pag-top10",
+     "quote": "at least 150 to 300 minutes of moderate-intensity aerobic activity",
+     "src": {
+      "id": "hhs-pag-top10",
+      "name": "US Dept. of Health and Human Services — Physical Activity Guidelines: top 10 things to know",
+      "url": "https://odphp.health.gov/our-work/nutrition-physical-activity/physical-activity-guidelines/current-guidelines/top-10-things-know"
+     },
+     "checked": true
+    },
+    {
+     "key": "strength",
+     "topic": null,
+     "says": "Muscle-strengthening activity at least 2 days a week",
+     "source": "hhs-pag-top10",
+     "quote": "muscle-strengthening activity, like lifting weights or doing push-ups, at least 2 days each week",
+     "src": {
+      "id": "hhs-pag-top10",
+      "name": "US Dept. of Health and Human Services — Physical Activity Guidelines: top 10 things to know",
+      "url": "https://odphp.health.gov/our-work/nutrition-physical-activity/physical-activity-guidelines/current-guidelines/top-10-things-know"
+     },
+     "checked": true
+    },
+    {
+     "key": "sleep",
+     "topic": null,
+     "says": "7 to 9 hours of sleep a night for adults",
+     "source": "mlp-1598",
+     "quote": "try to get 7 to 9 hours of sleep per night",
+     "src": {
+      "id": "mlp-1598",
+      "name": "MedlinePlus — How to Prevent Heart Disease",
+      "url": "https://medlineplus.gov/howtopreventheartdisease.html"
+     },
+     "checked": true
+    }
+   ],
+   "cooked_before": 12,
+   "adapted": {
+    "on": "2026-11-11",
+    "days": [
+     {
+      "on": "2026-11-08",
+      "kcal": 3256
+     },
+     {
+      "on": "2026-11-10",
+      "kcal": 3185
+     }
+    ],
+    "reference": 2255
+   }
+  },
+  "profile": {
+   "doctor_said": "Your blood pressure is a little high. Cut down on salt, eat more vegetables and beans, and walk at least 30 minutes most days. Losing a few pounds would help.",
+   "device": "Air fryer",
+   "people": 1,
+   "constraints_text": "",
+   "budget": 140.0,
+   "guidance": {
+    "goals": [
+     "Cut down on salt",
+     "Eat more vegetables and beans",
+     "Walk at least 30 minutes most days",
+     "Lose a few pounds"
+    ],
+    "constraints": [
+     "low sodium"
+    ],
+    "topics": [
+     "blood_pressure",
+     "activity",
+     "weight",
+     "fiber"
+    ],
+    "to_the_doctor": [
+     "Your blood pressure is a little high"
+    ]
+   }
+  },
+  "quotes": {},
+  "refunds": [
+   {
+    "refund_id": "40198090VD119811D",
+    "capture_id": "2163420521732552Y",
+    "amount": 17.99,
+    "invoice_id": "CV-REWARD-2163420521732552Y-1",
+    "via": "mcp"
+   }
+  ],
+  "report_draft": {
+   "test_date": "2026-10-20",
+   "rows": [
+    {
+     "measure": "total_cholesterol",
+     "printed": "Total cholesterol",
+     "printed_value": 212.0,
+     "printed_unit": "mg/dL",
+     "value": 212.0,
+     "note": "",
+     "ok": true
+    },
+    {
+     "measure": "ldl",
+     "printed": "LDL cholesterol",
+     "printed_value": 138.0,
+     "printed_unit": "mg/dL",
+     "value": 138.0,
+     "note": "",
+     "ok": true
+    },
+    {
+     "measure": "hdl",
+     "printed": "HDL cholesterol",
+     "printed_value": 48.0,
+     "printed_unit": "mg/dL",
+     "value": 48.0,
+     "note": "",
+     "ok": true
+    },
+    {
+     "measure": "triglycerides",
+     "printed": "Triglycerides",
+     "printed_value": 150.0,
+     "printed_unit": "mg/dL",
+     "value": 150.0,
+     "note": "",
+     "ok": true
+    },
+    {
+     "measure": "glucose",
+     "printed": "Glucose, fasting",
+     "printed_value": 104.0,
+     "printed_unit": "mg/dL",
+     "value": 104.0,
+     "note": "",
+     "ok": true
+    },
+    {
+     "measure": "a1c",
+     "printed": "Hemoglobin A1c",
+     "printed_value": 5.9,
+     "printed_unit": "%",
+     "value": 5.9,
+     "note": "",
+     "ok": true
+    }
+   ]
+  },
+  "steps": [
+   8200,
+   6100,
+   6400,
+   7300,
+   4800,
+   11200,
+   7600
+  ],
+  "training": {
+   "setup": {
+    "days": 4,
+    "minutes": 30,
+    "answers": {
+     "heart": true
+    },
+    "cleared": true
+   },
+   "doctor": {
+    "avoid_impact": false,
+    "spare": [],
+    "intensity": "any",
+    "quote": ""
+   },
+   "doctor_said": "Your blood pressure is a little high. Cut down on salt, eat more vegetables and beans, and walk at least 30 minutes most days. Losing a few pounds would help.",
+   "start": "2026-11-02",
+   "level": 0,
+   "log": {
+    "2026-11-02": {
+     "done": true,
+     "rpe": 5,
+     "feedback": {},
+     "minutes": 30
+    },
+    "2026-11-03": {
+     "done": true,
+     "rpe": 5,
+     "feedback": {},
+     "minutes": 30
+    },
+    "2026-11-05": {
+     "done": true,
+     "rpe": 6,
+     "feedback": {
+      "wall_pushup": "easy"
+     },
+     "minutes": 30
+    },
+    "2026-11-07": {
+     "done": false,
+     "rpe": null,
+     "feedback": {},
+     "minutes": null
+    },
+    "2026-11-09": {
+     "done": true,
+     "rpe": 6,
+     "feedback": {
+      "sit_to_stand": "easy"
+     },
+     "minutes": 30
+    },
+    "2026-11-10": {
+     "done": true,
+     "rpe": 5,
+     "feedback": {},
+     "minutes": 30
+    }
+   }
+  }
+ },
+ "log": [
+  {
+   "at": "2026-11-10 17:22:57",
+   "kind": "profile",
+   "data": {
+    "topics": [
+     "blood_pressure",
+     "activity",
+     "weight",
+     "fiber"
+    ]
+   }
+  },
+  {
+   "at": "2026-11-10 17:28:32",
+   "kind": "plan",
+   "data": {
+    "approved": true,
+    "provider": "vertex"
+   }
+  },
+  {
+   "at": "2026-11-10 17:29:29",
+   "kind": "pantry",
+   "data": {
+    "at_home": 3,
+    "dont_rebuy": 0
+   }
+  },
+  {
+   "at": "2026-11-10 17:31:36",
+   "kind": "order_created",
+   "data": {
+    "order_id": "0TL26925HA8779214",
+    "amount": 140.0
+   }
+  },
+  {
+   "at": "2026-11-10 19:26:02",
+   "kind": "order_created",
+   "data": {
+    "order_id": "21E270924A8229448",
+    "amount": 140.0
+   }
+  },
+  {
+   "at": "2026-11-10 20:03:05",
+   "kind": "order_created",
+   "data": {
+    "order_id": "24R48148W21803918",
+    "amount": 140.0
+   }
+  },
+  {
+   "at": "2026-11-10 20:07:28",
+   "kind": "authorized",
+   "data": {
+    "order_id": "24R48148W21803918",
+    "authorization_id": "4NP38678F46892931",
+    "amount": 140.0,
+    "currency": "USD",
+    "voided": false,
+    "released": 0.0,
+    "authorized_at": "2026-11-10T20:07:28.025211+00:00",
+    "held_at": "2026-11-10T20:07:28.025211+00:00"
+   }
+  },
+  {
+   "at": "2026-11-10 20:09:05",
+   "kind": "captured",
+   "data": {
+    "capture_id": "2163420521732552Y",
+    "amount": 105.92,
+    "note": "Carpe Vigor order: 26 items from Demo Market"
+   }
+  },
+  {
+   "at": "2026-11-10 20:09:05",
+   "kind": "order",
+   "data": {
+    "items": 26,
+    "total": 105.92,
+    "blacklisted_bought": [],
+    "healthy": 98.15,
+    "unhealthy": 0
+   }
+  },
+  {
+   "at": "2026-11-10 20:09:17",
+   "kind": "released",
+   "data": {
+    "released": 34.08,
+    "authorization_id": "4NP38678F46892931"
+   }
+  },
+  {
+   "at": "2026-11-10 20:09:17",
+   "kind": "week_closed",
+   "data": {
+    "authorization_id": "4NP38678F46892931",
+    "spent": 105.92,
+    "earned": 17.99,
+    "rate": 0.1698,
+    "score": 0.849,
+    "parts": [
+     {
+      "key": "basket",
+      "label": "Basket: 93% healthy food, 0% sweets, snacks and cured meat",
+      "share": 0.927,
+      "weight": 0.5,
+      "source": "captured by PayPal"
+     },
+     {
+      "key": "moved",
+      "label": "Moved on 5 of 7 days: 4 with 7,000 steps or more, 1 with your training session",
+      "share": 0.714,
+      "weight": 0.3,
+      "source": "from your phone's health app and your training log"
+     },
+     {
+      "key": "cooked",
+      "label": "Cooked 12 of 14 planned meals",
+      "share": 0.857,
+      "weight": 0.2,
+      "source": "self-reported"
+     }
+    ]
+   }
+  },
+  {
+   "at": "2026-11-10 20:09:40",
+   "kind": "reward_paid",
+   "data": {
+    "cashback": 17.99,
+    "weeks": 1,
+    "refunds": [
+     {
+      "refund_id": "40198090VD119811D",
+      "capture_id": "2163420521732552Y",
+      "amount": 17.99,
+      "invoice_id": "CV-REWARD-2163420521732552Y-1",
+      "via": "mcp"
+     }
+    ]
+   }
+  },
+  {
+   "at": "2026-11-11 08:55:21",
+   "kind": "adapt",
+   "data": {
+    "days": 2
+   }
+  },
+  {
+   "at": "2026-11-11 09:02:09",
+   "kind": "plan",
+   "data": {
+    "approved": true,
+    "provider": "vertex"
+   }
+  }
+ ]
+}
