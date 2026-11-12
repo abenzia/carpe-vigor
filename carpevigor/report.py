@@ -12,10 +12,11 @@ from __future__ import annotations
 
 import re
 from datetime import date
+from pathlib import Path
 
 from pydantic import BaseModel, Field
 
-from . import checkup, llm
+from . import checkup, config, llm
 
 TYPES = {"application/pdf", "image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"}
 MAX_BYTES = 10 * 1024 * 1024
@@ -38,6 +39,17 @@ class Extracted(BaseModel):
     test_date: str = Field(description="The date the sample was taken, YYYY-MM-DD, or empty if not printed")
     readings: list[Reading]
 
+
+# The invented report the public demo offers for download. With no model (LLM_PROVIDER=mock) only this file can be
+# "read": its values are the ones printed on it, so the check-and-keep steps can be walked without Gemini.
+SAMPLE = Path(__file__).resolve().parent.parent / "static" / "demo" / "invented-lab-report.pdf"
+SAMPLE_READ = Extracted(test_date="2026-10-20", readings=[
+    Reading(measure="total_cholesterol", printed_name="Total cholesterol", value=212, unit="mg/dL"),
+    Reading(measure="ldl", printed_name="LDL cholesterol", value=138, unit="mg/dL"),
+    Reading(measure="hdl", printed_name="HDL cholesterol", value=48, unit="mg/dL"),
+    Reading(measure="triglycerides", printed_name="Triglycerides", value=150, unit="mg/dL"),
+    Reading(measure="glucose", printed_name="Glucose, fasting", value=104, unit="mg/dL"),
+    Reading(measure="a1c", printed_name="Hemoglobin A1c", value=5.9, unit="%")])
 
 READ = """You copy values from a medical lab report into a list. For each test printed, give its name as printed, \
 the value and the unit exactly as printed, and which of the listed measures it is ('other' when none). Copy only \
@@ -66,7 +78,10 @@ def read(data: bytes, mime: str) -> dict:
         raise ValueError("Send a PDF or a photo (JPEG, PNG, HEIC).")
     if not data or len(data) > MAX_BYTES:
         raise ValueError("The file is empty or larger than 10 MB.")
-    got = llm.ask(READ, "Read this lab report.", Extracted, tier="mid", attachment=(data, mime))
+    if config.LLM_PROVIDER == "mock" and SAMPLE.exists() and data == SAMPLE.read_bytes():
+        got = SAMPLE_READ
+    else:
+        got = llm.ask(READ, "Read this lab report.", Extracted, tier="mid", attachment=(data, mime))
     on = got.test_date if re.fullmatch(r"\d{4}-\d{2}-\d{2}", got.test_date or "") else ""
     if on and on > date.today().isoformat():
         on = ""

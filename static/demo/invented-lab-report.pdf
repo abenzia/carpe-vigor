@@ -1,0 +1,44 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 897 >>
+stream
+BT
+/F1 16 Tf 1 0 0 1 60 760 Tm (SAMPLE CITY LAB  -  invented for a demo, not a real report) Tj
+/F1 11 Tf 1 0 0 1 60 732 Tm () Tj
+/F1 11 Tf 1 0 0 1 60 709 Tm (Patient: Jane Example            Date of collection: 2026-10-20) Tj
+/F1 11 Tf 1 0 0 1 60 686 Tm () Tj
+/F1 11 Tf 1 0 0 1 60 663 Tm (TEST                        RESULT      UNIT       REFERENCE) Tj
+/F1 11 Tf 1 0 0 1 60 640 Tm (Total cholesterol           212         mg/dL      < 200) Tj
+/F1 11 Tf 1 0 0 1 60 617 Tm (LDL cholesterol             138         mg/dL      < 130) Tj
+/F1 11 Tf 1 0 0 1 60 594 Tm (HDL cholesterol             48          mg/dL      > 40) Tj
+/F1 11 Tf 1 0 0 1 60 571 Tm (Triglycerides               150         mg/dL      < 150) Tj
+/F1 11 Tf 1 0 0 1 60 548 Tm (Glucose, fasting            104         mg/dL      70 - 99) Tj
+/F1 11 Tf 1 0 0 1 60 525 Tm (Hemoglobin A1c              5.9         %          < 5.7) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000001189 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1257
+%%EOF

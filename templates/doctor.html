@@ -38,6 +38,7 @@
         <p class="section-kicker">Your lab results · optional</p>
         <h3>Upload your lab report</h3>
         <p class="tiny">A PDF or a photo of the page. AI reads the values; you check each one before anything is kept, and each is shown next to your doctor's target, never judged by the app. The file is not stored.</p>
+        {% if hosted %}<p class="tiny"><a href="/static/demo/invented-lab-report.pdf" download>Download an invented lab report</a> to try it: on this demo the AI is simulated and reads only that file.</p>{% endif %}
         <input type="file" name="file" accept="application/pdf,image/jpeg,image/png,image/heic,image/heif,image/webp" required>
         <label class="check"><input type="checkbox" name="send_ok" value="1" required> I agree that the file is sent to Google Vertex AI (Gemini) to read the values.</label>
         <div class="row" style="justify-content:space-between;margin-top:8px"><a class="tiny" href="/numbers">Height, weight, other measures →</a><button type="submit">Read it</button></div>

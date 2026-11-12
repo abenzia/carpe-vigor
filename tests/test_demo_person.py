@@ -35,3 +35,11 @@ def test_the_button_exists_only_on_the_public_demo(tmp_path, monkeypatch):
     monkeypatch.setattr(webapp.config, "HOSTED", True)
     assert client.post("/demo/example", follow_redirects=False).status_code == 303
     assert webapp.store.get("authorization")["authorization_id"] == "4NP38678F46892931"
+
+
+def test_the_simulated_reader_reads_only_the_invented_report():
+    from carpevigor import report
+    draft = report.read(report.SAMPLE.read_bytes(), "application/pdf")
+    assert draft["test_date"] == "2026-10-20"
+    assert {r["measure"]: r["value"] for r in draft["rows"]}["ldl"] == 138 and all(r["ok"] for r in draft["rows"])
+    assert report.read(b"%PDF-1.4 another report", "application/pdf")["rows"] == []
